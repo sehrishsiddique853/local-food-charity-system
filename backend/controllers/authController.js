@@ -1,72 +1,103 @@
-import bcrypt from "bcryptjs";
-import jwt from "jsonwebtoken";
-import User from "../models/User.js";
-import RefreshToken from "../models/RefreshToken.js";
+// Controller layer for auth-related HTTP endpoints.
+// Controllers receive request data, invoke service logic, and return structured responses.
+import { successResponse } from "../utils/apiResponse.js";
+import * as authService from "../services/authService.js";
 
-const generateToken = (user) => {
-  return jwt.sign({ id: user._id, role: user.role }, process.env.JWT_SECRET, {
-    expiresIn: "7d",
-  });
+// Cookie settings for access and refresh tokens.
+// Access tokens are short-lived, refresh tokens are longer-lived.
+const accessCookieOptions = {
+  httpOnly: true,
+  secure: process.env.NODE_ENV === "production",
+  sameSite: "strict",
+  maxAge: 15 * 60 * 1000, // 15 minutes
 };
 
-export const register = async (req, res) => {
+const refreshCookieOptions = {
+  httpOnly: true,
+  secure: process.env.NODE_ENV === "production",
+  sameSite: "strict",
+  maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+};
+
+// Register a new user.
+// Delegates validation to middleware and business logic to authService.
+export const register = async (req, res, next) => {
   try {
-    const { name, email, password, phone, role, ngoName, ngoDocument } = req.body;
-    if (!name || !email || !password || !phone) {
-      return res.status(400).json({ message: "Missing required fields" });
-    }
+    const { user, accessToken, refreshToken } = await authService.registerUser(req.body);
 
-    const existing = await User.findOne({ email });
-    if (existing) return res.status(409).json({ message: "Email already in use" });
+    res.cookie("accessToken", accessToken, accessCookieOptions);
+    res.cookie("refreshToken", refreshToken, refreshCookieOptions);
 
-    const salt = await bcrypt.genSalt(10);
-    const hashed = await bcrypt.hash(password, salt);
-
-    const user = await User.create({
-      name,
-      email,
-      password: hashed,
-      phone,
-      role: role || "donor",
-      ngoName: role === "ngo" ? ngoName : undefined,
-      ngoDocument: role === "ngo" ? ngoDocument : undefined,
-      ngoVerificationStatus: role === "ngo" ? "pending" : undefined,
+    return successResponse(res, 201, {
+      user: {
+        id: user._id,
+        email: user.email,
+        role: user.role,
+      },
     });
-
-    const token = generateToken(user);
-
-    res.status(201).json({ token, user: { id: user._id, email: user.email, role: user.role } });
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    return next(err);
   }
 };
 
-export const login = async (req, res) => {
+// Log in a user and issue new tokens.
+export const login = async (req, res, next) => {
   try {
-    const { email, password } = req.body;
-    if (!email || !password) return res.status(400).json({ message: "Missing fields" });
+    const { user, accessToken, refreshToken } = await authService.loginUser(req.body);
 
-    const user = await User.findOne({ email });
-    if (!user) return res.status(401).json({ message: "Invalid credentials" });
+    res.cookie("accessToken", accessToken, accessCookieOptions);
+    res.cookie("refreshToken", refreshToken, refreshCookieOptions);
 
-    const match = await bcrypt.compare(password, user.password);
-    if (!match) return res.status(401).json({ message: "Invalid credentials" });
-
-    const token = generateToken(user);
-
-    res.json({ token, user: { id: user._id, email: user.email, role: user.role } });
+    return successResponse(res, 200, {
+      user: {
+        id: user._id,
+        email: user.email,
+        role: user.role,
+      },
+    });
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    return next(err);
   }
 };
 
-export const getProfile = async (req, res) => {
+// Get the current authenticated user's profile.
+export const getProfile = async (req, res, next) => {
   try {
-    const user = await User.findById(req.user.id).select("-password");
-    if (!user) return res.status(404).json({ message: "User not found" });
-    res.json({ user });
+    const user = await authService.getProfileById(req.user.id);
+    return successResponse(res, 200, { user });
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    return next(err);
+  }
+};
+
+// Log out a user by deleting the stored refresh token and clearing cookies.
+export const logout = async (req, res, next) => {
+  try {
+    await authService.logoutUser(req.cookies?.refreshToken);
+    res.clearCookie("accessToken");
+    res.clearCookie("refreshToken");
+
+    return successResponse(res, 200, { message: "Logged out successfully" });
+  } catch (err) {
+    return next(err);
+  }
+};
+
+// Refresh the access token using a valid refresh token.
+export const refresh = async (req, res, next) => {
+  try {
+    const { user, accessToken } = await authService.refreshAccessToken(req.cookies?.refreshToken);
+    res.cookie("accessToken", accessToken, accessCookieOptions);
+
+    return successResponse(res, 200, {
+      user: {
+        id: user._id,
+        email: user.email,
+        role: user.role,
+      },
+    });
+  } catch (err) {
+    return next(err);
   }
 };
 
@@ -74,4 +105,6 @@ export default {
   register,
   login,
   getProfile,
+  refresh,
+  logout,
 };
