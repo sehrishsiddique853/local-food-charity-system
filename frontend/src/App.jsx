@@ -1,7 +1,10 @@
+import HomePage from './pages/HomePage';
+import './App.css';
+
 function App() {
   return (
-    <div>
-      <h1>Local Food Charity System</h1>
+    <div className="app">
+      <HomePage />
     </div>
   );
 }

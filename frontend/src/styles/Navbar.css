@@ -1,0 +1,248 @@
+.navbar {
+  background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+  padding: 1rem 0;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+}
+
+.navbar-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+}
+
+.navbar-logo {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.logo-icon {
+  font-size: 1.8rem;
+}
+
+.logo-text {
+  color: white;
+  font-size: 1.3rem;
+}
+
+.logo-text-accent {
+  color: #27ae60;
+  font-size: 1.3rem;
+  font-weight: 700;
+}
+
+.logo-subtitle {
+  font-size: 0.7rem;
+  color: #bbb;
+  letter-spacing: 0.5px;
+}
+
+.nav-menu {
+  display: flex;
+  list-style: none;
+  gap: 2rem;
+  margin: 0;
+  padding: 0;
+}
+
+.nav-menu li {
+  display: flex;
+}
+
+.nav-menu a {
+  color: #ddd;
+  text-decoration: none;
+  font-size: 0.95rem;
+  transition: color 0.3s ease;
+  cursor: pointer;
+  padding: 0.5rem 0;
+}
+
+.nav-menu a:hover {
+  color: #27ae60;
+}
+
+.login-btn {
+  background-color: #27ae60;
+  color: white;
+  border: none;
+  padding: 0.6rem 1.5rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background-color 0.3s ease;
+  font-size: 0.95rem;
+}
+
+.login-btn:hover {
+  background-color: #229954;
+}
+
+/* Hamburger Menu */
+.hamburger {
+  display: none;
+  flex-direction: column;
+  cursor: pointer;
+  gap: 5px;
+  z-index: 101;
+}
+
+.hamburger span {
+  width: 25px;
+  height: 3px;
+  background-color: #27ae60;
+  border-radius: 2px;
+  transition: all 0.3s ease;
+}
+
+.hamburger.active span:nth-child(1) {
+  transform: rotate(45deg) translate(10px, 10px);
+}
+
+.hamburger.active span:nth-child(2) {
+  opacity: 0;
+}
+
+.hamburger.active span:nth-child(3) {
+  transform: rotate(-45deg) translate(7px, -7px);
+}
+
+/* Tablet (768px and below) */
+@media (max-width: 768px) {
+  .navbar-container {
+    padding: 0 1.5rem;
+  }
+
+  .logo-text {
+    font-size: 1.1rem;
+  }
+
+  .logo-text-accent {
+    font-size: 1.1rem;
+  }
+
+  .logo-subtitle {
+    font-size: 0.6rem;
+  }
+
+  .hamburger {
+    display: flex;
+  }
+
+  .login-btn {
+    display: none;
+  }
+
+  .nav-menu {
+    position: absolute;
+    top: 70px;
+    left: 0;
+    right: 0;
+    flex-direction: column;
+    background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+    gap: 0;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.3);
+    padding: 0;
+    margin: 0;
+  }
+
+  .nav-menu.active {
+    max-height: 500px;
+    padding: 1rem 0;
+  }
+
+  .nav-menu li {
+    display: flex;
+  }
+
+  .nav-menu a {
+    display: block;
+    width: 100%;
+    padding: 1rem 1.5rem;
+    color: #ddd;
+    text-decoration: none;
+    font-size: 0.95rem;
+    transition: background-color 0.3s ease;
+    cursor: pointer;
+  }
+
+  .nav-menu a:hover {
+    background-color: rgba(39, 174, 96, 0.2);
+    color: #27ae60;
+  }
+
+  .nav-menu .mobile-login {
+    display: flex;
+  }
+
+  .nav-menu .mobile-login a {
+    background-color: #27ae60;
+    color: white;
+    font-weight: 600;
+    margin: 0.5rem 1.5rem;
+    border-radius: 4px;
+    padding: 0.7rem 1.5rem;
+    text-align: center;
+  }
+
+  .nav-menu .mobile-login a:hover {
+    background-color: #229954;
+    color: white;
+  }
+}
+
+/* Mobile (480px and below) */
+@media (max-width: 480px) {
+  .navbar-container {
+    padding: 0 1rem;
+  }
+
+  .navbar-logo {
+    gap: 0.5rem;
+  }
+
+  .logo-icon {
+    font-size: 1.4rem;
+  }
+
+  .logo-text {
+    font-size: 0.9rem;
+  }
+
+  .logo-text-accent {
+    font-size: 0.9rem;
+  }
+
+  .logo-subtitle {
+    font-size: 0.5rem;
+  }
+
+  .hamburger span {
+    width: 20px;
+    height: 2.5px;
+  }
+
+  .nav-menu a {
+    padding: 0.8rem 1.2rem;
+    font-size: 0.9rem;
+  }
+
+  .nav-menu .mobile-login a {
+    margin: 0.5rem 1.2rem;
+    padding: 0.6rem 1.2rem;
+  }
+}
