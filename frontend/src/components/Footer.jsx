@@ -1,9 +1,8 @@
-import React from 'react';
 import '../styles/Footer.css';
 
 const Footer = () => {
   return (
-    <footer className="footer">
+    <footer className="footer" id="contact">
       <div className="footer-container">
         {/* Left Section - Logo and Description */}
         <div className="footer-section">
@@ -29,11 +28,11 @@ const Footer = () => {
         <div className="footer-section">
           <h4>Quick Links</h4>
           <ul>
-            <li><a href="#home">Home</a></li>
-            <li><a href="#about">About Us</a></li>
-            <li><a href="#donate">Donate Food</a></li>
-            <li><a href="#request">Request Food</a></li>
-            <li><a href="#volunteer">Volunteer</a></li>
+            <li><a href="/#home">Home</a></li>
+            <li><a href="/#about">About Us</a></li>
+            <li><a href="/register?role=donor">Donate Food</a></li>
+            <li><a href="/register?role=ngo">Request Food</a></li>
+            <li><a href="/register">Register</a></li>
           </ul>
         </div>
 

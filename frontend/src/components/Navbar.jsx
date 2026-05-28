@@ -1,11 +1,15 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import '../styles/Navbar.css';
 
-const Navbar = () => {
+const Navbar = ({ variant = 'transparent' }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const isLight = variant === 'light';
+  const homeHref = isLight ? '/#home' : '#home';
+  const aboutHref = isLight ? '/#about' : '#about';
+  const contactHref = isLight ? '/#contact' : '#contact';
 
   const toggleMobileMenu = () => {
-    setMobileMenuOpen(!mobileMenuOpen);
+    setMobileMenuOpen((prev) => !prev);
   };
 
   const closeMobileMenu = () => {
@@ -13,38 +17,61 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="navbar">
+    <nav className={`navbar ${isLight ? 'navbar-light' : ''}`}>
       <div className="navbar-container">
         {/* Logo */}
-        <div className="navbar-logo">
+        <a href={homeHref} className="navbar-logo" onClick={closeMobileMenu}>
           <div className="logo-icon">🥗</div>
-          <div>
-            <span className="logo-text">Local</span>
-            <span className="logo-text-accent">Food</span>
-            <div className="logo-subtitle">Charity System</div>
+
+          <div className="logo-content">
+            <div>
+              <span className="logo-text">Local</span>
+              <span className="logo-text-accent">Food</span>
+            </div>
+            <span className="logo-subtitle">Charity System</span>
           </div>
-        </div>
+        </a>
 
-        {/* Hamburger Menu Icon */}
-        <div className={`hamburger ${mobileMenuOpen ? 'active' : ''}`} onClick={toggleMobileMenu}>
+        {/* Mobile Menu Button */}
+        <button
+          className={`hamburger ${mobileMenuOpen ? 'active' : ''}`}
+          onClick={toggleMobileMenu}
+          aria-label="Toggle navigation menu"
+        >
           <span></span>
           <span></span>
           <span></span>
-        </div>
+        </button>
 
-        {/* Menu Items */}
+        {/* Navigation Links */}
         <ul className={`nav-menu ${mobileMenuOpen ? 'active' : ''}`}>
-          <li><a href="#home" onClick={closeMobileMenu}>Home</a></li>
-          <li><a href="#about" onClick={closeMobileMenu}>About Us</a></li>
-          <li><a href="#donate" onClick={closeMobileMenu}>Donate</a></li>
-          <li><a href="#request" onClick={closeMobileMenu}>Request</a></li>
-          <li><a href="#volunteer" onClick={closeMobileMenu}>Volunteer</a></li>
-          <li><a href="#contact" onClick={closeMobileMenu}>Contact Us</a></li>
-          <li className="mobile-login"><a href="#login" onClick={closeMobileMenu}>Login</a></li>
+          <li>
+            <a href={homeHref} className={!isLight ? 'active' : ''} onClick={closeMobileMenu}>
+              Home
+            </a>
+          </li>
+          <li>
+            <a href={aboutHref} onClick={closeMobileMenu}>About Us</a>
+          </li>
+          <li>
+            <a href="/register?role=donor" onClick={closeMobileMenu}>Donate</a>
+          </li>
+          <li>
+            <a href="/register?role=ngo" onClick={closeMobileMenu}>Request</a>
+          </li>
+          <li>
+            <a href={contactHref} onClick={closeMobileMenu}>Contact Us</a>
+          </li>
+          <li className="mobile-login">
+            <a href="#login" onClick={closeMobileMenu}>Login</a>
+          </li>
         </ul>
 
-        {/* Login Button (Desktop Only) */}
-        <button className="login-btn">Login</button>
+        {/* Desktop Login Button */}
+        <a className="login-btn" href="#login">
+          <span className="login-icon">♡</span>
+          Login
+        </a>
       </div>
     </nav>
   );

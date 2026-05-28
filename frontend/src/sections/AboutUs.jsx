@@ -1,4 +1,3 @@
-import React from 'react';
 import '../styles/sections/AboutUs.css';
 
 const AboutUs = () => {
@@ -7,7 +6,7 @@ const AboutUs = () => {
       <div className="about-container">
         <div className="about-image">
           <div className="image-placeholder">
-            <img src="/about-image.jpg" alt="About Us" />
+            <img src="/home-page-ani.png" alt="Food donation volunteers" />
           </div>
         </div>
         <div className="about-content">

@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { FIXED_SERVICE_CITY, SUPPORTED_CITIES } from "../constants/location.js";
 
 const userSchema = new mongoose.Schema(
   {
@@ -13,6 +14,14 @@ const userSchema = new mongoose.Schema(
       required: true,
       unique: true,
       lowercase: true,
+    },
+
+    username: {
+      type: String,
+      required: true,
+      unique: true,
+      lowercase: true,
+      trim: true,
     },
 
     password: {
@@ -33,7 +42,18 @@ const userSchema = new mongoose.Schema(
     },
 
     location: {
-      type: String,
+      city: {
+        type: String,
+        enum: SUPPORTED_CITIES,
+        default: FIXED_SERVICE_CITY,
+        immutable: true,
+        required: true,
+      },
+      address: {
+        type: String,
+        required: true,
+        trim: true,
+      },
     },
 
     

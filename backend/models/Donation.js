@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { FIXED_SERVICE_CITY, SUPPORTED_CITIES } from "../constants/location.js";
 
 const donationSchema = new mongoose.Schema(
   {
@@ -36,8 +37,18 @@ const donationSchema = new mongoose.Schema(
     },
 
     pickupAddress: {
-      type: String,
-      required: true,
+      city: {
+        type: String,
+        enum: SUPPORTED_CITIES,
+        default: FIXED_SERVICE_CITY,
+        immutable: true,
+        required: true,
+      },
+      address: {
+        type: String,
+        required: true,
+        trim: true,
+      },
     },
 
 

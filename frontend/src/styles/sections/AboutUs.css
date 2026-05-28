@@ -20,22 +20,19 @@
 .about-image .image-placeholder {
   width: 100%;
   height: 400px;
-  background: linear-gradient(135deg, #f8f9fa 0%, #e0e0e0 100%);
-  border-radius: 12px;
+  background: #f8faf8;
+  border-radius: 8px;
   display: flex;
   justify-content: center;
   align-items: center;
-  color: #999;
-  font-size: 3rem;
-  border: 2px dashed #ddd;
   overflow: hidden;
 }
 
 .about-image img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
-  display: none;
+  object-fit: contain;
+  display: block;
 }
 
 .about-content h2 {

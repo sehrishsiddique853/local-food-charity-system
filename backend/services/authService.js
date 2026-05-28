@@ -5,6 +5,7 @@ import jwt from "jsonwebtoken";
 import User from "../models/User.js";
 import RefreshToken from "../models/RefreshToken.js";
 import ApiError from "../utils/ApiError.js";
+import { FIXED_SERVICE_CITY } from "../constants/location.js";
 
 // Create a signed JWT access token containing the user id and role.
 const generateAccessToken = (user) => {
@@ -26,7 +27,18 @@ const saveRefreshToken = async (userId, token) => {
   await RefreshToken.create({ user: userId, token, expiresAt });
 };
 
-export const registerUser = async ({ name, email, password, phone, role, ngoName, ngoDocument }) => {
+export const registerUser = async ({
+  name,
+  email,
+  username,
+  password,
+  phone,
+  role,
+  location,
+  ngoName,
+  ngoRegistrationNumber,
+  ngoDocument,
+}) => {
   // Prevent duplicate email and phone registrations.
   const existingEmail = await User.findOne({ email });
   if (existingEmail) {
@@ -38,6 +50,11 @@ export const registerUser = async ({ name, email, password, phone, role, ngoName
     throw new ApiError(409, "PHONE_ALREADY_EXISTS", "Phone number already in use");
   }
 
+  const existingUsername = await User.findOne({ username });
+  if (existingUsername) {
+    throw new ApiError(409, "USERNAME_ALREADY_EXISTS", "Username already in use");
+  }
+
   const salt = await bcrypt.genSalt(10);
   const hashedPassword = await bcrypt.hash(password, salt);
 
@@ -46,10 +63,16 @@ export const registerUser = async ({ name, email, password, phone, role, ngoName
   const user = await User.create({
     name,
     email,
+    username,
     password: hashedPassword,
     phone,
     role: normalizedRole,
+    location: {
+      city: FIXED_SERVICE_CITY,
+      address: location?.address,
+    },
     ngoName: normalizedRole === "ngo" ? ngoName : undefined,
+    ngoRegistrationNumber: normalizedRole === "ngo" ? ngoRegistrationNumber : undefined,
     ngoDocument: normalizedRole === "ngo" ? ngoDocument : undefined,
     ngoVerificationStatus: normalizedRole === "ngo" ? "pending" : undefined,
   });

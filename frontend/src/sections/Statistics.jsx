@@ -1,42 +1,41 @@
-import React from 'react';
 import '../styles/sections/Statistics.css';
 
 const Statistics = () => {
-  const stats = [
+  const benefits = [
     {
       id: 1,
-      icon: '🍽️',
-      number: '1,250+',
-      label: 'Meals Donated'
+      icon: '👥',
+      title: 'Communities Helped',
+      description: 'We connect food with local communities that truly need it.'
     },
     {
       id: 2,
-      icon: '🏢',
-      number: '85+',
-      label: 'Verified NGOs'
+      icon: '🛡',
+      title: 'Safe & Transparent',
+      description: 'Every step is verified and tracked to ensure safe food delivery.'
     },
     {
       id: 3,
-      icon: '✓',
-      number: '450+',
-      label: 'Successful Donations'
+      icon: '◷',
+      title: 'Reduce Food Waste',
+      description: 'We help reduce food waste by redistributing it to those in need.'
     },
     {
       id: 4,
-      icon: '🌱',
-      number: '2.3 Tons',
-      label: 'Food Waste Reduced'
+      icon: '♥',
+      title: 'Make an Impact',
+      description: "Your donation brings hope and makes a real difference in people's lives."
     }
   ];
 
   return (
     <section className="statistics">
       <div className="stats-container">
-        {stats.map(stat => (
-          <div key={stat.id} className="stat-card">
-            <div className="stat-icon">{stat.icon}</div>
-            <h3 className="stat-number">{stat.number}</h3>
-            <p className="stat-label">{stat.label}</p>
+        {benefits.map(benefit => (
+          <div key={benefit.id} className="stat-card">
+            <div className="stat-icon">{benefit.icon}</div>
+            <h3 className="stat-title">{benefit.title}</h3>
+            <p className="stat-description">{benefit.description}</p>
           </div>
         ))}
       </div>
