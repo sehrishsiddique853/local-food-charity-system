@@ -20,6 +20,14 @@ const errorHandler = (err, req, res, next) => {
     );
   }
 
+  if (err.name === "MulterError") {
+    return errorResponse(res, 400, "UPLOAD_FAILED", err.message);
+  }
+
+  if (err.message === "Only PDF, JPG, and PNG documents are allowed") {
+    return errorResponse(res, 400, "INVALID_FILE_TYPE", err.message);
+  }
+
   // Handle service-generated ApiError instances.
   if (err instanceof ApiError) {
     return errorResponse(res, err.statusCode, err.errorCode, err.message, err.details);

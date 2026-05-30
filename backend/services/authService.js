@@ -27,10 +27,11 @@ const saveRefreshToken = async (userId, token) => {
   await RefreshToken.create({ user: userId, token, expiresAt });
 };
 
+const formatPakistanPhone = (phone) => `+92 ${phone}`;
+
 export const registerUser = async ({
   name,
   email,
-  username,
   password,
   phone,
   role,
@@ -39,20 +40,17 @@ export const registerUser = async ({
   ngoRegistrationNumber,
   ngoDocument,
 }) => {
+  const formattedPhone = formatPakistanPhone(phone);
+
   // Prevent duplicate email and phone registrations.
   const existingEmail = await User.findOne({ email });
   if (existingEmail) {
     throw new ApiError(409, "EMAIL_ALREADY_EXISTS", "Email already in use");
   }
 
-  const existingPhone = await User.findOne({ phone });
+  const existingPhone = await User.findOne({ phone: formattedPhone });
   if (existingPhone) {
     throw new ApiError(409, "PHONE_ALREADY_EXISTS", "Phone number already in use");
-  }
-
-  const existingUsername = await User.findOne({ username });
-  if (existingUsername) {
-    throw new ApiError(409, "USERNAME_ALREADY_EXISTS", "Username already in use");
   }
 
   const salt = await bcrypt.genSalt(10);
@@ -61,11 +59,10 @@ export const registerUser = async ({
   const normalizedRole = role ? role.toLowerCase() : "donor";
 
   const user = await User.create({
-    name,
+    name: normalizedRole === "donor" ? name : undefined,
     email,
-    username,
     password: hashedPassword,
-    phone,
+    phone: formattedPhone,
     role: normalizedRole,
     location: {
       city: FIXED_SERVICE_CITY,

@@ -185,6 +185,15 @@
   flex: 0 0 auto;
 }
 
+.phone-field strong {
+  flex: 0 0 auto;
+  color: #111827;
+  font-size: 0.95rem;
+  font-weight: 750;
+  padding-right: 0.75rem;
+  border-right: 1px solid #d9e0e7;
+}
+
 .field input,
 .field select {
   width: 100%;
@@ -198,6 +207,23 @@
 
 .field input::placeholder {
   color: #4b5563;
+}
+
+.field input[type='file'] {
+  color: #4b5563;
+  cursor: pointer;
+}
+
+.field input[type='file']::file-selector-button {
+  margin-right: 0.85rem;
+  border: 0;
+  border-radius: 4px;
+  background: rgba(39, 174, 96, 0.12);
+  color: #167d2f;
+  padding: 0.55rem 0.8rem;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
 }
 
 .field select:disabled {

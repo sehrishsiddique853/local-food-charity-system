@@ -12,7 +12,6 @@ const RegisterPage = () => {
   );
   const [formData, setFormData] = useState({
     name: '',
-    username: '',
     email: '',
     password: '',
     confirmPassword: '',
@@ -20,7 +19,7 @@ const RegisterPage = () => {
     address: '',
     ngoName: '',
     ngoRegistrationNumber: '',
-    ngoDocument: '',
+    ngoDocument: null,
   });
   const [acceptedTerms, setAcceptedTerms] = useState(true);
   const [formStatus, setFormStatus] = useState({ type: '', message: '' });
@@ -30,10 +29,42 @@ const RegisterPage = () => {
 
   const updateField = (event) => {
     const { name, value } = event.target;
+    const nextValue = name === 'phone' ? value.replace(/\D/g, '').slice(0, 10) : value;
+
     setFormData((current) => ({
       ...current,
-      [name]: value,
+      [name]: nextValue,
     }));
+  };
+
+  const updateDocumentFile = (event) => {
+    const file = event.target.files?.[0];
+    if (!file) {
+      setFormData((current) => ({
+        ...current,
+        ngoDocument: '',
+      }));
+      return;
+    }
+
+    const allowedTypes = ['application/pdf', 'image/jpeg', 'image/png'];
+    if (!allowedTypes.includes(file.type)) {
+      setFormStatus({ type: 'error', message: 'Please upload a PDF, JPG, or PNG document.' });
+      event.target.value = '';
+      return;
+    }
+
+    if (file.size > 5 * 1024 * 1024) {
+      setFormStatus({ type: 'error', message: 'Document must be 5MB or smaller.' });
+      event.target.value = '';
+      return;
+    }
+
+    setFormData((current) => ({
+      ...current,
+      ngoDocument: file,
+    }));
+    setFormStatus({ type: '', message: '' });
   };
 
   const handleAccountTypeChange = (role) => {
@@ -55,22 +86,26 @@ const RegisterPage = () => {
       return;
     }
 
-    const payload = {
-      name: formData.name,
-      username: formData.username,
-      email: formData.email,
-      password: formData.password,
-      phone: formData.phone,
-      role: accountType,
-      location: {
-        address: formData.address,
-      },
-    };
+    if (accountType === 'ngo' && !formData.ngoDocument) {
+      setFormStatus({ type: 'error', message: 'Please upload your NGO verification document.' });
+      return;
+    }
+
+    const payload = new FormData();
+    payload.append('email', formData.email);
+    payload.append('password', formData.password);
+    payload.append('phone', formData.phone);
+    payload.append('role', accountType);
+    payload.append('address', formData.address);
+
+    if (accountType === 'donor') {
+      payload.append('name', formData.name);
+    }
 
     if (accountType === 'ngo') {
-      payload.ngoName = formData.ngoName;
-      payload.ngoRegistrationNumber = formData.ngoRegistrationNumber;
-      payload.ngoDocument = formData.ngoDocument;
+      payload.append('ngoName', formData.ngoName);
+      payload.append('ngoRegistrationNumber', formData.ngoRegistrationNumber);
+      payload.append('ngoDocument', formData.ngoDocument);
     }
 
     setIsSubmitting(true);
@@ -78,11 +113,8 @@ const RegisterPage = () => {
     try {
       const response = await fetch('/api/auth/register', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
         credentials: 'include',
-        body: JSON.stringify(payload),
+        body: payload,
       });
 
       const result = await response.json();
@@ -98,7 +130,6 @@ const RegisterPage = () => {
       });
       setFormData({
         name: '',
-        username: '',
         email: '',
         password: '',
         confirmPassword: '',
@@ -106,7 +137,7 @@ const RegisterPage = () => {
         address: '',
         ngoName: '',
         ngoRegistrationNumber: '',
-        ngoDocument: '',
+        ngoDocument: null,
       });
     } catch (error) {
       setFormStatus({
@@ -148,7 +179,7 @@ const RegisterPage = () => {
             <p>Sign up to get started</p>
           </div>
 
-          <form className="register-form" onSubmit={handleSubmit}>
+          <form className="register-form" onSubmit={handleSubmit} encType="multipart/form-data">
             <div className="role-toggle" aria-label="Select account type">
               <button
                 type="button"
@@ -170,7 +201,7 @@ const RegisterPage = () => {
               </button>
             </div>
 
-            <div className="form-grid">
+            {accountType === 'donor' && (
               <label className="field">
                 <span>♙</span>
                 <input
@@ -182,18 +213,21 @@ const RegisterPage = () => {
                   required
                 />
               </label>
+            )}
+
+            {accountType === 'ngo' && (
               <label className="field">
-                <span>@</span>
+                <span>▥</span>
                 <input
                   type="text"
-                  name="username"
-                  placeholder="Username"
-                  value={formData.username}
+                  name="ngoName"
+                  placeholder="NGO Name"
+                  value={formData.ngoName}
                   onChange={updateField}
                   required
                 />
               </label>
-            </div>
+            )}
 
             <label className="field">
               <span>✉</span>
@@ -238,14 +272,18 @@ const RegisterPage = () => {
               </label>
             </div>
 
-            <label className="field">
+            <label className="field phone-field">
               <span>☏</span>
+              <strong>+92</strong>
               <input
                 type="tel"
                 name="phone"
                 placeholder="Phone Number"
                 value={formData.phone}
                 onChange={updateField}
+                inputMode="numeric"
+                maxLength="10"
+                pattern="[0-9]{10}"
                 required
               />
             </label>
@@ -269,53 +307,30 @@ const RegisterPage = () => {
               />
             </label>
 
-            <label className="field select-field">
-              <span>▤</span>
-              <select value={accountType} onChange={(event) => handleAccountTypeChange(event.target.value)}>
-                <option value="donor">Donor</option>
-                <option value="ngo">NGO</option>
-              </select>
-            </label>
-
             {accountType === 'ngo' && (
-              <>
+              <div className="form-grid">
                 <label className="field">
-                  <span>▥</span>
+                  <span>#</span>
                   <input
                     type="text"
-                    name="ngoName"
-                    placeholder="NGO Name"
-                    value={formData.ngoName}
+                    name="ngoRegistrationNumber"
+                    placeholder="NGO Registration Number"
+                    value={formData.ngoRegistrationNumber}
                     onChange={updateField}
                     required
                   />
                 </label>
-
-                <div className="form-grid">
-                  <label className="field">
-                    <span>#</span>
-                    <input
-                      type="text"
-                      name="ngoRegistrationNumber"
-                      placeholder="NGO Registration Number"
-                      value={formData.ngoRegistrationNumber}
-                      onChange={updateField}
-                      required
-                    />
-                  </label>
-                  <label className="field">
-                    <span>▧</span>
-                    <input
-                      type="text"
-                      name="ngoDocument"
-                      placeholder="NGO Document Link"
-                      value={formData.ngoDocument}
-                      onChange={updateField}
-                      required
-                    />
-                  </label>
-                </div>
-              </>
+                <label className="field">
+                  <span>▧</span>
+                  <input
+                    type="file"
+                    name="ngoDocument"
+                    accept=".pdf,.jpg,.jpeg,.png,application/pdf,image/jpeg,image/png"
+                    onChange={updateDocumentFile}
+                    required
+                  />
+                </label>
+              </div>
             )}
 
             <label className="terms-row">

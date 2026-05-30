@@ -7,7 +7,7 @@ import dotenv from "dotenv";
 import connectDB from "./config/db.js";
 import authRoutes from "./routes/auth.js";
 import errorHandler from "./middleware/errorHandler.js";
-import { apiRateLimiter } from "./middleware/rateLimiter.js";
+// import { apiRateLimiter } from "./middleware/rateLimiter.js";
 
 dotenv.config();
 
@@ -28,7 +28,7 @@ app.use(express.json());
 app.use(cookieParser());
 
 // Apply general API rate limiting to all /api routes.
-app.use("/api", apiRateLimiter);
+// app.use("/api", apiRateLimiter);
 
 // Mount authentication routes under /api/auth
 app.use("/api/auth", authRoutes);

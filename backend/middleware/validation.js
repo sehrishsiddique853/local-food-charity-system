@@ -3,25 +3,37 @@ import { FIXED_SERVICE_CITY, SUPPORTED_CITIES } from "../constants/location.js";
 import { errorResponse } from "../utils/apiResponse.js";
 
 // Validation rules for the registration endpoint.
-// Only NGO users require ngoName and ngoDocument.
+// Donor and NGO registrations require different role-specific fields.
 export const validateRegister = [
-  body("name")
+  body("role")
     .trim()
-    .notEmpty().withMessage("Name is required")
-    .isLength({ min: 2, max: 100 }).withMessage("Name must be between 2 and 100 characters"),
+    .notEmpty().withMessage("Role is required")
+    .isIn(["donor", "ngo"]).withMessage("Role must be donor or ngo"),
+
+  body("name")
+    .custom((value, { req }) => {
+      if (req.body.role !== "donor") {
+        return true;
+      }
+
+      const name = typeof value === "string" ? value.trim() : "";
+      if (!name) {
+        throw new Error("Name is required");
+      }
+
+      if (name.length < 2 || name.length > 100) {
+        throw new Error("Name must be between 2 and 100 characters");
+      }
+
+      req.body.name = name;
+      return true;
+    }),
 
   body("email")
     .trim()
     .notEmpty().withMessage("Email is required")
     .isEmail().withMessage("Invalid email format")
     .normalizeEmail(),
-
-  body("username")
-    .trim()
-    .notEmpty().withMessage("Username is required")
-    .isLength({ min: 3, max: 30 }).withMessage("Username must be between 3 and 30 characters")
-    .matches(/^[a-zA-Z0-9_]+$/).withMessage("Username can only contain letters, numbers and underscores")
-    .toLowerCase(),
 
   body("password")
     .notEmpty().withMessage("Password is required")
@@ -34,11 +46,8 @@ export const validateRegister = [
   body("phone")
     .trim()
     .notEmpty().withMessage("Phone is required")
+    .customSanitizer((value) => value.replace(/^\+92\s*/, ""))
     .matches(/^[0-9]{10}$/).withMessage("Phone must be exactly 10 digits"),
-
-  body("role")
-    .optional()
-    .isIn(["donor", "ngo", "admin"]).withMessage("Invalid role"),
 
   body("location.city")
     .optional()
@@ -51,17 +60,35 @@ export const validateRegister = [
 
   // NGO-specific fields that are only required when role === "ngo".
   body("ngoName")
-    .if(body("role").equals("ngo"))
-    .trim()
-    .notEmpty().withMessage("NGO name is required for NGO role")
-    .isLength({ min: 2, max: 100 }).withMessage("NGO name must be between 2 and 100 characters"),
+    .custom((value, { req }) => {
+      if (req.body.role !== "ngo") {
+        return true;
+      }
+
+      const ngoName = typeof value === "string" ? value.trim() : "";
+      if (!ngoName) {
+        throw new Error("NGO name is required for NGO role");
+      }
+
+      if (ngoName.length < 2 || ngoName.length > 100) {
+        throw new Error("NGO name must be between 2 and 100 characters");
+      }
+
+      req.body.ngoName = ngoName;
+      return true;
+    }),
 
   body("ngoDocument")
-    .if(body("role").equals("ngo"))
-    .notEmpty().withMessage("NGO document is required for NGO role"),
+    .if((value, { req }) => req.body.role === "ngo")
+    .custom((value, { req }) => {
+      if (!req.file) {
+        throw new Error("NGO document is required for NGO role");
+      }
+      return true;
+    }),
 
   body("ngoRegistrationNumber")
-    .if(body("role").equals("ngo"))
+    .if((value, { req }) => req.body.role === "ngo")
     .trim()
     .notEmpty().withMessage("NGO registration number is required for NGO role"),
 ];

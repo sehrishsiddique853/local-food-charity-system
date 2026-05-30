@@ -4,24 +4,20 @@ import { FIXED_SERVICE_CITY, SUPPORTED_CITIES } from "../constants/location.js";
 const userSchema = new mongoose.Schema(
   {
     name: {
-      type: String,
-      required: true,
-      trim: true,
-    },
+  type: String,
+  trim: true,
+  required: function () {
+    return this.role === "donor";
+  }
+},
+
+
 
     email: {
       type: String,
       required: true,
       unique: true,
       lowercase: true,
-    },
-
-    username: {
-      type: String,
-      required: true,
-      unique: true,
-      lowercase: true,
-      trim: true,
     },
 
     password: {
@@ -65,14 +61,25 @@ const userSchema = new mongoose.Schema(
     // NGO specific fields
     ngoName: {
       type: String,
+      required() {
+        return this.role === "ngo";
+      },
+      trim: true,
     },
 
     ngoRegistrationNumber: {
       type: String,
+      required() {
+        return this.role === "ngo";
+      },
+      trim: true,
     },
 
     ngoDocument: {
       type: String,
+      required() {
+        return this.role === "ngo";
+      },
     },
 
     ngoVerificationStatus: {

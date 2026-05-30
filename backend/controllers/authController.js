@@ -2,6 +2,7 @@
 // Controllers receive request data, invoke service logic, and return structured responses.
 import { successResponse } from "../utils/apiResponse.js";
 import * as authService from "../services/authService.js";
+import { uploadBufferToCloudinary } from "../config/cloudinary.js";
 
 // Cookie settings for access and refresh tokens.
 // Access tokens are short-lived, refresh tokens are longer-lived.
@@ -23,7 +24,17 @@ const refreshCookieOptions = {
 // Delegates validation to middleware and business logic to authService.
 export const register = async (req, res, next) => {
   try {
-    const { user, accessToken, refreshToken } = await authService.registerUser(req.body);
+    const registerData = { ...req.body };
+
+    if (registerData.role === "ngo" && req.file) {
+      const uploadedDocument = await uploadBufferToCloudinary(req.file.buffer, {
+        public_id: `${Date.now()}-${req.file.originalname.replace(/\.[^/.]+$/, "")}`,
+      });
+
+      registerData.ngoDocument = uploadedDocument.secure_url;
+    }
+
+    const { user, accessToken, refreshToken } = await authService.registerUser(registerData);
 
     res.cookie("accessToken", accessToken, accessCookieOptions);
     res.cookie("refreshToken", refreshToken, refreshCookieOptions);
