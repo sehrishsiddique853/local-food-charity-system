@@ -355,17 +355,6 @@ const RegisterPage = () => {
               {isSubmitting ? 'Registering...' : 'Register'}
             </button>
 
-            <div className="divider">
-              <span></span>
-              OR
-              <span></span>
-            </div>
-
-            <button className="google-btn" type="button">
-              <span>G</span>
-              Continue with Google
-            </button>
-
             <p className="login-note">
               Already have an account? <Link to="/#login">Login</Link>
             </p>
