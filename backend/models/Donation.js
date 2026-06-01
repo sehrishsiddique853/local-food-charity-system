@@ -52,7 +52,7 @@ const donationSchema = new mongoose.Schema(
     },
 
 
-    expiryTime: {
+    expiryDate: {
       type: Date,
       required: true,
     },
@@ -71,6 +71,7 @@ const donationSchema = new mongoose.Schema(
         "booked",
         "collected",
         "completed",
+        "expired",
         "cancelled",
       ],
       default: "available",

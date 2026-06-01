@@ -63,14 +63,14 @@ const Navbar = ({ variant = 'transparent' }) => {
             <a href={contactHref} onClick={closeMobileMenu}>Contact Us</a>
           </li>
           <li className="mobile-login">
-            <a href="#login" onClick={closeMobileMenu}>Login</a>
+            <a href="/login" onClick={closeMobileMenu}>Sign In</a>
           </li>
         </ul>
 
         {/* Desktop Login Button */}
-        <a className="login-btn" href="#login">
+        <a className="login-btn" href="/login">
           <span className="login-icon">♡</span>
-          Login
+          Sign In
         </a>
       </div>
     </nav>

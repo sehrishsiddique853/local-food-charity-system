@@ -356,7 +356,7 @@ const RegisterPage = () => {
             </button>
 
             <p className="login-note">
-              Already have an account? <Link to="/#login">Login</Link>
+              Already have an account? <Link to="/login">Sign In</Link>
             </p>
           </form>
         </section>

@@ -6,6 +6,7 @@ import cookieParser from "cookie-parser";
 import dotenv from "dotenv";
 import connectDB from "./config/db.js";
 import authRoutes from "./routes/auth.js";
+import donationRoutes from "./routes/donationRoutes.js";
 import errorHandler from "./middleware/errorHandler.js";
 // import { apiRateLimiter } from "./middleware/rateLimiter.js";
 
@@ -32,6 +33,7 @@ app.use(cookieParser());
 
 // Mount authentication routes under /api/auth
 app.use("/api/auth", authRoutes);
+app.use("/api/donations", donationRoutes);
 
 app.get("/", (req, res) => {
   res.send("Backend Running");

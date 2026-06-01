@@ -85,7 +85,9 @@ const userSchema = new mongoose.Schema(
     ngoVerificationStatus: {
       type: String,
       enum: ["pending", "approved", "rejected"],
-      default: "pending",
+      default: function () {
+        return this.role === "ngo" ? "pending" : undefined;
+      },
     },
 
     isBlocked: {

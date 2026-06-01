@@ -112,7 +112,17 @@ export const getProfileById = async (userId) => {
   if (!user) {
     throw new ApiError(404, "USER_NOT_FOUND", "User not found");
   }
-  return user;
+
+  const profile = user.toObject();
+
+  if (profile.role === "donor") {
+    delete profile.ngoName;
+    delete profile.ngoRegistrationNumber;
+    delete profile.ngoDocument;
+    delete profile.ngoVerificationStatus;
+  }
+
+  return profile;
 };
 
 export const logoutUser = async (refreshToken) => {

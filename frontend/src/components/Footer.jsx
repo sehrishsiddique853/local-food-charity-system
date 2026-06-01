@@ -33,6 +33,7 @@ const Footer = () => {
             <li><a href="/register?role=donor">Donate Food</a></li>
             <li><a href="/register?role=ngo">Request Food</a></li>
             <li><a href="/register">Register</a></li>
+            <li><a href="/login">Sign In</a></li>
           </ul>
         </div>
 

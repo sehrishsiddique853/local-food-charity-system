@@ -28,6 +28,10 @@ const errorHandler = (err, req, res, next) => {
     return errorResponse(res, 400, "INVALID_FILE_TYPE", err.message);
   }
 
+  if (err.message === "Only JPG, PNG, and WEBP images are allowed") {
+    return errorResponse(res, 400, "INVALID_FILE_TYPE", err.message);
+  }
+
   // Handle service-generated ApiError instances.
   if (err instanceof ApiError) {
     return errorResponse(res, err.statusCode, err.errorCode, err.message, err.details);
