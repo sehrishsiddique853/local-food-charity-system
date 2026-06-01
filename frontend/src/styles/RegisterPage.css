@@ -12,37 +12,30 @@
   margin: 0 auto;
   padding: 3.8rem 2rem 4rem;
   display: grid;
-  grid-template-columns: 0.92fr 1.08fr;
-  gap: 2rem;
+  grid-template-columns: 0.82fr 1.18fr;
+  gap: 1.75rem;
   align-items: stretch;
 }
 
 .register-intro {
-  position: relative;
   min-height: 720px;
-  padding: 4.8rem 3.75rem 0;
+  padding: 4.4rem 3.4rem 2.9rem;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
   overflow: hidden;
   background:
-    radial-gradient(circle at 82% 38%, rgba(34, 197, 94, 0.09), transparent 28%),
-    linear-gradient(135deg, #f3faf4 0%, #ffffff 58%, #e6f5e9 100%);
+    radial-gradient(circle at 76% 36%, rgba(34, 197, 94, 0.1), transparent 28%),
+    linear-gradient(135deg, #f3faf4 0%, #ffffff 56%, #e6f5e9 100%);
   border: 1px solid #edf2ee;
   border-radius: 8px;
-}
-
-.register-intro-copy {
-  position: relative;
-  z-index: 2;
 }
 
 .register-intro h1 {
   margin: 0;
   color: #0f172a;
-  font-size: clamp(2.25rem, 4vw, 3.25rem);
+  font-size: clamp(2.1rem, 3.6vw, 2.9rem);
   font-weight: 800;
-  line-height: 1.18;
+  line-height: 1.2;
 }
 
 .register-intro h1 span {
@@ -54,7 +47,7 @@
   display: block;
   width: 58px;
   height: 3px;
-  margin: 1.5rem 0 1.8rem;
+  margin: 1.45rem 0 1.75rem;
   background: #21863a;
 }
 
@@ -62,21 +55,61 @@
   max-width: 390px;
   margin: 0;
   color: #374151;
-  font-size: 1.04rem;
-  line-height: 1.8;
+  font-size: 1rem;
+  line-height: 1.75;
 }
 
 .register-art {
-  width: calc(100% + 7.5rem);
-  margin-left: -3.75rem;
-  margin-right: -3.75rem;
+  width: calc(100% + 6.8rem);
+  margin: 1.5rem -3.4rem 0;
 }
 
 .register-art img {
   width: 100%;
-  height: 390px;
+  height: 290px;
   object-fit: contain;
   object-position: center bottom;
+}
+
+.register-benefits {
+  display: flex;
+  flex-direction: column;
+  gap: 1.45rem;
+  margin-top: auto;
+}
+
+.register-benefit {
+  display: grid;
+  grid-template-columns: 58px 1fr;
+  gap: 1rem;
+  align-items: center;
+}
+
+.register-benefit > span {
+  width: 54px;
+  height: 54px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: #ffffff;
+  border: 1px solid rgba(39, 174, 96, 0.18);
+  box-shadow: 0 8px 24px rgba(20, 83, 45, 0.1);
+  color: #21863a;
+  font-size: 1.5rem;
+}
+
+.register-benefit h3 {
+  margin: 0 0 0.35rem;
+  color: #168032;
+  font-size: 1.05rem;
+}
+
+.register-benefit p {
+  margin: 0;
+  color: #374151;
+  font-size: 0.92rem;
+  line-height: 1.45;
 }
 
 .register-panel {
@@ -336,11 +369,6 @@
 
   .register-intro {
     min-height: auto;
-    padding-top: 3rem;
-  }
-
-  .register-art img {
-    height: 320px;
   }
 }
 

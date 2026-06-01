@@ -1,10 +1,11 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import '../styles/LoginPage.css';
 
 const LoginPage = () => {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -47,6 +48,10 @@ const LoginPage = () => {
         type: 'success',
         message: 'Logged in successfully.',
       });
+
+      if (result.data?.user?.role === 'donor') {
+        navigate('/donor/dashboard');
+      }
     } catch (error) {
       setFormStatus({
         type: 'error',

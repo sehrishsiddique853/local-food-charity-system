@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import '../styles/Navbar.css';
 
-const Navbar = ({ variant = 'transparent' }) => {
+const Navbar = ({ variant = 'transparent', actionSlot = null }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const isLight = variant === 'light';
   const homeHref = isLight ? '/#home' : '#home';
@@ -67,11 +67,13 @@ const Navbar = ({ variant = 'transparent' }) => {
           </li>
         </ul>
 
-        {/* Desktop Login Button */}
-        <a className="login-btn" href="/login">
-          <span className="login-icon">♡</span>
-          Sign In
-        </a>
+        {/* Desktop Action */}
+        {actionSlot || (
+          <a className="login-btn" href="/login">
+            <span className="login-icon">♡</span>
+            Sign In
+          </a>
+        )}
       </div>
     </nav>
   );

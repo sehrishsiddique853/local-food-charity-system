@@ -32,10 +32,10 @@ const Statistics = () => {
     <section className="statistics">
       <div className="stats-container">
         {benefits.map(benefit => (
-          <div key={benefit.id} className="stat-card">
-            <div className="stat-icon">{benefit.icon}</div>
-            <h3 className="stat-title">{benefit.title}</h3>
-            <p className="stat-description">{benefit.description}</p>
+          <div key={benefit.id} className="benefit-card">
+            <div className="benefit-icon">{benefit.icon}</div>
+            <h3 className="benefit-title">{benefit.title}</h3>
+            <p className="benefit-description">{benefit.description}</p>
           </div>
         ))}
       </div>
