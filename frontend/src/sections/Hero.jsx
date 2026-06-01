@@ -1,4 +1,6 @@
+import { Link } from 'react-router-dom';
 import '../styles/sections/Hero.css';
+import { ROUTES } from '../constants/routes';
 
 const Hero = () => {
   return (
@@ -19,15 +21,15 @@ const Hero = () => {
           </p>
 
           <div className="hero-buttons">
-            <a className="btn btn-primary" href="/register?role=donor">
+            <Link className="btn btn-primary" to={ROUTES.donorRegister}>
               <span className="btn-icon">♡</span>
               Donate Food
-            </a>
+            </Link>
 
-            <a className="btn btn-secondary" href="/register?role=ngo">
+            <Link className="btn btn-secondary" to={ROUTES.ngoRegister}>
               <span className="btn-icon">♧</span>
               Join as NGO
-            </a>
+            </Link>
           </div>
         </div>
       </div>

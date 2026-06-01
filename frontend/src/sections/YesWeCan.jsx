@@ -1,4 +1,6 @@
+import { Link } from 'react-router-dom';
 import '../styles/sections/YesWeCan.css';
+import { ROUTES } from '../constants/routes';
 
 const YesWeCan = () => {
   const cards = [
@@ -8,7 +10,7 @@ const YesWeCan = () => {
       icon: '🥗',
       description: 'You can donate food and we are here to distribute the food to the ones who have the need for that.',
       btnText: 'Donate',
-      href: '/register?role=donor'
+      href: ROUTES.donorRegister,
     },
     {
       id: 2,
@@ -16,7 +18,7 @@ const YesWeCan = () => {
       icon: '🤝',
       description: 'Verified NGOs can request available donations, collect food, and distribute it to people in need.',
       btnText: 'Register NGO',
-      href: '/register?role=ngo'
+      href: ROUTES.ngoRegister,
     },
     {
       id: 3,
@@ -24,8 +26,8 @@ const YesWeCan = () => {
       icon: '🙏',
       description: 'You can request food, if you can feed some hungry helpless people and you are genuinely a distributor.',
       btnText: 'Request',
-      href: '/register?role=ngo'
-    }
+      href: ROUTES.ngoRegister,
+    },
   ];
 
   return (
@@ -37,7 +39,7 @@ const YesWeCan = () => {
             <div className="card-icon">{card.icon}</div>
             <h3 className="card-title">{card.title}</h3>
             <p className="card-description">{card.description}</p>
-            <a className="card-btn" href={card.href}>{card.btnText}</a>
+            <Link className="card-btn" to={card.href}>{card.btnText}</Link>
           </div>
         ))}
       </div>

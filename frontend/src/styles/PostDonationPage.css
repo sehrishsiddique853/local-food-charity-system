@@ -1,0 +1,234 @@
+.post-donation-page {
+  background: #ffffff;
+}
+
+.post-donation-shell {
+  max-width: 1160px;
+  margin: 0 auto;
+  padding: 2rem 2rem 3.5rem;
+}
+
+.post-donation-intro {
+  min-height: 270px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 360px;
+  gap: 2rem;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  padding: 2.2rem;
+  border: 1px solid #e8ece9;
+  border-radius: 8px;
+  background:
+    radial-gradient(circle at 78% 28%, rgba(39, 174, 96, 0.1), transparent 28%),
+    linear-gradient(135deg, #f3faf4 0%, #ffffff 58%, #e8f7eb 100%);
+  box-shadow: 0 14px 34px rgba(20, 83, 45, 0.07);
+}
+
+.post-eyebrow {
+  margin: 0 0 0.8rem;
+  color: #27ae60;
+  font-size: 0.92rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 1.8px;
+}
+
+.post-donation-intro h1 {
+  max-width: 640px;
+  margin: 0 0 0.9rem;
+  color: #111827;
+  font-size: clamp(2rem, 4vw, 3rem);
+  line-height: 1.12;
+}
+
+.post-donation-intro p {
+  max-width: 650px;
+  margin: 0;
+  color: #374151;
+  font-size: 1rem;
+  line-height: 1.7;
+}
+
+.post-donation-intro img {
+  width: 100%;
+  height: 210px;
+  object-fit: contain;
+}
+
+.post-form-actions a {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 1rem;
+  border: 1px solid rgba(39, 174, 96, 0.28);
+  border-radius: 6px;
+  color: #15803d;
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.post-form-actions a:hover {
+  background: rgba(39, 174, 96, 0.08);
+  color: #15803d;
+}
+
+.post-donation-card {
+  padding: 2rem;
+  border: 1px solid #e8ece9;
+  border-radius: 8px;
+  background: #ffffff;
+  box-shadow: 0 14px 34px rgba(15, 23, 42, 0.06);
+}
+
+.post-form-heading {
+  margin-bottom: 1.6rem;
+}
+
+.post-form-heading h2 {
+  margin: 0 0 0.45rem;
+  color: #111827;
+  font-size: 1.6rem;
+}
+
+.post-form-heading p {
+  margin: 0;
+  color: #4b5563;
+}
+
+.post-donation-form {
+  display: grid;
+  gap: 1.15rem;
+}
+
+.post-form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.post-field {
+  display: grid;
+  gap: 0.55rem;
+}
+
+.post-field > span {
+  color: #374151;
+  font-size: 0.92rem;
+  font-weight: 800;
+}
+
+.post-field input,
+.post-field select,
+.post-field textarea {
+  width: 100%;
+  min-height: 56px;
+  border: 1px solid #d9e0e7;
+  border-radius: 6px;
+  background: #ffffff;
+  color: #111827;
+  padding: 0 1rem;
+  outline: 0;
+  transition: border-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+.post-field textarea {
+  min-height: 120px;
+  padding-top: 0.9rem;
+  resize: vertical;
+}
+
+.post-field input:focus,
+.post-field select:focus,
+.post-field textarea:focus {
+  border-color: #27ae60;
+  box-shadow: 0 0 0 3px rgba(39, 174, 96, 0.12);
+}
+
+.image-field input[type='file'] {
+  padding: 0.9rem 1rem;
+}
+
+.image-field small {
+  color: #4b5563;
+  font-size: 0.84rem;
+}
+
+.post-form-status {
+  margin: 0;
+  padding: 0.9rem 1rem;
+  border-radius: 6px;
+  font-size: 0.92rem;
+}
+
+.post-form-status.success {
+  background: rgba(34, 197, 94, 0.1);
+  border: 1px solid rgba(34, 197, 94, 0.28);
+  color: #166534;
+}
+
+.post-form-status.error {
+  background: rgba(239, 68, 68, 0.08);
+  border: 1px solid rgba(239, 68, 68, 0.24);
+  color: #991b1b;
+}
+
+.post-form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.85rem;
+  margin-top: 0.4rem;
+}
+
+.post-form-actions button {
+  min-height: 48px;
+  min-width: 170px;
+  border: 0;
+  border-radius: 6px;
+  background: linear-gradient(135deg, #22c55e, #15803d);
+  color: #ffffff;
+  font-weight: 800;
+  box-shadow: 0 10px 24px rgba(34, 197, 94, 0.22);
+}
+
+.post-form-actions button:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 14px 30px rgba(34, 197, 94, 0.28);
+}
+
+.post-form-actions button:disabled {
+  cursor: wait;
+  opacity: 0.72;
+}
+
+@media (max-width: 900px) {
+  .post-donation-intro,
+  .post-form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .post-donation-intro img {
+    height: 180px;
+    object-position: left center;
+  }
+}
+
+@media (max-width: 640px) {
+  .post-donation-shell {
+    padding: 1rem 1rem 2.5rem;
+  }
+
+  .post-donation-intro,
+  .post-donation-card {
+    padding: 1.25rem;
+  }
+
+  .post-form-actions {
+    flex-direction: column-reverse;
+  }
+
+  .post-form-actions a,
+  .post-form-actions button {
+    width: 100%;
+  }
+}

@@ -1,12 +1,14 @@
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import '../styles/Navbar.css';
+import { ROUTES } from '../constants/routes';
 
 const Navbar = ({ variant = 'transparent', actionSlot = null }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const isLight = variant === 'light';
-  const homeHref = isLight ? '/#home' : '#home';
-  const aboutHref = isLight ? '/#about' : '#about';
-  const contactHref = isLight ? '/#contact' : '#contact';
+  const homeHref = `${ROUTES.home}#home`;
+  const aboutHref = `${ROUTES.home}#about`;
+  const contactHref = `${ROUTES.home}#contact`;
 
   const toggleMobileMenu = () => {
     setMobileMenuOpen((prev) => !prev);
@@ -20,7 +22,7 @@ const Navbar = ({ variant = 'transparent', actionSlot = null }) => {
     <nav className={`navbar ${isLight ? 'navbar-light' : ''}`}>
       <div className="navbar-container">
         {/* Logo */}
-        <a href={homeHref} className="navbar-logo" onClick={closeMobileMenu}>
+        <Link to={homeHref} className="navbar-logo" onClick={closeMobileMenu}>
           <div className="logo-icon">🥗</div>
 
           <div className="logo-content">
@@ -30,7 +32,7 @@ const Navbar = ({ variant = 'transparent', actionSlot = null }) => {
             </div>
             <span className="logo-subtitle">Charity System</span>
           </div>
-        </a>
+        </Link>
 
         {/* Mobile Menu Button */}
         <button
@@ -46,33 +48,33 @@ const Navbar = ({ variant = 'transparent', actionSlot = null }) => {
         {/* Navigation Links */}
         <ul className={`nav-menu ${mobileMenuOpen ? 'active' : ''}`}>
           <li>
-            <a href={homeHref} className={!isLight ? 'active' : ''} onClick={closeMobileMenu}>
+            <Link to={homeHref} className={!isLight ? 'active' : ''} onClick={closeMobileMenu}>
               Home
-            </a>
+            </Link>
           </li>
           <li>
-            <a href={aboutHref} onClick={closeMobileMenu}>About Us</a>
+            <Link to={aboutHref} onClick={closeMobileMenu}>About Us</Link>
           </li>
           <li>
-            <a href="/register?role=donor" onClick={closeMobileMenu}>Donate</a>
+            <Link to={ROUTES.donorRegister} onClick={closeMobileMenu}>Donate</Link>
           </li>
           <li>
-            <a href="/register?role=ngo" onClick={closeMobileMenu}>Request</a>
+            <Link to={ROUTES.ngoRegister} onClick={closeMobileMenu}>Request</Link>
           </li>
           <li>
-            <a href={contactHref} onClick={closeMobileMenu}>Contact Us</a>
+            <Link to={contactHref} onClick={closeMobileMenu}>Contact Us</Link>
           </li>
           <li className="mobile-login">
-            <a href="/login" onClick={closeMobileMenu}>Sign In</a>
+            <Link to={ROUTES.login} onClick={closeMobileMenu}>Sign In</Link>
           </li>
         </ul>
 
         {/* Desktop Action */}
         {actionSlot || (
-          <a className="login-btn" href="/login">
+          <Link className="login-btn" to={ROUTES.login}>
             <span className="login-icon">♡</span>
             Sign In
-          </a>
+          </Link>
         )}
       </div>
     </nav>

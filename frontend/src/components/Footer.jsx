@@ -1,4 +1,6 @@
+import { Link } from 'react-router-dom';
 import '../styles/Footer.css';
+import { ROUTES } from '../constants/routes';
 
 const Footer = () => {
   return (
@@ -28,12 +30,12 @@ const Footer = () => {
         <div className="footer-section">
           <h4>Quick Links</h4>
           <ul>
-            <li><a href="/#home">Home</a></li>
-            <li><a href="/#about">About Us</a></li>
-            <li><a href="/register?role=donor">Donate Food</a></li>
-            <li><a href="/register?role=ngo">Request Food</a></li>
-            <li><a href="/register">Register</a></li>
-            <li><a href="/login">Sign In</a></li>
+            <li><Link to={`${ROUTES.home}#home`}>Home</Link></li>
+            <li><Link to={`${ROUTES.home}#about`}>About Us</Link></li>
+            <li><Link to={ROUTES.donorRegister}>Donate Food</Link></li>
+            <li><Link to={ROUTES.ngoRegister}>Request Food</Link></li>
+            <li><Link to={ROUTES.register}>Register</Link></li>
+            <li><Link to={ROUTES.login}>Sign In</Link></li>
           </ul>
         </div>
 
