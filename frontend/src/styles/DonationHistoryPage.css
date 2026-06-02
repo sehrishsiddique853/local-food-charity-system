@@ -1,0 +1,190 @@
+.donation-history-page {
+  background: #ffffff;
+}
+
+.donation-history-shell {
+  max-width: 1160px;
+  margin: 0 auto;
+  padding: 2rem 2rem 3.5rem;
+}
+
+.history-panel {
+  padding: 2rem;
+  border: 1px solid #e8ece9;
+  border-radius: 8px;
+  background: #ffffff;
+  box-shadow: 0 14px 34px rgba(15, 23, 42, 0.06);
+}
+
+.history-heading-actions {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+.secondary-history-link {
+  border: 1px solid rgba(39, 174, 96, 0.28);
+  background: #ffffff;
+  color: #15803d;
+  box-shadow: none;
+}
+
+.secondary-history-link:hover {
+  background: rgba(39, 174, 96, 0.08);
+  color: #15803d;
+  box-shadow: none;
+}
+
+.history-summary {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.75rem;
+  margin-bottom: 1.35rem;
+}
+
+.summary-chip.cancelled {
+  background: #fff1f1;
+}
+
+.history-groups {
+  display: grid;
+  gap: 1rem;
+}
+
+.history-group {
+  padding: 1rem;
+  border: 1px solid #edf1ee;
+  border-radius: 8px;
+  background: #ffffff;
+}
+
+.history-group-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 0.9rem;
+  padding-bottom: 0.9rem;
+  border-bottom: 1px solid #edf1ee;
+}
+
+.history-group-heading h3 {
+  margin: 0 0 0.35rem;
+  color: #111827;
+  font-size: 1.15rem;
+}
+
+.history-group-heading p {
+  margin: 0;
+  color: #4b5563;
+  font-size: 0.92rem;
+}
+
+.history-group-heading > strong {
+  min-width: 42px;
+  min-height: 36px;
+  display: grid;
+  place-items: center;
+  border-radius: 8px;
+  background: #f0fbf3;
+  color: #15803d;
+  font-size: 1rem;
+}
+
+.history-list {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.history-card {
+  min-height: 104px;
+  display: grid;
+  grid-template-columns: 110px minmax(0, 1fr) 116px auto;
+  gap: 1rem;
+  align-items: center;
+  padding: 0.85rem;
+  border: 1px solid #f0f3f1;
+  border-radius: 8px;
+  background: #fbfdfc;
+}
+
+.history-card img {
+  width: 110px;
+  height: 76px;
+  border-radius: 8px;
+  object-fit: cover;
+}
+
+.history-card button {
+  min-height: 38px;
+  padding: 0 0.9rem;
+  border: 1px solid rgba(39, 174, 96, 0.28);
+  border-radius: 6px;
+  background: #ffffff;
+  color: #15803d;
+  font-weight: 800;
+}
+
+.history-card button:hover {
+  background: rgba(39, 174, 96, 0.08);
+}
+
+.history-empty-row {
+  min-height: 72px;
+  display: grid;
+  place-items: center;
+  margin: 0;
+  border: 1px dashed #d9e0e7;
+  border-radius: 8px;
+  color: #64748b;
+  text-align: center;
+}
+
+@media (max-width: 980px) {
+  .history-summary {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .history-card {
+    grid-template-columns: 96px minmax(0, 1fr);
+  }
+
+  .history-card img {
+    width: 96px;
+    height: 72px;
+  }
+
+  .history-card .status-pill,
+  .history-card button {
+    grid-column: 2;
+    justify-self: start;
+  }
+}
+
+@media (max-width: 640px) {
+  .donation-history-shell,
+  .history-panel {
+    padding: 1.25rem;
+  }
+
+  .history-heading-actions,
+  .history-group-heading {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .history-summary,
+  .history-card {
+    grid-template-columns: 1fr;
+  }
+
+  .history-card img {
+    width: 100%;
+    height: 180px;
+  }
+
+  .history-card .status-pill,
+  .history-card button {
+    grid-column: auto;
+  }
+}

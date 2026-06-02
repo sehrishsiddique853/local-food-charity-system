@@ -3,11 +3,13 @@ import { Link } from 'react-router-dom';
 import { donorNavItems } from '../../constants/donorNavigation';
 import { getInitials } from '../../utils/profileUtils';
 import { ROUTES } from '../../constants/routes';
+import { useNotifications } from '../../hooks/useNotifications';
 import './DonorNavbar.css';
 
 const DonorNavbar = ({ activeKey, profile, onLogout }) => {
   const [profileMenuOpen, setProfileMenuOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const { unreadCount } = useNotifications({ loadList: false });
   const displayName = profile?.name || 'Donor';
 
   const closeMobileMenu = () => {
@@ -51,10 +53,10 @@ const DonorNavbar = ({ activeKey, profile, onLogout }) => {
       </nav>
 
       <div className="dashboard-user-actions">
-        <button className="notification-button" type="button" aria-label="Notifications">
+        <Link className="notification-button" to={ROUTES.notifications} aria-label="Notifications">
           🔔
-          <span>3</span>
-        </button>
+          {unreadCount > 0 && <span>{unreadCount}</span>}
+        </Link>
         <div className="header-divider"></div>
         <div className="profile-menu">
           <button

@@ -1,9 +1,23 @@
 // Authentication routes for registration, login, profile, refresh and logout.
 import express from "express";
-import { register, login, getProfile, logout, refresh } from "../controllers/authController.js";
+import {
+  register,
+  login,
+  getProfile,
+  updateProfile,
+  changePassword,
+  logout,
+  refresh,
+} from "../controllers/authController.js";
 import auth from "../middleware/auth.js";
 import authorize from "../middleware/authorize.js";
-import { validateRegister, validateLogin, handleValidationErrors } from "../middleware/validation.js";
+import {
+  validateRegister,
+  validateLogin,
+  validateUpdateProfile,
+  validateChangePassword,
+  handleValidationErrors,
+} from "../middleware/validation.js";
 // import { loginRegisterLimiter } from "../middleware/rateLimiter.js";
 import normalizeRegisterBody from "../middleware/normalizeRegisterBody.js";
 import { uploadNgoDocument } from "../middleware/upload.js";
@@ -30,6 +44,22 @@ router.post(
 );
 // Get current authenticated user's profile.
 router.get("/profile", auth, authorize("donor", "ngo", "admin"), getProfile);
+router.put(
+  "/profile",
+  auth,
+  authorize("donor"),
+  validateUpdateProfile,
+  handleValidationErrors,
+  updateProfile
+);
+router.put(
+  "/change-password",
+  auth,
+  authorize("donor"),
+  validateChangePassword,
+  handleValidationErrors,
+  changePassword
+);
 // Refresh access token using refresh token cookie.
 router.post("/refresh", refresh);
 // Log out by revoking refresh token and clearing cookies.

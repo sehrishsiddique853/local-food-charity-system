@@ -18,6 +18,21 @@ export const formatQuantity = (quantity) => {
   return `${quantity.value} ${quantity.unit}`;
 };
 
+export const DEFAULT_DONATION_IMAGE = '/hero-image.JPG';
+
+export const getDonationImage = (donation) => donation?.images?.[0] || DEFAULT_DONATION_IMAGE;
+
+export const toDateTimeInputValue = (dateValue) => {
+  if (!dateValue) {
+    return '';
+  }
+
+  const date = new Date(dateValue);
+  const timezoneOffset = date.getTimezoneOffset() * 60000;
+
+  return new Date(date.getTime() - timezoneOffset).toISOString().slice(0, 16);
+};
+
 export const buildDonutGradient = (rows, total) => {
   if (!total) {
     return 'radial-gradient(circle, #ffffff 0 39%, transparent 40%), conic-gradient(#e5e7eb 0 100%)';

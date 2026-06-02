@@ -1,29 +1,30 @@
 import { Link } from 'react-router-dom';
 import { foodTypeOptions, quantityUnitOptions } from '../../constants/donationConstants';
 import { ROUTES } from '../../constants/routes';
+import PostDonationCard from '../PostDonationCard';
 
 const PostDonationForm = ({
   formData,
   formStatus,
   isSubmitting,
+  minExpiryDate,
   updateField,
   updateImages,
   handleSubmit,
 }) => {
   return (
-    <section className="post-donation-card" aria-labelledby="post-donation-title">
-      <div className="post-form-heading">
-        <h2 id="post-donation-title">Donation Details</h2>
-        <p>Fields marked with clear food and pickup information help NGOs respond faster.</p>
-      </div>
-
+    <PostDonationCard
+      title="Upload Donation"
+      description="Enter details of the donation"
+      titleId="post-donation-title"
+    >
       <form className="post-donation-form" onSubmit={handleSubmit} encType="multipart/form-data">
         <label className="post-field">
-          <span>Food Title</span>
+          <span>▣</span>
           <input
             type="text"
             name="foodTitle"
-            placeholder="Chicken Biryani"
+            placeholder="Food Title"
             value={formData.foodTitle}
             onChange={updateField}
             required
@@ -31,8 +32,8 @@ const PostDonationForm = ({
         </label>
 
         <div className="post-form-grid">
-          <label className="post-field">
-            <span>Food Type</span>
+          <label className="post-field post-select-field">
+            <span>▤</span>
             <select name="foodType" value={formData.foodType} onChange={updateField} required>
               {foodTypeOptions.map((option) => (
                 <option key={option.value} value={option.value}>{option.label}</option>
@@ -41,24 +42,30 @@ const PostDonationForm = ({
           </label>
 
           <label className="post-field">
-            <span>Expiry Date & Time</span>
-            <input
-              type="datetime-local"
-              name="expiryDate"
-              value={formData.expiryDate}
-              onChange={updateField}
-              required
-            />
+            <span>◴</span>
+            <span className="post-date-control">
+              {!formData.expiryDate && <strong>Expiry Date</strong>}
+              <input
+                type="datetime-local"
+                name="expiryDate"
+                aria-label="Expiry Date"
+                title="Expiry Date"
+                value={formData.expiryDate}
+                min={minExpiryDate}
+                onChange={updateField}
+                required
+              />
+            </span>
           </label>
         </div>
 
         <div className="post-form-grid">
           <label className="post-field">
-            <span>Quantity</span>
+            <span>#</span>
             <input
               type="number"
               name="quantityValue"
-              placeholder="20"
+              placeholder="Quantity"
               min="1"
               step="0.5"
               value={formData.quantityValue}
@@ -67,8 +74,8 @@ const PostDonationForm = ({
             />
           </label>
 
-          <label className="post-field">
-            <span>Unit</span>
+          <label className="post-field post-select-field">
+            <span>▧</span>
             <select name="quantityUnit" value={formData.quantityUnit} onChange={updateField} required>
               {quantityUnitOptions.map((option) => (
                 <option key={option.value} value={option.value}>{option.label}</option>
@@ -78,22 +85,22 @@ const PostDonationForm = ({
         </div>
 
         <label className="post-field">
-          <span>Pickup Address</span>
+          <span>⌂</span>
           <input
             type="text"
             name="address"
-            placeholder="House 12, Street 5, G-10"
+            placeholder="Address"
             value={formData.address}
             onChange={updateField}
             required
           />
         </label>
 
-        <label className="post-field">
-          <span>Description</span>
+        <label className="post-field post-textarea-field">
+          <span>☰</span>
           <textarea
             name="description"
-            placeholder="Freshly cooked and packed. Please collect before the expiry time."
+            placeholder="Description"
             value={formData.description}
             onChange={updateField}
             rows="4"
@@ -101,15 +108,13 @@ const PostDonationForm = ({
         </label>
 
         <label className="post-field image-field">
-          <span>Food Images</span>
+          <span>▧</span>
           <input
             type="file"
             name="images"
             accept="image/*"
-            multiple
             onChange={updateImages}
           />
-          <small>You can upload up to 5 images.</small>
         </label>
 
         {formStatus.message && (
@@ -125,7 +130,7 @@ const PostDonationForm = ({
           </button>
         </div>
       </form>
-    </section>
+    </PostDonationCard>
   );
 };
 

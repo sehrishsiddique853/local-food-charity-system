@@ -81,6 +81,29 @@ export const getProfile = async (req, res, next) => {
   }
 };
 
+export const updateProfile = async (req, res, next) => {
+  try {
+    const user = await authService.updateProfileById(req.user.id, req.body);
+    return successResponse(res, 200, {
+      message: "Profile updated successfully",
+      user,
+    });
+  } catch (err) {
+    return next(err);
+  }
+};
+
+export const changePassword = async (req, res, next) => {
+  try {
+    await authService.changePasswordById(req.user.id, req.body);
+    return successResponse(res, 200, {
+      message: "Password changed successfully",
+    });
+  } catch (err) {
+    return next(err);
+  }
+};
+
 // Log out a user by deleting the stored refresh token and clearing cookies.
 export const logout = async (req, res, next) => {
   try {
@@ -116,6 +139,8 @@ export default {
   register,
   login,
   getProfile,
+  updateProfile,
+  changePassword,
   refresh,
   logout,
 };

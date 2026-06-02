@@ -125,6 +125,49 @@ export const getProfileById = async (userId) => {
   return profile;
 };
 
+export const updateProfileById = async (userId, { name, phone, location }) => {
+  const user = await User.findById(userId);
+  if (!user) {
+    throw new ApiError(404, "USER_NOT_FOUND", "User not found");
+  }
+
+  const formattedPhone = formatPakistanPhone(phone);
+  const existingPhone = await User.findOne({
+    phone: formattedPhone,
+    _id: { $ne: user._id },
+  });
+
+  if (existingPhone) {
+    throw new ApiError(409, "PHONE_ALREADY_EXISTS", "Phone number already in use");
+  }
+
+  user.name = name;
+  user.phone = formattedPhone;
+  user.location = {
+    city: FIXED_SERVICE_CITY,
+    address: location?.address,
+  };
+
+  await user.save();
+  return getProfileById(user._id);
+};
+
+export const changePasswordById = async (userId, { currentPassword, newPassword }) => {
+  const user = await User.findById(userId);
+  if (!user) {
+    throw new ApiError(404, "USER_NOT_FOUND", "User not found");
+  }
+
+  const match = await bcrypt.compare(currentPassword, user.password);
+  if (!match) {
+    throw new ApiError(400, "INVALID_CURRENT_PASSWORD", "Current password is incorrect");
+  }
+
+  const salt = await bcrypt.genSalt(10);
+  user.password = await bcrypt.hash(newPassword, salt);
+  await user.save();
+};
+
 export const logoutUser = async (refreshToken) => {
   if (!refreshToken) {
     return;

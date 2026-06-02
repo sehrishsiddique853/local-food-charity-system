@@ -5,51 +5,9 @@
 }
 
 .donor-content {
-  padding: 1.75rem 2rem 1rem;
-}
-
-.welcome-band {
-  min-height: 320px;
-  display: grid;
-  grid-template-columns: minmax(0, 1.2fr) minmax(330px, 0.8fr);
-  align-items: center;
-  gap: 2rem;
-  margin-bottom: 1.5rem;
-  padding: 3rem 3.4rem;
-  border: 1px solid #e8ece9;
-  border-radius: 8px;
-  background:
-    radial-gradient(circle at 82% 46%, rgba(39, 174, 96, 0.16), transparent 30%),
-    linear-gradient(110deg, #f8fcf9 0%, #ffffff 48%, #e8f7eb 100%);
-  box-shadow: 0 16px 42px rgba(20, 83, 45, 0.08);
-  overflow: hidden;
-}
-
-.welcome-band p {
-  margin: 0;
-  color: #1f2937;
-  font-size: 1.18rem;
-  line-height: 1.75;
-}
-
-.welcome-band h1 {
-  margin: 0.25rem 0 0.45rem;
-  color: #111827;
-  font-size: clamp(3rem, 5.2vw, 5rem);
-  font-weight: 900;
-  line-height: 1.08;
-}
-
-.welcome-band h1 span {
-  font-size: 2rem;
-}
-
-.welcome-band img {
-  width: 100%;
-  height: 255px;
-  object-fit: contain;
-  object-position: center;
-  filter: drop-shadow(0 18px 26px rgba(20, 83, 45, 0.12));
+  max-width: 1160px;
+  margin: 0 auto;
+  padding: 2rem 2rem 3.5rem;
 }
 
 .dashboard-alert {
@@ -69,8 +27,7 @@
 }
 
 .stat-card,
-.dashboard-panel,
-.surplus-card {
+.dashboard-panel {
   border: 1px solid #e8ece9;
   border-radius: 8px;
   background: #ffffff;
@@ -434,73 +391,13 @@
   white-space: nowrap;
 }
 
-.surplus-card {
-  min-height: 170px;
-  display: grid;
-  grid-template-columns: 64px 1fr;
-  gap: 1rem;
-  align-items: center;
-  padding: 1rem 1.25rem;
-  background: linear-gradient(90deg, #eaf8ee, #f8fff9);
-}
-
-.surplus-icon {
-  width: 58px;
-  height: 58px;
-  display: grid;
-  place-items: center;
-  border-radius: 50%;
-  background: #dff3e5;
-  color: #27ae60;
-  font-size: 2rem;
-}
-
-.surplus-card h2 {
-  margin: 0 0 0.25rem;
-  color: #111827;
-  font-size: 1.15rem;
-}
-
-.surplus-card p {
-  margin: 0;
-  color: #374151;
-  font-size: 0.92rem;
-  line-height: 1.55;
-}
-
-.surplus-button {
-  grid-column: 1 / -1;
-  min-height: 48px;
-  width: 100%;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.65rem;
-  padding: 0 1.3rem;
-  border-radius: 8px;
-  background: linear-gradient(135deg, #22c55e, #15803d);
-  color: #ffffff;
-  font-weight: 800;
-  text-decoration: none;
-}
-
-.surplus-button:hover {
-  color: #ffffff;
-  transform: translateY(-2px);
-}
-
 @media (max-width: 1250px) {
   .stats-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
-  .dashboard-grid,
-  .welcome-band {
+  .dashboard-grid {
     grid-template-columns: 1fr;
-  }
-
-  .welcome-band img {
-    object-position: left center;
   }
 }
 
@@ -509,8 +406,7 @@
     padding: 1rem;
   }
 
-  .stats-grid,
-  .surplus-card {
+  .stats-grid {
     grid-template-columns: 1fr;
   }
 

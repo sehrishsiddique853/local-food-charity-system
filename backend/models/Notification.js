@@ -29,6 +29,23 @@ const notificationSchema = new mongoose.Schema(
       ],
     },
 
+    eventKey: {
+      type: String,
+      trim: true,
+    },
+
+    relatedDonation: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Donation",
+      default: null,
+    },
+
+    relatedRequest: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "DonationRequest",
+      default: null,
+    },
+
     isRead: {
       type: Boolean,
       default: false,

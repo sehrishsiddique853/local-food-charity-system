@@ -9,9 +9,9 @@ import {
   RecentDonationsPanel,
 } from '../sections/DonorDashboard';
 import '../styles/DonorDashboard.css';
+import '../styles/PostDonationPage.css';
 
 const DonorDashboard = () => {
-  const navigate = useNavigate();
   const { profile, profileError, handleLogout } = useDonorProfile();
   const { donationSummary, overviewRows, recentDonations, isLoading, errorMessage } = useDonorDashboard();
 

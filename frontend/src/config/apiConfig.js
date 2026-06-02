@@ -4,8 +4,12 @@ export const API_ROUTES = {
   login: '/api/auth/login',
   register: '/api/auth/register',
   profile: '/api/auth/profile',
+  changePassword: '/api/auth/change-password',
   logout: '/api/auth/logout',
   donationStats: '/api/donations/my/stats',
   donationHistory: '/api/donations/history',
   createDonation: '/api/donations',
+  donations: '/api/donations',
+  notifications: '/api/notifications',
+  unreadNotifications: '/api/notifications/unread-count',
 };

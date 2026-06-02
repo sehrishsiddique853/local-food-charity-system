@@ -24,7 +24,7 @@ router.use(auth, authorize("donor"));
 
 router.post(
   "/",
-  uploadDonationImages.array("images", 5),
+  uploadDonationImages.array("images", 1),
   normalizeDonationBody,
   validateCreateDonation,
   handleDonationValidationErrors,
@@ -39,7 +39,7 @@ router.get("/:id", getDonationById);
 
 router.put(
   "/:id",
-  uploadDonationImages.array("images", 5),
+  uploadDonationImages.array("images", 1),
   normalizeDonationBody,
   validateUpdateDonation,
   handleDonationValidationErrors,

@@ -13,19 +13,19 @@ export const donorNavItems = [
   },
   {
     key: 'myDonations',
-    href: '/donor/dashboard#my-donations',
+    href: '/donor/my-donations',
     icon: '▣',
     label: 'My Donations',
   },
   {
     key: 'history',
-    href: '/donor/dashboard#history',
+    href: '/donor/donation-history',
     icon: '↺',
     label: 'Donation History',
   },
   {
     key: 'profile',
-    href: '/donor/dashboard#profile',
+    href: '/donor/profile',
     icon: '♙',
     label: 'My Profile',
   },

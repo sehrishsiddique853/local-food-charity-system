@@ -9,3 +9,12 @@ export const createDonation = (payload) => apiRequest(API_ROUTES.createDonation,
   method: 'POST',
   body: payload,
 });
+
+export const updateDonation = (donationId, payload) => apiRequest(`${API_ROUTES.donations}/${donationId}`, {
+  method: 'PUT',
+  body: payload,
+});
+
+export const deleteDonation = (donationId) => apiRequest(`${API_ROUTES.donations}/${donationId}`, {
+  method: 'DELETE',
+});

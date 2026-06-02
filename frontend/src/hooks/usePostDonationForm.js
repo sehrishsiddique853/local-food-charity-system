@@ -2,24 +2,47 @@ import { useEffect, useState } from 'react';
 import { createDonation } from '../services/donationService';
 import { initialPostDonationForm } from '../constants/donationConstants';
 
-const MAX_IMAGES = 5;
+const getDateTimeInputNow = () => {
+  const now = new Date();
+  const timezoneOffset = now.getTimezoneOffset() * 60000;
+
+  return new Date(now.getTime() - timezoneOffset).toISOString().slice(0, 16);
+};
 
 export const usePostDonationForm = (profile) => {
   const [formData, setFormData] = useState(initialPostDonationForm);
   const [formStatus, setFormStatus] = useState({ type: '', message: '' });
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [minExpiryDate, setMinExpiryDate] = useState(getDateTimeInputNow);
 
   useEffect(() => {
-    if (profile?.location?.address) {
-      setFormData((current) => ({
-        ...current,
-        address: profile.location.address,
-      }));
-    }
-  }, [profile]);
+    const intervalId = window.setInterval(() => {
+      setMinExpiryDate(getDateTimeInputNow());
+    }, 60000);
+
+    return () => window.clearInterval(intervalId);
+  }, []);
 
   const updateField = (event) => {
     const { name, value } = event.target;
+
+    if (name === 'expiryDate' && value && value < getDateTimeInputNow()) {
+      setMinExpiryDate(getDateTimeInputNow());
+      setFormStatus({
+        type: 'error',
+        message: 'Expiry date and time cannot be earlier than the current time.',
+      });
+      setFormData((current) => ({
+        ...current,
+        expiryDate: '',
+      }));
+      return;
+    }
+
+    if (name === 'expiryDate') {
+      setFormStatus({ type: '', message: '' });
+    }
+
     setFormData((current) => ({
       ...current,
       [name]: value,
@@ -27,7 +50,7 @@ export const usePostDonationForm = (profile) => {
   };
 
   const updateImages = (event) => {
-    const files = Array.from(event.target.files || []).slice(0, MAX_IMAGES);
+    const files = Array.from(event.target.files || []).slice(0, 1);
     setFormData((current) => ({
       ...current,
       images: files,
@@ -38,6 +61,17 @@ export const usePostDonationForm = (profile) => {
     event.preventDefault();
     setFormStatus({ type: '', message: '' });
     setIsSubmitting(true);
+
+    const currentMinimum = getDateTimeInputNow();
+    if (!formData.expiryDate || formData.expiryDate < currentMinimum) {
+      setFormStatus({
+        type: 'error',
+        message: 'Expiry date must be later than the current date and time.',
+      });
+      setMinExpiryDate(currentMinimum);
+      setIsSubmitting(false);
+      return;
+    }
 
     const payload = new FormData();
     payload.append('foodTitle', formData.foodTitle);
@@ -63,7 +97,7 @@ export const usePostDonationForm = (profile) => {
       });
       setFormData((current) => ({
         ...initialPostDonationForm,
-        address: current.address,
+        address: '',
       }));
     } catch (error) {
       setFormStatus({
@@ -79,6 +113,7 @@ export const usePostDonationForm = (profile) => {
     formData,
     formStatus,
     isSubmitting,
+    minExpiryDate,
     updateField,
     updateImages,
     handleSubmit,

@@ -3,6 +3,12 @@ import ApiError from "../utils/ApiError.js";
 import { successResponse } from "../utils/apiResponse.js";
 import { FIXED_SERVICE_CITY } from "../constants/location.js";
 import { uploadBufferToCloudinary } from "../config/cloudinary.js";
+import {
+  notifyDonationCancelled,
+  notifyDonationExpired,
+  notifyDonationPosted,
+  notifyDonationUpdated,
+} from "../services/notificationService.js";
 
 const ensureDonorOwnsDonation = (donation, userId) => {
   if (!donation) {
@@ -45,12 +51,16 @@ const markExpiredDonations = async (donorId = null) => {
     filter.donor = donorId;
   }
 
+  const expiringDonations = await Donation.find(filter).select("_id donor foodTitle");
+
   await Donation.updateMany(filter, {
     $set: {
       status: "expired",
       isActive: false,
     },
   });
+
+  await Promise.all(expiringDonations.map((donation) => notifyDonationExpired(donation)));
 };
 
 const uploadDonationImagesToCloudinary = async (files = []) => {
@@ -91,6 +101,8 @@ export const createDonation = async (req, res, next) => {
       status: "available",
       isActive: true,
     });
+
+    await notifyDonationPosted(donation);
 
     return successResponse(res, 201, {
       message: "Donation posted successfully",
@@ -167,10 +179,11 @@ export const updateDonation = async (req, res, next) => {
     }
 
     if (imageUrls.length) {
-      donation.images = [...donation.images, ...imageUrls];
+      donation.images = imageUrls;
     }
 
     await donation.save();
+    await notifyDonationUpdated(donation);
 
     return successResponse(res, 200, {
       message: "Donation updated successfully",
@@ -192,6 +205,7 @@ export const deleteDonation = async (req, res, next) => {
     donation.status = "cancelled";
     donation.isActive = false;
     await donation.save();
+    await notifyDonationCancelled(donation);
 
     return successResponse(res, 200, {
       message: "Donation cancelled successfully",

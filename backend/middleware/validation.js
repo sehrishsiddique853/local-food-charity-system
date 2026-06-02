@@ -105,6 +105,41 @@ export const validateLogin = [
     .notEmpty().withMessage("Password is required"),
 ];
 
+export const validateUpdateProfile = [
+  body("name")
+    .trim()
+    .notEmpty().withMessage("Name is required")
+    .isLength({ min: 2, max: 100 }).withMessage("Name must be between 2 and 100 characters"),
+
+  body("phone")
+    .trim()
+    .notEmpty().withMessage("Phone is required")
+    .customSanitizer((value) => value.replace(/^\+92\s*/, ""))
+    .matches(/^[0-9]{10}$/).withMessage("Phone must be exactly 10 digits"),
+
+  body("location.city")
+    .optional()
+    .isIn([FIXED_SERVICE_CITY]).withMessage(`City is fixed to ${FIXED_SERVICE_CITY}`),
+
+  body("location.address")
+    .trim()
+    .notEmpty().withMessage("Exact address is required")
+    .isLength({ min: 5, max: 250 }).withMessage("Exact address must be between 5 and 250 characters"),
+];
+
+export const validateChangePassword = [
+  body("currentPassword")
+    .notEmpty().withMessage("Current password is required"),
+
+  body("newPassword")
+    .notEmpty().withMessage("New password is required")
+    .isLength({ min: 8 }).withMessage("Password must be at least 8 characters")
+    .matches(/[A-Z]/).withMessage("Password must contain at least one uppercase letter")
+    .matches(/[a-z]/).withMessage("Password must contain at least one lowercase letter")
+    .matches(/[0-9]/).withMessage("Password must contain at least one digit")
+    .matches(/[!@#$%^&*]/).withMessage("Password must contain at least one special character (!@#$%^&*)"),
+];
+
 // Middleware to normalize express-validator errors into a consistent response.
 export const handleValidationErrors = (req, res, next) => {
   const errors = validationResult(req);

@@ -1,11 +1,13 @@
+import { Link } from 'react-router-dom';
 import { donationStatusClasses, donationStatusLabels } from '../../constants/donationConstants';
-import { formatDate, formatQuantity } from '../../utils/donationUtils';
+import { ROUTES } from '../../constants/routes';
+import { formatDate, formatQuantity, getDonationImage } from '../../utils/donationUtils';
 
 const RecentDonationsPanel = ({ donations, isLoading }) => (
   <article className="dashboard-panel recent-panel" id="my-donations">
     <div className="panel-heading">
       <h2>Recent Donations</h2>
-      <a href="#my-donations">View All</a>
+      <Link to={ROUTES.myDonations}>View All</Link>
     </div>
 
     <div className="donation-list">
@@ -15,7 +17,7 @@ const RecentDonationsPanel = ({ donations, isLoading }) => (
       )}
       {donations.map((donation) => (
         <article className="donation-row" key={donation._id}>
-          <img src={donation.images?.[0] || '/hero-image.JPG'} alt={donation.foodTitle} />
+          <img src={getDonationImage(donation)} alt={donation.foodTitle} />
           <div className="donation-copy">
             <strong>{donation.foodTitle}</strong>
             <p>
