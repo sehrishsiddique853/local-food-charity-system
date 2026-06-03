@@ -107,9 +107,19 @@ export const validateLogin = [
 
 export const validateUpdateProfile = [
   body("name")
+    .optional()
     .trim()
-    .notEmpty().withMessage("Name is required")
     .isLength({ min: 2, max: 100 }).withMessage("Name must be between 2 and 100 characters"),
+
+  body("ngoName")
+    .optional()
+    .trim()
+    .isLength({ min: 2, max: 100 }).withMessage("NGO name must be between 2 and 100 characters"),
+
+  body("ngoRegistrationNumber")
+    .optional()
+    .trim()
+    .notEmpty().withMessage("NGO registration number cannot be empty"),
 
   body("phone")
     .trim()

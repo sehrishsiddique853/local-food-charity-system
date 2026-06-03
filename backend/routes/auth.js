@@ -47,7 +47,7 @@ router.get("/profile", auth, authorize("donor", "ngo", "admin"), getProfile);
 router.put(
   "/profile",
   auth,
-  authorize("donor"),
+  authorize("donor", "ngo"),
   validateUpdateProfile,
   handleValidationErrors,
   updateProfile
@@ -55,7 +55,7 @@ router.put(
 router.put(
   "/change-password",
   auth,
-  authorize("donor"),
+  authorize("donor", "ngo", "admin"),
   validateChangePassword,
   handleValidationErrors,
   changePassword

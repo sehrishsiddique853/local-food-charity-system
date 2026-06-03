@@ -1,4 +1,5 @@
 import Notification from "../models/Notification.js";
+import User from "../models/User.js";
 
 const createNotification = async ({
   receiver,
@@ -48,6 +49,28 @@ export const notifyDonationPosted = (donation) =>
     relatedDonation: donation._id,
     dedupe: true,
   });
+
+export const notifyApprovedNgosDonationAvailable = async (donation) => {
+  const approvedNgos = await User.find({
+    role: "ngo",
+    ngoVerificationStatus: "approved",
+    isBlocked: false,
+  }).select("_id");
+
+  return Promise.all(
+    approvedNgos.map((ngo) =>
+      createNotification({
+        receiver: ngo._id,
+        title: "New Donation Available",
+        message: `"${donation.foodTitle}" is available for request.`,
+        type: "donation",
+        eventKey: "new_donation_available",
+        relatedDonation: donation._id,
+        dedupe: true,
+      })
+    )
+  );
+};
 
 export const notifyDonationUpdated = (donation) =>
   createNotification({
@@ -103,11 +126,76 @@ export const notifyDonationCollected = (donation) =>
     dedupe: true,
   });
 
+export const notifyDonationRequested = (donation, request) =>
+  createNotification({
+    receiver: donation.donor,
+    title: "Donation Requested",
+    message: `An NGO requested your donation "${donation.foodTitle}".`,
+    type: "request",
+    eventKey: "donation_requested",
+    relatedDonation: donation._id,
+    relatedRequest: request._id,
+    dedupe: true,
+  });
+
+export const notifyNgoVerificationApproved = (ngo) =>
+  createNotification({
+    receiver: ngo._id,
+    title: "NGO Approved",
+    message: "Your NGO account has been approved. You can now request donations.",
+    type: "approval",
+    eventKey: "ngo_verification_approved",
+    dedupe: true,
+  });
+
+export const notifyNgoVerificationRejected = (ngo, reason) =>
+  createNotification({
+    receiver: ngo._id,
+    title: "NGO Verification Rejected",
+    message: reason
+      ? `Your NGO verification was rejected. Reason: ${reason}`
+      : "Your NGO verification was rejected.",
+    type: "rejection",
+    eventKey: "ngo_verification_rejected",
+  });
+
+export const notifyNgoRequestApproved = (request, donation) =>
+  createNotification({
+    receiver: request.ngo,
+    title: "Donation Request Approved",
+    message: `Your request for "${donation.foodTitle}" was approved.`,
+    type: "approval",
+    eventKey: "request_approved",
+    relatedDonation: donation._id,
+    relatedRequest: request._id,
+    dedupe: true,
+  });
+
+export const notifyNgoRequestRejected = (request, donation, reason) =>
+  createNotification({
+    receiver: request.ngo,
+    title: "Donation Request Rejected",
+    message: reason
+      ? `Your request for "${donation.foodTitle}" was rejected. Reason: ${reason}`
+      : `Your request for "${donation.foodTitle}" was rejected.`,
+    type: "rejection",
+    eventKey: "request_rejected",
+    relatedDonation: donation._id,
+    relatedRequest: request._id,
+    dedupe: true,
+  });
+
 export default {
   notifyDonationPosted,
+  notifyApprovedNgosDonationAvailable,
   notifyDonationUpdated,
   notifyDonationCancelled,
   notifyDonationExpired,
   notifyDonationBooked,
   notifyDonationCollected,
+  notifyDonationRequested,
+  notifyNgoVerificationApproved,
+  notifyNgoVerificationRejected,
+  notifyNgoRequestApproved,
+  notifyNgoRequestRejected,
 };

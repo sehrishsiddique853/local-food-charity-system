@@ -4,6 +4,7 @@ import { successResponse } from "../utils/apiResponse.js";
 import { FIXED_SERVICE_CITY } from "../constants/location.js";
 import { uploadBufferToCloudinary } from "../config/cloudinary.js";
 import {
+  notifyApprovedNgosDonationAvailable,
   notifyDonationCancelled,
   notifyDonationExpired,
   notifyDonationPosted,
@@ -102,7 +103,10 @@ export const createDonation = async (req, res, next) => {
       isActive: true,
     });
 
-    await notifyDonationPosted(donation);
+    await Promise.all([
+      notifyDonationPosted(donation),
+      notifyApprovedNgosDonationAvailable(donation),
+    ]);
 
     return successResponse(res, 201, {
       message: "Donation posted successfully",

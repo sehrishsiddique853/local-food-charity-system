@@ -5,8 +5,10 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 import dotenv from "dotenv";
 import connectDB from "./config/db.js";
+import adminRoutes from "./routes/adminRoutes.js";
 import authRoutes from "./routes/auth.js";
 import donationRoutes from "./routes/donationRoutes.js";
+import ngoRoutes from "./routes/ngoRoutes.js";
 import notificationRoutes from "./routes/notificationRoutes.js";
 import errorHandler from "./middleware/errorHandler.js";
 // import { apiRateLimiter } from "./middleware/rateLimiter.js";
@@ -35,6 +37,8 @@ app.use(cookieParser());
 // Mount authentication routes under /api/auth
 app.use("/api/auth", authRoutes);
 app.use("/api/donations", donationRoutes);
+app.use("/api/ngo", ngoRoutes);
+app.use("/api/admin", adminRoutes);
 app.use("/api/notifications", notificationRoutes);
 
 app.get("/", (req, res) => {
