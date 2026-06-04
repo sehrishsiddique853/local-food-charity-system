@@ -9,7 +9,7 @@
   gap: clamp(0.75rem, 2vw, 1.5rem);
   align-items: center;
   background: #ffffff;
-  box-shadow: 0 1px 0 rgba(15, 23, 42, 0.08);
+  box-shadow: 0 1px 0 rgba(15, 23, 42, 0.06);
 }
 
 .dashboard-logo {
@@ -31,21 +31,21 @@
   place-items: center;
   flex: 0 0 auto;
   border-radius: 50%;
-  background: #ffffff;
-  color: #27ae60;
+  background: rgba(255, 255, 255, 0.95);
+  color: #22c55e;
   font-size: 1.9rem;
-  box-shadow: 0 10px 26px rgba(15, 23, 42, 0.14);
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.25);
 }
 
 .dashboard-logo strong {
   display: block;
   color: #111827;
-  font-size: clamp(1.2rem, 2vw, 1.55rem);
+  font-size: clamp(1.2rem, 2vw, 1.35rem);
   line-height: 1.05;
 }
 
 .dashboard-logo strong span {
-  color: #27ae60;
+  color: #22c55e;
 }
 
 .dashboard-logo small {
@@ -70,13 +70,13 @@
   align-items: center;
   justify-content: center;
   gap: 0.45rem;
-  border-bottom: 2px solid transparent;
   color: #111827;
   font-size: 0.93rem;
-  font-weight: 700;
+  font-weight: 600;
   text-decoration: none;
   white-space: nowrap;
-  transition: color 0.25s ease, border-color 0.25s ease, background 0.25s ease;
+  transition: color 0.25s ease, background 0.25s ease;
+  position: relative;
 }
 
 .dashboard-nav a span {
@@ -86,15 +86,25 @@
   transition: color 0.25s ease;
 }
 
-.dashboard-nav a.active,
-.dashboard-nav a.active span,
-.dashboard-nav a:hover,
-.dashboard-nav a:hover span {
-  color: #27ae60;
+.dashboard-nav a::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  width: 0;
+  height: 2px;
+  background: #22c55e;
+  transform: translateX(-50%);
+  transition: width 0.28s ease;
 }
 
-.dashboard-nav a.active {
-  border-bottom-color: #27ae60;
+.dashboard-nav a:hover,
+.dashboard-nav a:hover span {
+  color: #22c55e;
+}
+
+.dashboard-nav a:hover::after {
+  width: 100%;
 }
 
 .dashboard-menu-button {
@@ -102,9 +112,9 @@
   width: 40px;
   height: 40px;
   place-items: center;
-  border: 1px solid #dfe7e2;
+  border: none;
   border-radius: 8px;
-  background: #ffffff;
+  background: transparent;
   flex-direction: column;
   justify-content: center;
   gap: 5px;
@@ -114,7 +124,7 @@
   width: 22px;
   height: 2px;
   border-radius: 999px;
-  background: #15803d;
+  background: #22c55e;
   transition: transform 0.3s ease, opacity 0.3s ease;
 }
 
@@ -366,9 +376,9 @@
     overflow: hidden;
     padding: 0;
     border: 1px solid transparent;
-    border-radius: 8px;
-    background: #ffffff;
-    box-shadow: 0 20px 44px rgba(15, 23, 42, 0.16);
+    border-radius: 18px;
+    background: rgba(255, 255, 255, 0.98);
+    box-shadow: 0 18px 50px rgba(0, 0, 0, 0.1);
     opacity: 0;
     transition: max-height 0.3s ease, padding 0.3s ease, opacity 0.2s ease, border-color 0.2s ease;
   }

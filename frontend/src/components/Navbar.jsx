@@ -1,11 +1,16 @@
-import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { Link, useLocation } from 'react-router-dom';
 import '../styles/Navbar.css';
 import { ROUTES } from '../constants/routes';
 
 const Navbar = ({ variant = 'transparent', actionSlot = null }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const location = useLocation();
   const isLight = variant === 'light';
+
+  useEffect(() => {
+    setMobileMenuOpen(false);
+  }, [location]);
   const homeHref = `${ROUTES.home}#home`;
   const aboutHref = `${ROUTES.home}#about`;
   const contactHref = `${ROUTES.home}#contact`;

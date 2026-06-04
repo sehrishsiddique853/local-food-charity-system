@@ -365,6 +365,7 @@
 @media (max-width: 1024px) {
   .register-main {
     grid-template-columns: 1fr;
+   
   }
 
   .register-intro {
@@ -375,6 +376,7 @@
 @media (max-width: 768px) {
   .register-main {
     padding: 2rem 1rem 3rem;
+    
   }
 
   .register-intro,

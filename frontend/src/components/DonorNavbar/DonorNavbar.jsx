@@ -46,7 +46,6 @@ const DonorNavbar = ({ activeKey, profile, onLogout }) => {
             key={item.key}
             onClick={closeMobileMenu}
           >
-            <span>{item.icon}</span>
             {item.label}
           </Link>
         ))}
