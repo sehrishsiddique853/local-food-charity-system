@@ -1,8 +1,12 @@
 import express from "express";
 import {
   getAvailableDonations,
+   getDonationById,
   getBookedDonations,
   getMyRequests,
+  getRequestById,
+   getRequestStats,
+  cancelRequest,
   getNgoHistory,
   markDonationCollected,
   requestDonation,
@@ -16,6 +20,10 @@ const router = express.Router();
 router.use(auth, authorize("ngo"), ensureNgoApproved);
 
 router.get("/donations/available", getAvailableDonations);
+router.get("/donations/:id", getDonationById);
+router.get("/requests/:id", getRequestById);
+router.get("/requests/stats", getRequestStats);
+router.put("/requests/:id/cancel", cancelRequest);
 router.post("/donations/:id/request", requestDonation);
 router.get("/requests", getMyRequests);
 router.get("/donations/booked", getBookedDonations);

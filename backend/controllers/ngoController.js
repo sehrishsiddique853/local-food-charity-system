@@ -147,6 +147,97 @@ export const getMyRequests = async (req, res, next) => {
   }
 };
 
+export const getRequestById = async (req, res, next) => {
+  try {
+    const request = await DonationRequest.findById(req.params.id).populate("donation");
+
+    if (!request) {
+      throw new ApiError(404, "REQUEST_NOT_FOUND", "Request not found");
+    }
+
+    if (request.ngo.toString() !== req.user.id.toString()) {
+      throw new ApiError(403, "FORBIDDEN", "You can only view your own requests");
+    }
+
+    return successResponse(res, 200, { request });
+  } catch (err) {
+    return next(err);
+  }
+};
+
+export const cancelRequest = async (req, res, next) => {
+  try {
+    const request = await DonationRequest.findById(req.params.id);
+
+    if (!request) {
+      throw new ApiError(404, "REQUEST_NOT_FOUND", "Request not found");
+    }
+
+    if (request.ngo.toString() !== req.user.id.toString()) {
+      throw new ApiError(403, "FORBIDDEN", "You can only cancel your own requests");
+    }
+
+    if (request.requestStatus !== "pending") {
+      throw new ApiError(400, "REQUEST_NOT_CANCELABLE", "Only pending requests can be cancelled");
+    }
+
+    const donation = await Donation.findById(request.donation);
+
+    request.requestStatus = "rejected";
+    request.adminMessage = req.body.reason || req.body.message || "Cancelled by NGO";
+    await request.save();
+
+    if (donation && donation.status === "requested") {
+      const pendingRequests = await DonationRequest.countDocuments({
+        donation: donation._id,
+        requestStatus: "pending",
+      });
+
+      if (pendingRequests === 0) {
+        donation.status = "available";
+        await donation.save();
+      }
+    }
+
+    return successResponse(res, 200, {
+      message: "Request cancelled successfully",
+      request,
+    });
+  } catch (err) {
+    return next(err);
+  }
+};
+
+export const getRequestStats = async (req, res, next) => {
+  try {
+    const groupedStats = await DonationRequest.aggregate([
+      { $match: { ngo: req.user.id } },
+      {
+        $group: {
+          _id: "$requestStatus",
+          count: { $sum: 1 },
+        },
+      },
+    ]);
+
+    const stats = {
+      totalRequests: 0,
+      pending: 0,
+      approved: 0,
+      rejected: 0,
+    };
+
+    groupedStats.forEach((item) => {
+      stats[item._id] = item.count;
+      stats.totalRequests += item.count;
+    });
+
+    return successResponse(res, 200, stats);
+  } catch (err) {
+    return next(err);
+  }
+};
+
 export const getBookedDonations = async (req, res, next) => {
   try {
     const donations = await Donation.find({
@@ -211,4 +302,18 @@ export const getNgoHistory = async (req, res, next) => {
   } catch (err) {
     return next(err);
   }
+};
+
+export const getDonationById = async (req, res, next) => {
+  try {
+    await markExpiredDonations();
+    const donation = await Donation.findById(req.params.id).populate("donor", "name phone location");
+    if (!donation) {
+      throw new ApiError(404, "DONATION_NOT_FOUND", "Donation not found");
+    }
+    return successResponse(res, 200, { donation });
+  } catch (err) {
+    return next(err);
+  } 
+
 };
