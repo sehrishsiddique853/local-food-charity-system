@@ -3,15 +3,13 @@ import { donationStatusClasses, donationStatusLabels } from '../../constants/don
 import { ROUTES } from '../../constants/routes';
 import { formatDate, formatQuantity, getDonationImage } from '../../utils/donationUtils';
 
-const statusOrder = ['all', 'available', 'requested', 'booked', 'collected', 'expired'];
+const statusOrder = ['all', 'available', 'requested', 'booked'];
 
 const statusLabels = {
   all: 'All',
   available: 'Available',
   requested: 'Requested',
   booked: 'Booked',
-  collected: 'Collected',
-  expired: 'Expired',
 };
 
 const MyDonationsList = ({
