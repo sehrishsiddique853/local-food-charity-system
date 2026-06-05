@@ -25,6 +25,96 @@ export const getPendingNgos = async (req, res, next) => {
   }
 };
 
+export const getUsers = async (req, res, next) => {
+  try {
+    const { role } = req.query;
+    const filter = {};
+    if (role) {
+      filter.role = role;
+    }
+
+    const users = await User.find(filter).select("-password").sort({ createdAt: -1 });
+    return successResponse(res, 200, { users });
+  } catch (err) {
+    return next(err);
+  }
+};
+
+export const deleteUser = async (req, res, next) => {
+  try {
+    const user = await User.findById(req.params.id);
+    if (!user) {
+      throw new ApiError(404, "USER_NOT_FOUND", "User not found");
+    }
+
+    if (user.role === "donor") {
+      const donations = await Donation.find({ donor: user._id });
+      const donationIds = donations.map((donation) => donation._id);
+
+      await DonationRequest.deleteMany({ donation: { $in: donationIds } });
+      await Donation.deleteMany({ donor: user._id });
+    }
+
+    if (user.role === "ngo") {
+      await DonationRequest.deleteMany({ ngo: user._id });
+    }
+
+    await User.deleteOne({ _id: user._id });
+
+    return successResponse(res, 200, { message: "User deleted successfully" });
+  } catch (err) {
+    return next(err);
+  }
+};
+
+export const getNgos = async (req, res, next) => {
+  try {
+    const { status } = req.query;
+    const filter = { role: "ngo" };
+    if (status) {
+      filter.ngoVerificationStatus = status;
+    }
+
+    const ngos = await User.find(filter).select("-password").sort({ createdAt: -1 });
+    return successResponse(res, 200, { ngos });
+  } catch (err) {
+    return next(err);
+  }
+};
+
+export const verifyNgo = async (req, res, next) => {
+  try {
+    const ngo = await User.findOne({ _id: req.params.id, role: "ngo" });
+
+    if (!ngo) {
+      throw new ApiError(404, "NGO_NOT_FOUND", "NGO not found");
+    }
+
+    ngo.ngoVerificationStatus = "approved";
+    await ngo.save();
+
+    await NgoVerification.findOneAndUpdate(
+      { ngo: ngo._id },
+      {
+        ngo: ngo._id,
+        status: "approved",
+        reviewedBy: req.user.id,
+        rejectionReason: undefined,
+      },
+      { upsert: true, new: true }
+    );
+
+    await notifyNgoVerificationApproved(ngo);
+
+    return successResponse(res, 200, {
+      message: "NGO verified successfully",
+      ngo,
+    });
+  } catch (err) {
+    return next(err);
+  }
+};
+
 export const approveNgo = async (req, res, next) => {
   try {
     const ngo = await User.findOne({ _id: req.params.id, role: "ngo" });
@@ -87,6 +177,60 @@ export const rejectNgo = async (req, res, next) => {
     return successResponse(res, 200, {
       message: "NGO rejected successfully",
       ngo,
+    });
+  } catch (err) {
+    return next(err);
+  }
+};
+
+export const getDonations = async (req, res, next) => {
+  try {
+    const { status } = req.query;
+    const filter = {};
+    if (status) {
+      filter.status = status;
+    }
+
+    const donations = await Donation.find(filter)
+      .populate("donor", "name email phone location")
+      .sort({ createdAt: -1 });
+
+    return successResponse(res, 200, { donations });
+  } catch (err) {
+    return next(err);
+  }
+};
+
+export const changeDonationStatus = async (req, res, next) => {
+  try {
+    const { status } = req.body;
+    const allowed = [
+      "available",
+      "requested",
+      "booked",
+      "collected",
+      "completed",
+      "expired",
+      "cancelled",
+    ];
+
+    if (!allowed.includes(status)) {
+      throw new ApiError(400, "INVALID_DONATION_STATUS", "Invalid donation status");
+    }
+
+    const donation = await Donation.findById(req.params.id);
+    if (!donation) {
+      throw new ApiError(404, "DONATION_NOT_FOUND", "Donation not found");
+    }
+
+    donation.status = status;
+    donation.isActive = !["expired", "cancelled", "completed"].includes(status);
+
+    await donation.save();
+
+    return successResponse(res, 200, {
+      message: "Donation status updated successfully",
+      donation,
     });
   } catch (err) {
     return next(err);
