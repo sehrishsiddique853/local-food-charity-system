@@ -4,6 +4,8 @@ import { ROUTES } from '../constants/routes';
 import { deleteDonation, getDonationHistory, updateDonation } from '../services/donationService';
 import { toDateTimeInputValue } from '../utils/donationUtils';
 
+const ACTIVE_DONATION_STATUSES = ['available', 'requested', 'booked'];
+
 const buildEditForm = (donation) => ({
   foodTitle: donation.foodTitle || '',
   foodType: donation.foodType || 'cooked',
@@ -167,17 +169,20 @@ export const useMyDonations = () => {
     }
   };
 
+  const activeDonations = useMemo(
+    () => donations.filter((donation) => ACTIVE_DONATION_STATUSES.includes(donation.status)),
+    [donations]
+  );
+
   const totals = useMemo(() => ({
-    all: donations.length,
-    available: donations.filter((donation) => donation.status === 'available').length,
-    requested: donations.filter((donation) => donation.status === 'requested').length,
-    booked: donations.filter((donation) => donation.status === 'booked').length,
-    collected: donations.filter((donation) => donation.status === 'collected').length,
-    expired: donations.filter((donation) => donation.status === 'expired').length,
-  }), [donations]);
+    all: activeDonations.length,
+    available: activeDonations.filter((donation) => donation.status === 'available').length,
+    requested: activeDonations.filter((donation) => donation.status === 'requested').length,
+    booked: activeDonations.filter((donation) => donation.status === 'booked').length,
+  }), [activeDonations]);
 
   return {
-    donations,
+    donations: activeDonations,
     totals,
     isLoading,
     statusMessage,

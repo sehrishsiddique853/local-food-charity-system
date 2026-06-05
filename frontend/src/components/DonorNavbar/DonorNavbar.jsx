@@ -46,7 +46,6 @@ const DonorNavbar = ({ activeKey, profile, onLogout }) => {
             key={item.key}
             onClick={closeMobileMenu}
           >
-            <span>{item.icon}</span>
             {item.label}
           </Link>
         ))}
@@ -54,7 +53,10 @@ const DonorNavbar = ({ activeKey, profile, onLogout }) => {
 
       <div className="dashboard-user-actions">
         <Link className="notification-button" to={ROUTES.notifications} aria-label="Notifications">
-          🔔
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M18 9a6 6 0 0 0-12 0c0 7-3 7-3 7h18s-3 0-3-7" />
+            <path d="M10 20a2 2 0 0 0 4 0" />
+          </svg>
           {unreadCount > 0 && <span>{unreadCount}</span>}
         </Link>
         <div className="header-divider"></div>

@@ -1,6 +1,6 @@
 .donor-dashboard {
   min-height: 100vh;
-  background: #f8faf9;
+  background: #ffffff;
   color: #111827;
 }
 
@@ -41,6 +41,7 @@
   display: grid;
   grid-template-rows: 50px 1fr auto;
   gap: 0.55rem;
+
   overflow: hidden;
   border: 0;
   box-shadow: 0 14px 32px rgba(15, 23, 42, 0.075);
@@ -77,14 +78,23 @@
 .stat-icon {
   position: relative;
   z-index: 1;
-  width: 50px;
-  height: 50px;
+  width: 42px;
+  height: 42px;
   display: grid;
   place-items: center;
-  border-radius: 14px;
-  background: rgba(255, 255, 255, 0.78);
-  font-size: 1.42rem;
-  box-shadow: 0 10px 22px rgba(15, 23, 42, 0.08);
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+}
+
+.stat-icon svg {
+  width: 22px;
+  height: 22px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.9;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
 
 .stat-card > div {
@@ -100,42 +110,42 @@
 }
 
 .stat-card.orange .stat-icon {
-  color: #f59e0b;
+  color: #27ae60;
 }
 
 .stat-card.blue .stat-icon {
-  color: #3b82f6;
+  color: #27ae60;
 }
 
 .stat-card.purple .stat-icon {
-  color: #8b5cf6;
+  color: #27ae60;
 }
 
 .stat-card.green {
-  background: linear-gradient(135deg, #e9f8ed 0%, #ffffff 100%);
+  background: #ffffff;
   color: #14532d;
 }
 
 .stat-card.orange {
-  background: linear-gradient(135deg, #fff3d9 0%, #ffffff 100%);
-  color: #7c3f00;
+  background: #ffffff;
+  color: #14532d;
 }
 
 .stat-card.blue {
-  background: linear-gradient(135deg, #e5f0ff 0%, #ffffff 100%);
-  color: #1e3a8a;
+  background: #ffffff;
+  color: #14532d;
 }
 
 .stat-card.purple {
-  background: linear-gradient(135deg, #f0e7ff 0%, #ffffff 100%);
-  color: #4c1d95;
+  background: #ffffff;
+  color: #14532d;
 }
 
 .stat-card strong {
   position: relative;
   z-index: 1;
   display: block;
-  color: currentColor;
+  color: #27ae60;
   font-size: 2.15rem;
   line-height: 1;
 }
@@ -294,8 +304,8 @@
 }
 
 .status-pill.requested {
-  background: #fff0d5;
-  color: #f59e0b;
+  background: #fff7df;
+  color: #b45309;
 }
 
 .status-pill.booked {
@@ -304,13 +314,23 @@
 }
 
 .status-pill.collected {
-  background: #e8f5e9;
-  color: #27ae60;
+  background: #e0f2f1;
+  color: #0f766e;
+}
+
+.status-pill.completed {
+  background: #ecfdf5;
+  color: #047857;
 }
 
 .status-pill.expired {
-  background: #eee4ff;
-  color: #7c3aed;
+  background: #f3f4f6;
+  color: #4b5563;
+}
+
+.status-pill.cancelled {
+  background: #fee2e2;
+  color: #b91c1c;
 }
 
 .donation-row time {
@@ -365,7 +385,7 @@
 
 .overview-row {
   display: grid;
-  grid-template-columns: 12px minmax(0, 1fr) auto;
+  grid-template-columns: 12px minmax(0, 1fr) 48px 62px;
   gap: 0.8rem;
   align-items: center;
   color: #111827;
@@ -384,10 +404,19 @@
   font-weight: 700;
 }
 
+.overview-row small {
+  color: #4b5563;
+  font-size: 0.88rem;
+  font-weight: 700;
+  text-align: right;
+  white-space: nowrap;
+}
+
 .overview-row strong {
   color: #111827;
   font-size: 0.88rem;
   font-weight: 500;
+  text-align: right;
   white-space: nowrap;
 }
 

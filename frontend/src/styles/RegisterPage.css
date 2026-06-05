@@ -184,7 +184,22 @@
 }
 
 .role-icon {
-  font-size: 1.35rem;
+  width: 24px;
+  height: 24px;
+  color: #27ae60;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.role-icon svg {
+  width: 24px;
+  height: 24px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.9;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
 
 .form-grid {
@@ -365,6 +380,7 @@
 @media (max-width: 1024px) {
   .register-main {
     grid-template-columns: 1fr;
+   
   }
 
   .register-intro {
@@ -375,6 +391,7 @@
 @media (max-width: 768px) {
   .register-main {
     padding: 2rem 1rem 3rem;
+    
   }
 
   .register-intro,

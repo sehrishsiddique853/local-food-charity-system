@@ -30,7 +30,7 @@ const DonorDashboard = () => {
           <RecentDonationsPanel donations={recentDonations} isLoading={isLoading} />
 
           <div className="dashboard-side">
-            <DonationOverviewPanel rows={overviewRows} total={donationSummary.total} />
+            <DonationOverviewPanel rows={overviewRows} total={donationSummary.overviewTotal} />
             <DonationCtaCard />
           </div>
         </section>

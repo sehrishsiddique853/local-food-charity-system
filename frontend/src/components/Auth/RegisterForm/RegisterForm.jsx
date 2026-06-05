@@ -1,6 +1,27 @@
 import { Link } from 'react-router-dom';
 import { ROUTES } from '../../../constants/routes';
 
+const roleIcons = {
+  donor: (
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M4 9.5 12 5l8 4.5-8 4.5-8-4.5z" />
+      <path d="M4 9.5v7L12 21l8-4.5v-7" />
+      <path d="M12 14v7" />
+      <path d="M9.5 9.8h5" />
+    </svg>
+  ),
+  ngo: (
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M4 21h16" />
+      <path d="M6 21V9l6-4 6 4v12" />
+      <path d="M9 21v-6h6v6" />
+      <path d="M9 11h.01" />
+      <path d="M12 11h.01" />
+      <path d="M15 11h.01" />
+    </svg>
+  ),
+};
+
 const RegisterForm = ({
   accountType,
   formData,
@@ -32,7 +53,7 @@ const RegisterForm = ({
             onClick={() => handleAccountTypeChange('donor')}
           >
             <span className="role-dot"></span>
-            <span className="role-icon">🥗</span>
+            <span className="role-icon">{roleIcons.donor}</span>
             Donor
           </button>
           <button
@@ -41,7 +62,7 @@ const RegisterForm = ({
             onClick={() => handleAccountTypeChange('ngo')}
           >
             <span className="role-dot"></span>
-            <span className="role-icon">🤝</span>
+            <span className="role-icon">{roleIcons.ngo}</span>
             NGO
           </button>
         </div>

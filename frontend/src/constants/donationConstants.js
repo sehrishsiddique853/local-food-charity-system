@@ -13,9 +13,9 @@ export const donationStatusClasses = {
   requested: 'requested',
   booked: 'booked',
   collected: 'collected',
-  completed: 'collected',
+  completed: 'completed',
   expired: 'expired',
-  cancelled: 'expired',
+  cancelled: 'cancelled',
 };
 
 export const initialDonationStats = {
@@ -28,9 +28,10 @@ export const initialDonationStats = {
 
 export const overviewColors = {
   available: '#27ae60',
-  requestedBooked: '#f59e0b',
-  collected: '#3b82f6',
-  expiredCancelled: '#8b5cf6',
+  booked: '#2563eb',
+  collected: '#0f766e',
+  cancelled: '#b91c1c',
+  expired: '#6b7280',
 };
 
 export const foodTypeOptions = [

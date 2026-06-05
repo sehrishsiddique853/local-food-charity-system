@@ -9,7 +9,7 @@
   gap: clamp(0.75rem, 2vw, 1.5rem);
   align-items: center;
   background: #ffffff;
-  box-shadow: 0 1px 0 rgba(15, 23, 42, 0.08);
+  box-shadow: 0 1px 0 rgba(15, 23, 42, 0.06);
 }
 
 .dashboard-logo {
@@ -31,21 +31,21 @@
   place-items: center;
   flex: 0 0 auto;
   border-radius: 50%;
-  background: #ffffff;
-  color: #27ae60;
+  background: rgba(255, 255, 255, 0.95);
+  color: #22c55e;
   font-size: 1.9rem;
-  box-shadow: 0 10px 26px rgba(15, 23, 42, 0.14);
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.25);
 }
 
 .dashboard-logo strong {
   display: block;
   color: #111827;
-  font-size: clamp(1.2rem, 2vw, 1.55rem);
+  font-size: clamp(1.2rem, 2vw, 1.35rem);
   line-height: 1.05;
 }
 
 .dashboard-logo strong span {
-  color: #27ae60;
+  color: #22c55e;
 }
 
 .dashboard-logo small {
@@ -70,13 +70,13 @@
   align-items: center;
   justify-content: center;
   gap: 0.45rem;
-  border-bottom: 2px solid transparent;
   color: #111827;
   font-size: 0.93rem;
-  font-weight: 700;
+  font-weight: 600;
   text-decoration: none;
   white-space: nowrap;
-  transition: color 0.25s ease, border-color 0.25s ease, background 0.25s ease;
+  transition: color 0.25s ease, background 0.25s ease;
+  position: relative;
 }
 
 .dashboard-nav a span {
@@ -86,15 +86,25 @@
   transition: color 0.25s ease;
 }
 
-.dashboard-nav a.active,
-.dashboard-nav a.active span,
-.dashboard-nav a:hover,
-.dashboard-nav a:hover span {
-  color: #27ae60;
+.dashboard-nav a::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  width: 0;
+  height: 2px;
+  background: #22c55e;
+  transform: translateX(-50%);
+  transition: width 0.28s ease;
 }
 
-.dashboard-nav a.active {
-  border-bottom-color: #27ae60;
+.dashboard-nav a:hover,
+.dashboard-nav a:hover span {
+  color: #22c55e;
+}
+
+.dashboard-nav a:hover::after {
+  width: 100%;
 }
 
 .dashboard-menu-button {
@@ -102,9 +112,9 @@
   width: 40px;
   height: 40px;
   place-items: center;
-  border: 1px solid #dfe7e2;
+  border: none;
   border-radius: 8px;
-  background: #ffffff;
+  background: transparent;
   flex-direction: column;
   justify-content: center;
   gap: 5px;
@@ -114,7 +124,7 @@
   width: 22px;
   height: 2px;
   border-radius: 999px;
-  background: #15803d;
+  background: #22c55e;
   transition: transform 0.3s ease, opacity 0.3s ease;
 }
 
@@ -139,33 +149,47 @@
 
 .notification-button {
   position: relative;
-  width: 40px;
-  height: 40px;
+  width: 34px;
+  height: 34px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  border-radius: 8px;
-  background: #f8faf9;
-  color: #111827;
-  font-size: 1.2rem;
+  border-radius: 6px;
+  background: transparent;
+  color: #374151;
   text-decoration: none;
+}
+
+.notification-button:hover {
+  background: transparent;
+  color: #15803d;
+}
+
+.notification-button svg {
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
 
 .notification-button span {
   position: absolute;
   top: -3px;
   right: -3px;
-  min-width: 19px;
-  height: 19px;
+  min-width: 16px;
+  height: 16px;
   display: grid;
   place-items: center;
-  padding: 0 0.25rem;
-  border: 2px solid #ffffff;
+  padding: 0 0.2rem;
+  border: 1px solid #ffffff;
   border-radius: 999px;
-  background: #ef1111;
+  background: #b91c1c;
   color: #ffffff;
-  font-size: 0.66rem;
-  font-weight: 800;
+  font-size: 0.58rem;
+  font-weight: 700;
 }
 
 .header-divider {
@@ -179,8 +203,8 @@
 }
 
 .profile-avatar-button {
-  width: 50px;
-  height: 50px;
+  width: 42px;
+  height: 42px;
   display: grid;
   place-items: center;
   border: 0;
@@ -190,24 +214,23 @@
 }
 
 .donor-avatar {
-  width: 48px;
-  height: 48px;
+  width: 40px;
+  height: 40px;
   display: grid;
   place-items: center;
   border-radius: 50%;
-  background: linear-gradient(135deg, #dcfce7, #bbf7d0);
-  color: #15803d;
-  border: 1px solid rgba(22, 128, 50, 0.14);
-  font-size: 1rem;
-  font-weight: 900;
-  letter-spacing: 0.5px;
-  box-shadow: 0 8px 22px rgba(22, 128, 50, 0.12);
+  background: #dcfce7;
+  color: #166534;
+  border: 1px solid rgba(22, 101, 52, 0.18);
+  font-size: 0.88rem;
+  font-weight: 800;
+  letter-spacing: 0.2px;
 }
 
 .donor-avatar.large {
-  width: 52px;
-  height: 52px;
-  font-size: 1.05rem;
+  width: 44px;
+  height: 44px;
+  font-size: 0.92rem;
   box-shadow: none;
 }
 
@@ -216,12 +239,12 @@
   top: calc(100% + 0.85rem);
   right: 0;
   z-index: 40;
-  width: min(260px, calc(100vw - 2rem));
-  padding: 0.85rem;
+  width: min(240px, calc(100vw - 2rem));
+  padding: 0.75rem;
   border: 1px solid #e5e7eb;
   border-radius: 8px;
   background: #ffffff;
-  box-shadow: 0 18px 42px rgba(15, 23, 42, 0.16);
+  box-shadow: 0 14px 34px rgba(15, 23, 42, 0.12);
 }
 
 .profile-dropdown::before {
@@ -239,42 +262,43 @@
 
 .profile-dropdown-header {
   display: grid;
-  grid-template-columns: 52px minmax(0, 1fr);
-  gap: 0.85rem;
+  grid-template-columns: 44px minmax(0, 1fr);
+  gap: 0.75rem;
   align-items: center;
-  padding: 0.65rem 0.65rem 0.85rem;
+  padding: 0.55rem 0.55rem 0.75rem;
   border-bottom: 1px solid #eef2ef;
 }
 
 .profile-dropdown-header strong {
   display: block;
   color: #111827;
-  font-size: 1rem;
+  font-size: 0.95rem;
   line-height: 1.25;
   overflow-wrap: anywhere;
 }
 
 .profile-dropdown-header p {
   margin: 0.18rem 0 0;
-  color: #374151;
-  font-size: 0.9rem;
+  color: #6b7280;
+  font-size: 0.84rem;
 }
 
 .profile-logout {
   width: 100%;
-  min-height: 44px;
+  min-height: 40px;
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  gap: 0.65rem;
-  margin-top: 0.65rem;
-  padding: 0 0.75rem;
-  border: 0;
+  gap: 0.55rem;
+  margin-top: 0.55rem;
+  padding: 0 0.65rem;
+  border: 1px solid #fee2e2;
   border-radius: 6px;
-  background: #fff5f5;
+  background: #fffafa;
   color: #b91c1c;
   font: inherit;
-  font-weight: 800;
+  font-size: 0.9rem;
+  font-weight: 700;
   text-align: left;
 }
 
@@ -284,13 +308,14 @@
 }
 
 .profile-logout span {
-  width: 24px;
-  height: 24px;
+  width: 22px;
+  height: 22px;
   display: grid;
   place-items: center;
   flex: 0 0 auto;
   border-radius: 50%;
   background: #fee2e2;
+  font-size: 0.82rem;
 }
 
 @media (max-width: 1180px) {
@@ -366,9 +391,9 @@
     overflow: hidden;
     padding: 0;
     border: 1px solid transparent;
-    border-radius: 8px;
-    background: #ffffff;
-    box-shadow: 0 20px 44px rgba(15, 23, 42, 0.16);
+    border-radius: 18px;
+    background: rgba(255, 255, 255, 0.98);
+    box-shadow: 0 18px 50px rgba(0, 0, 0, 0.1);
     opacity: 0;
     transition: max-height 0.3s ease, padding 0.3s ease, opacity 0.2s ease, border-color 0.2s ease;
   }

@@ -51,32 +51,29 @@ export const buildDonutGradient = (rows, total) => {
 };
 
 export const getDonationSummary = (donations, stats) => {
-  const expiredCancelled = donations.filter((donation) =>
-    ['expired', 'cancelled'].includes(donation.status)
-  ).length;
+  const expired = donations.filter((donation) => donation.status === 'expired').length;
+  const cancelled = donations.filter((donation) => donation.status === 'cancelled').length;
   const requestedBooked = (stats.requested || 0) + (stats.booked || 0);
   const total = stats.total || donations.length || 0;
+  const overviewTotal =
+    (stats.available || 0) + (stats.booked || 0) + (stats.collected || 0) + cancelled + expired;
 
   return {
     total,
     available: stats.available || 0,
+    booked: stats.booked || 0,
     requestedBooked,
     collected: stats.collected || 0,
-    expiredCancelled,
+    cancelled,
+    expired,
+    overviewTotal,
   };
 };
 
 export const buildDashboardOverviewRows = (donationSummary, overviewColors) => [
   { label: 'Available', value: donationSummary.available, color: overviewColors.available },
-  {
-    label: 'Requested / Booked',
-    value: donationSummary.requestedBooked,
-    color: overviewColors.requestedBooked,
-  },
+  { label: 'Booked', value: donationSummary.booked, color: overviewColors.booked },
   { label: 'Collected', value: donationSummary.collected, color: overviewColors.collected },
-  {
-    label: 'Expired / Cancelled',
-    value: donationSummary.expiredCancelled,
-    color: overviewColors.expiredCancelled,
-  },
+  { label: 'Cancelled', value: donationSummary.cancelled, color: overviewColors.cancelled },
+  { label: 'Expired', value: donationSummary.expired, color: overviewColors.expired },
 ];

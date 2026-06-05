@@ -36,7 +36,7 @@ const HowItWorks = () => {
 
   return (
     <section className="how-it-works">
-      <h2 className="section-title">How It Works</h2>
+      <h2 className="section-title">How We Work</h2>
       <div className="steps-container">
         {steps.map((step, index) => (
           <div key={step.id} className="step">

@@ -4,17 +4,16 @@ const DonationOverviewPanel = ({ rows, total }) => (
   <article className="dashboard-panel overview-panel">
     <div className="panel-heading">
       <h2>Donations Overview</h2>
-      <button type="button">This Month <span>⌄</span></button>
     </div>
 
     <div className="overview-body">
       <div
         className="donut-chart"
         style={{ '--donut-gradient': buildDonutGradient(rows, total) }}
-        aria-label={`${total} total donations`}
+        aria-label="Donation status distribution"
       >
-        <strong>{total}</strong>
-        <span>Total</span>
+        <strong>{total ? '100%' : '0%'}</strong>
+        <span>Status Mix</span>
       </div>
 
       <div className="overview-list">
@@ -25,7 +24,8 @@ const DonationOverviewPanel = ({ rows, total }) => (
             <div className="overview-row" key={row.label}>
               <span style={{ '--dot-color': row.color }}></span>
               <p>{row.label}</p>
-              <strong>{row.value} ({percent}%)</strong>
+              <small>{row.value}</small>
+              <strong>{percent}%</strong>
             </div>
           );
         })}

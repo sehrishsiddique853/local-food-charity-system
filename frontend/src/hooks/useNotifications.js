@@ -5,8 +5,9 @@ import {
   getNotifications,
   getUnreadNotificationCount,
   markAllNotificationsRead,
-  markNotificationRead,
 } from '../services/notificationService';
+
+const NOTIFICATIONS_READ_EVENT = 'notifications:read';
 
 export const useNotifications = ({ loadList = true } = {}) => {
   const navigate = useNavigate();
@@ -56,8 +57,31 @@ export const useNotifications = ({ loadList = true } = {}) => {
       }
 
       const loadedNotifications = result.data.data?.notifications || [];
+      const unreadNotifications = loadedNotifications.filter((notification) => !notification.isRead);
+
+      if (unreadNotifications.length > 0) {
+        const readResult = await markAllNotificationsRead();
+
+        if (handleUnauthorized(readResult)) {
+          return;
+        }
+
+        if (!readResult.ok) {
+          throw new Error(readResult.data.error?.message || 'Unable to update notifications.');
+        }
+
+        setNotifications(
+          loadedNotifications.map((notification) => ({ ...notification, isRead: true }))
+        );
+        setUnreadCount(0);
+        window.dispatchEvent(
+          new CustomEvent(NOTIFICATIONS_READ_EVENT, { detail: { unreadCount: 0 } })
+        );
+        return;
+      }
+
       setNotifications(loadedNotifications);
-      setUnreadCount(loadedNotifications.filter((notification) => !notification.isRead).length);
+      setUnreadCount(0);
     } catch (error) {
       setErrorMessage(error.message || 'Unable to load notifications.');
     } finally {
@@ -68,48 +92,21 @@ export const useNotifications = ({ loadList = true } = {}) => {
   useEffect(() => {
     if (loadList) {
       loadNotifications();
-    } else {
-      loadUnreadCount();
+      return undefined;
     }
+
+    loadUnreadCount();
+
+    const handleNotificationsRead = (event) => {
+      setUnreadCount(event.detail?.unreadCount || 0);
+    };
+
+    window.addEventListener(NOTIFICATIONS_READ_EVENT, handleNotificationsRead);
+
+    return () => {
+      window.removeEventListener(NOTIFICATIONS_READ_EVENT, handleNotificationsRead);
+    };
   }, [loadList, loadNotifications, loadUnreadCount]);
-
-  const markRead = async (notificationId) => {
-    const result = await markNotificationRead(notificationId);
-
-    if (handleUnauthorized(result)) {
-      return;
-    }
-
-    if (!result.ok) {
-      setErrorMessage(result.data.error?.message || 'Unable to update notification.');
-      return;
-    }
-
-    setNotifications((current) =>
-      current.map((notification) =>
-        notification._id === notificationId ? { ...notification, isRead: true } : notification
-      )
-    );
-    setUnreadCount((current) => Math.max(current - 1, 0));
-  };
-
-  const markAllRead = async () => {
-    const result = await markAllNotificationsRead();
-
-    if (handleUnauthorized(result)) {
-      return;
-    }
-
-    if (!result.ok) {
-      setErrorMessage(result.data.error?.message || 'Unable to update notifications.');
-      return;
-    }
-
-    setNotifications((current) =>
-      current.map((notification) => ({ ...notification, isRead: true }))
-    );
-    setUnreadCount(0);
-  };
 
   const groupedNotifications = useMemo(() => ({
     unread: notifications.filter((notification) => !notification.isRead),
@@ -122,7 +119,5 @@ export const useNotifications = ({ loadList = true } = {}) => {
     unreadCount,
     isLoading,
     errorMessage,
-    markRead,
-    markAllRead,
   };
 };
