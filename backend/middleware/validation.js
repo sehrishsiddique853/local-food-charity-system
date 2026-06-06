@@ -44,8 +44,8 @@ export const validateRegister = [
     .matches(/[!@#$%^&*]/).withMessage("Password must contain at least one special character (!@#$%^&*)"),
 
   body("phone")
+    .optional()
     .trim()
-    .notEmpty().withMessage("Phone is required")
     .customSanitizer((value) => value.replace(/^\+92\s*/, ""))
     .matches(/^[0-9]{10}$/).withMessage("Phone must be exactly 10 digits"),
 
@@ -132,8 +132,8 @@ export const validateUpdateProfile = [
     .isIn([FIXED_SERVICE_CITY]).withMessage(`City is fixed to ${FIXED_SERVICE_CITY}`),
 
   body("location.address")
+    .optional()
     .trim()
-    .notEmpty().withMessage("Exact address is required")
     .isLength({ min: 5, max: 250 }).withMessage("Exact address must be between 5 and 250 characters"),
 ];
 

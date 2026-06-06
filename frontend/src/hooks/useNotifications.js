@@ -59,6 +59,9 @@ export const useNotifications = ({ loadList = true } = {}) => {
       const loadedNotifications = result.data.data?.notifications || [];
       const unreadNotifications = loadedNotifications.filter((notification) => !notification.isRead);
 
+      setNotifications(loadedNotifications);
+      setUnreadCount(unreadNotifications.length);
+
       if (unreadNotifications.length > 0) {
         const readResult = await markAllNotificationsRead();
 
@@ -70,9 +73,6 @@ export const useNotifications = ({ loadList = true } = {}) => {
           throw new Error(readResult.data.error?.message || 'Unable to update notifications.');
         }
 
-        setNotifications(
-          loadedNotifications.map((notification) => ({ ...notification, isRead: true }))
-        );
         setUnreadCount(0);
         window.dispatchEvent(
           new CustomEvent(NOTIFICATIONS_READ_EVENT, { detail: { unreadCount: 0 } })
@@ -80,7 +80,6 @@ export const useNotifications = ({ loadList = true } = {}) => {
         return;
       }
 
-      setNotifications(loadedNotifications);
       setUnreadCount(0);
     } catch (error) {
       setErrorMessage(error.message || 'Unable to load notifications.');
@@ -96,6 +95,7 @@ export const useNotifications = ({ loadList = true } = {}) => {
     }
 
     loadUnreadCount();
+    const unreadCountTimer = window.setInterval(loadUnreadCount, 30000);
 
     const handleNotificationsRead = (event) => {
       setUnreadCount(event.detail?.unreadCount || 0);
@@ -104,6 +104,7 @@ export const useNotifications = ({ loadList = true } = {}) => {
     window.addEventListener(NOTIFICATIONS_READ_EVENT, handleNotificationsRead);
 
     return () => {
+      window.clearInterval(unreadCountTimer);
       window.removeEventListener(NOTIFICATIONS_READ_EVENT, handleNotificationsRead);
     };
   }, [loadList, loadNotifications, loadUnreadCount]);

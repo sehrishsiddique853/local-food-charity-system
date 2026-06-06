@@ -123,6 +123,11 @@
   opacity: 1;
 }
 
+.profile-phone-field input[readonly] {
+  color: #4b5563;
+  cursor: not-allowed;
+}
+
 @media (max-width: 980px) {
   .profile-summary-card,
   .profile-settings-grid {

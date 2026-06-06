@@ -52,7 +52,11 @@ const DonorNavbar = ({ activeKey, profile, onLogout }) => {
       </nav>
 
       <div className="dashboard-user-actions">
-        <Link className="notification-button" to={ROUTES.notifications} aria-label="Notifications">
+        <Link
+          className={`notification-button ${unreadCount > 0 ? 'has-unread' : ''}`}
+          to={ROUTES.notifications}
+          aria-label={`${unreadCount} unread notifications`}
+        >
           <svg viewBox="0 0 24 24" aria-hidden="true">
             <path d="M18 9a6 6 0 0 0-12 0c0 7-3 7-3 7h18s-3 0-3-7" />
             <path d="M10 20a2 2 0 0 0 4 0" />

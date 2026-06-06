@@ -127,7 +127,6 @@ export const getProfileById = async (userId) => {
 
 export const updateProfileById = async (userId, {
   name,
-  phone,
   location,
   ngoName,
   ngoRegistrationNumber,
@@ -137,17 +136,7 @@ export const updateProfileById = async (userId, {
     throw new ApiError(404, "USER_NOT_FOUND", "User not found");
   }
 
-  const formattedPhone = formatPakistanPhone(phone);
-  const existingPhone = await User.findOne({
-    phone: formattedPhone,
-    _id: { $ne: user._id },
-  });
-
-  if (existingPhone) {
-    throw new ApiError(409, "PHONE_ALREADY_EXISTS", "Phone number already in use");
-  }
-
-  if (user.role === "donor") {
+  if (user.role === "donor" && name) {
     user.name = name;
   }
 
@@ -156,11 +145,9 @@ export const updateProfileById = async (userId, {
     user.ngoRegistrationNumber = ngoRegistrationNumber || user.ngoRegistrationNumber;
   }
 
-  user.phone = formattedPhone;
-  user.location = {
-    city: FIXED_SERVICE_CITY,
-    address: location?.address,
-  };
+  if (location?.address) {
+    user.location.address = location.address;
+  }
 
   await user.save();
   return getProfileById(user._id);

@@ -94,8 +94,9 @@
 }
 
 .notification-card.unread {
-  border-color: rgba(39, 174, 96, 0.28);
-  background: #fbfffc;
+  border-color: rgba(39, 174, 96, 0.35);
+  background: #f3fbf6;
+  box-shadow: inset 4px 0 0 #27ae60;
 }
 
 .notification-card.read {

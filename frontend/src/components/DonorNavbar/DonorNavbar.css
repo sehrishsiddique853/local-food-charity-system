@@ -165,6 +165,10 @@
   color: #15803d;
 }
 
+.notification-button.has-unread {
+  color: #b91c1c;
+}
+
 .notification-button svg {
   width: 18px;
   height: 18px;
@@ -184,7 +188,7 @@
   display: grid;
   place-items: center;
   padding: 0 0.2rem;
-  border: 1px solid #ffffff;
+  border: 2px solid #ffffff;
   border-radius: 999px;
   background: #b91c1c;
   color: #ffffff;
@@ -339,7 +343,7 @@
 
 @media (max-width: 760px) {
   .dashboard-header {
-    grid-template-columns: minmax(0, 1fr) auto auto;
+    grid-template-columns: minmax(0, 1fr) auto auto auto;
     gap: 0.65rem;
     min-height: 72px;
     padding: 0.75rem 1rem;
@@ -372,8 +376,8 @@
   }
 
   .dashboard-user-actions {
-    grid-column: 3;
-    gap: 0;
+    grid-column: 3 / 5;
+    gap: 0.35rem;
   }
 
   .dashboard-nav {
@@ -420,9 +424,12 @@
     background: #eefbf2;
   }
 
-  .notification-button,
   .header-divider {
     display: none;
+  }
+
+  .notification-button {
+    display: inline-flex;
   }
 
   .profile-avatar-button {

@@ -25,6 +25,43 @@ export const getPendingNgos = async (req, res, next) => {
   }
 };
 
+export const getDashboardStats = async (req, res, next) => {
+  try {
+    const [
+      totalDonors,
+      totalNGOs,
+      verifiedNGOs,
+      pendingNGOs,
+      totalDonations,
+      availableDonations,
+      requestedDonations,
+      collectedDonations,
+    ] = await Promise.all([
+      User.countDocuments({ role: "donor" }),
+      User.countDocuments({ role: "ngo" }),
+      User.countDocuments({ role: "ngo", ngoVerificationStatus: "approved" }),
+      User.countDocuments({ role: "ngo", ngoVerificationStatus: "pending" }),
+      Donation.countDocuments(),
+      Donation.countDocuments({ status: "available" }),
+      Donation.countDocuments({ status: "requested" }),
+      Donation.countDocuments({ status: { $in: ["collected", "completed"] } }),
+    ]);
+
+    return successResponse(res, 200, {
+      totalDonors,
+      totalNGOs,
+      verifiedNGOs,
+      pendingNGOs,
+      totalDonations,
+      availableDonations,
+      requestedDonations,
+      collectedDonations,
+    });
+  } catch (err) {
+    return next(err);
+  }
+};
+
 export const getUsers = async (req, res, next) => {
   try {
     const { role } = req.query;
@@ -35,6 +72,60 @@ export const getUsers = async (req, res, next) => {
 
     const users = await User.find(filter).select("-password").sort({ createdAt: -1 });
     return successResponse(res, 200, { users });
+  } catch (err) {
+    return next(err);
+  }
+};
+
+export const getUserById = async (req, res, next) => {
+  try {
+    const user = await User.findById(req.params.id).select("-password");
+
+    if (!user) {
+      throw new ApiError(404, "USER_NOT_FOUND", "User not found");
+    }
+
+    return successResponse(res, 200, { user });
+  } catch (err) {
+    return next(err);
+  }
+};
+
+export const activateUser = async (req, res, next) => {
+  try {
+    const user = await User.findById(req.params.id).select("-password");
+
+    if (!user) {
+      throw new ApiError(404, "USER_NOT_FOUND", "User not found");
+    }
+
+    user.isBlocked = false;
+    await user.save();
+
+    return successResponse(res, 200, {
+      message: "User activated successfully",
+      user,
+    });
+  } catch (err) {
+    return next(err);
+  }
+};
+
+export const deactivateUser = async (req, res, next) => {
+  try {
+    const user = await User.findById(req.params.id).select("-password");
+
+    if (!user) {
+      throw new ApiError(404, "USER_NOT_FOUND", "User not found");
+    }
+
+    user.isBlocked = true;
+    await user.save();
+
+    return successResponse(res, 200, {
+      message: "User deactivated successfully",
+      user,
+    });
   } catch (err) {
     return next(err);
   }
@@ -77,6 +168,24 @@ export const getNgos = async (req, res, next) => {
 
     const ngos = await User.find(filter).select("-password").sort({ createdAt: -1 });
     return successResponse(res, 200, { ngos });
+  } catch (err) {
+    return next(err);
+  }
+};
+
+export const getNgoById = async (req, res, next) => {
+  try {
+    const ngo = await User.findOne({ _id: req.params.id, role: "ngo" }).select("-password");
+
+    if (!ngo) {
+      throw new ApiError(404, "NGO_NOT_FOUND", "NGO not found");
+    }
+
+    const verification = await NgoVerification.findOne({ ngo: ngo._id })
+      .populate("reviewedBy", "email role")
+      .sort({ updatedAt: -1 });
+
+    return successResponse(res, 200, { ngo, verification });
   } catch (err) {
     return next(err);
   }
@@ -201,6 +310,43 @@ export const getDonations = async (req, res, next) => {
   }
 };
 
+export const getDonationById = async (req, res, next) => {
+  try {
+    const donation = await Donation.findById(req.params.id)
+      .populate("donor", "name email phone location")
+      .populate("bookedByNgo", "ngoName email phone location ngoVerificationStatus");
+
+    if (!donation) {
+      throw new ApiError(404, "DONATION_NOT_FOUND", "Donation not found");
+    }
+
+    const requests = await DonationRequest.find({ donation: donation._id })
+      .populate("ngo", "ngoName email phone location ngoVerificationStatus")
+      .sort({ createdAt: -1 });
+
+    return successResponse(res, 200, { donation, requests });
+  } catch (err) {
+    return next(err);
+  }
+};
+
+export const deleteDonation = async (req, res, next) => {
+  try {
+    const donation = await Donation.findById(req.params.id);
+
+    if (!donation) {
+      throw new ApiError(404, "DONATION_NOT_FOUND", "Donation not found");
+    }
+
+    await DonationRequest.deleteMany({ donation: donation._id });
+    await Donation.deleteOne({ _id: donation._id });
+
+    return successResponse(res, 200, { message: "Donation deleted successfully" });
+  } catch (err) {
+    return next(err);
+  }
+};
+
 export const changeDonationStatus = async (req, res, next) => {
   try {
     const { status } = req.body;
@@ -252,6 +398,28 @@ export const getDonationRequests = async (req, res, next) => {
       .sort({ createdAt: -1 });
 
     return successResponse(res, 200, { requests });
+  } catch (err) {
+    return next(err);
+  }
+};
+
+export const getDonationRequestById = async (req, res, next) => {
+  try {
+    const request = await DonationRequest.findById(req.params.id)
+      .populate("ngo", "ngoName email phone location ngoVerificationStatus")
+      .populate({
+        path: "donation",
+        populate: [
+          { path: "donor", select: "name email phone location" },
+          { path: "bookedByNgo", select: "ngoName email phone location ngoVerificationStatus" },
+        ],
+      });
+
+    if (!request) {
+      throw new ApiError(404, "REQUEST_NOT_FOUND", "Donation request not found");
+    }
+
+    return successResponse(res, 200, { request });
   } catch (err) {
     return next(err);
   }
@@ -322,6 +490,66 @@ export const approveDonationRequest = async (req, res, next) => {
       message: "Donation request approved successfully",
       request,
       donation,
+    });
+  } catch (err) {
+    return next(err);
+  }
+};
+
+export const getDonationReport = async (req, res, next) => {
+  try {
+    const groupedStats = await Donation.aggregate([
+      {
+        $group: {
+          _id: "$status",
+          count: { $sum: 1 },
+        },
+      },
+    ]);
+
+    const stats = {
+      available: 0,
+      requested: 0,
+      booked: 0,
+      collected: 0,
+      completed: 0,
+      expired: 0,
+      cancelled: 0,
+    };
+
+    groupedStats.forEach((item) => {
+      if (Object.prototype.hasOwnProperty.call(stats, item._id)) {
+        stats[item._id] = item.count;
+      }
+    });
+
+    return successResponse(res, 200, stats);
+  } catch (err) {
+    return next(err);
+  }
+};
+
+export const getUserReport = async (req, res, next) => {
+  try {
+    const [donors, ngos, verifiedNGOs, pendingNGOs, rejectedNGOs, admins, blockedUsers] =
+      await Promise.all([
+        User.countDocuments({ role: "donor" }),
+        User.countDocuments({ role: "ngo" }),
+        User.countDocuments({ role: "ngo", ngoVerificationStatus: "approved" }),
+        User.countDocuments({ role: "ngo", ngoVerificationStatus: "pending" }),
+        User.countDocuments({ role: "ngo", ngoVerificationStatus: "rejected" }),
+        User.countDocuments({ role: "admin" }),
+        User.countDocuments({ isBlocked: true }),
+      ]);
+
+    return successResponse(res, 200, {
+      donors,
+      ngos,
+      verifiedNGOs,
+      pendingNGOs,
+      rejectedNGOs,
+      admins,
+      blockedUsers,
     });
   } catch (err) {
     return next(err);
