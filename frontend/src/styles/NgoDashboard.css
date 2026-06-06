@@ -1,0 +1,137 @@
+.ngo-dashboard-grid {
+  grid-template-columns: minmax(0, 1.4fr) minmax(380px, 0.9fr);
+}
+
+.dashboard-main {
+  display: grid;
+  gap: 1rem;
+  align-items: start;
+}
+
+.request-status-list,
+.booked-donation-list {
+  display: grid;
+}
+
+.request-status-row,
+.booked-donation-row {
+  display: grid;
+  gap: 0.9rem;
+  align-items: center;
+  border-bottom: 1px solid #edf1ee;
+}
+
+.request-status-row {
+  grid-template-columns: minmax(0, 1fr) 104px;
+  min-height: 82px;
+}
+
+.booked-donation-row {
+  grid-template-columns: minmax(0, 1fr) auto;
+  min-height: 70px;
+}
+
+.request-status-row:last-child,
+.booked-donation-row:last-child {
+  border-bottom: 0;
+}
+
+.request-status-row strong,
+.booked-donation-row strong {
+  display: block;
+  margin-bottom: 0.35rem;
+  color: #111827;
+  font-size: 0.98rem;
+}
+
+.request-status-row p,
+.booked-donation-row p {
+  display: flex;
+  gap: 0.55rem;
+  margin: 0;
+  color: #4b5563;
+  font-size: 0.86rem;
+}
+
+.booked-donation-row time {
+  color: #4b5563;
+  font-size: 0.82rem;
+  white-space: nowrap;
+}
+
+.booked-donation-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.75rem;
+}
+
+.booked-donation-actions button {
+  border: 1px solid rgba(39, 174, 96, 0.28);
+  border-radius: 8px;
+  background: #fff;
+  color: #0f8f45;
+  cursor: pointer;
+  font: inherit;
+  font-weight: 800;
+  padding: 0.7rem 1rem;
+  transition: border-color 160ms ease, background 160ms ease, color 160ms ease;
+}
+
+.booked-donation-actions button:hover:not(:disabled) {
+  background: #eefaf3;
+  border-color: rgba(39, 174, 96, 0.5);
+}
+
+.booked-donation-actions button:disabled {
+  cursor: not-allowed;
+  opacity: 0.65;
+}
+
+.status-pill.request-pending {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.status-pill.request-approved {
+  background: #e0e7ff;
+  color: #3730a3;
+}
+
+.status-pill.request-rejected {
+  background: #ffe4e6;
+  color: #be123c;
+}
+
+.status-pill.request-collected {
+  background: #dcfce7;
+  color: #15803d;
+}
+
+.empty-state.compact {
+  min-height: 120px;
+}
+
+@media (max-width: 1250px) {
+  .ngo-dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 760px) {
+  .request-status-row,
+  .booked-donation-row {
+    grid-template-columns: 1fr;
+    padding: 0.9rem 0;
+  }
+
+  .request-status-row .status-pill {
+    justify-self: start;
+  }
+
+  .booked-donation-actions {
+    align-items: flex-start;
+    justify-content: flex-start;
+    flex-direction: column;
+  }
+}

@@ -6,11 +6,20 @@ import { ROUTES } from '../../constants/routes';
 import { useNotifications } from '../../hooks/useNotifications';
 import './DonorNavbar.css';
 
-const DonorNavbar = ({ activeKey, profile, onLogout }) => {
+const DonorNavbar = ({
+  activeKey,
+  profile,
+  onLogout,
+  navItems = donorNavItems,
+  notificationRoute = ROUTES.notifications,
+  roleLabel = 'Donor',
+  fallbackName = 'Donor',
+  navigationLabel = 'Dashboard navigation',
+}) => {
   const [profileMenuOpen, setProfileMenuOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { unreadCount } = useNotifications({ loadList: false });
-  const displayName = profile?.name || 'Donor';
+  const displayName = profile?.name || profile?.ngoName || profile?.organizationName || fallbackName;
 
   const closeMobileMenu = () => {
     setMobileMenuOpen(false);
@@ -38,8 +47,8 @@ const DonorNavbar = ({ activeKey, profile, onLogout }) => {
         <span></span>
       </button>
 
-      <nav className={`dashboard-nav ${mobileMenuOpen ? 'active' : ''}`} aria-label="Donor navigation">
-        {donorNavItems.map((item) => (
+      <nav className={`dashboard-nav ${mobileMenuOpen ? 'active' : ''}`} aria-label={navigationLabel}>
+        {navItems.map((item) => (
           <Link
             className={activeKey === item.key ? 'active' : ''}
             to={item.href}
@@ -54,7 +63,7 @@ const DonorNavbar = ({ activeKey, profile, onLogout }) => {
       <div className="dashboard-user-actions">
         <Link
           className={`notification-button ${unreadCount > 0 ? 'has-unread' : ''}`}
-          to={ROUTES.notifications}
+          to={notificationRoute}
           aria-label={`${unreadCount} unread notifications`}
         >
           <svg viewBox="0 0 24 24" aria-hidden="true">
@@ -81,7 +90,7 @@ const DonorNavbar = ({ activeKey, profile, onLogout }) => {
                 <span className="donor-avatar large" aria-hidden="true">{getInitials(displayName)}</span>
                 <div>
                   <strong>{displayName}</strong>
-                  <p>Donor</p>
+                  <p>{roleLabel}</p>
                 </div>
               </div>
               <button className="profile-logout" type="button" onClick={onLogout}>

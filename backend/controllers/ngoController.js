@@ -9,6 +9,7 @@ import {
 } from "../services/notificationService.js";
 
 const DAILY_REQUEST_LIMIT = 5;
+const NGO_CANCELLED_MESSAGE = "Cancelled by NGO";
 
 const markExpiredDonations = async () => {
   const filter = {
@@ -58,7 +59,13 @@ export const getAvailableDonations = async (req, res, next) => {
     await markExpiredDonations();
 
     const { search, foodType } = req.query;
+    const activeRequestDonationIds = await DonationRequest.distinct("donation", {
+      ngo: req.user.id,
+      requestStatus: { $in: ["pending", "approved"] },
+    });
+
     const filter = {
+      _id: { $nin: activeRequestDonationIds },
       status: { $in: ["available", "requested"] },
       isActive: true,
       expiryDate: { $gt: new Date() },
@@ -76,7 +83,12 @@ export const getAvailableDonations = async (req, res, next) => {
       .populate("donor", "name phone location")
       .sort({ createdAt: -1 });
 
-    return successResponse(res, 200, { donations });
+    const visibleDonations = donations.map((donation) => ({
+      ...donation.toObject(),
+      status: "available",
+    }));
+
+    return successResponse(res, 200, { donations: visibleDonations });
   } catch (err) {
     return next(err);
   }
@@ -89,12 +101,20 @@ export const requestDonation = async (req, res, next) => {
     const donation = await Donation.findById(req.params.id);
     ensureDonationCanBeRequested(donation);
 
-    const existingRequest = await DonationRequest.findOne({
+    await DonationRequest.deleteOne({
       donation: donation._id,
       ngo: req.user.id,
+      requestStatus: "rejected",
+      adminMessage: NGO_CANCELLED_MESSAGE,
     });
 
-    if (existingRequest) {
+    const activeRequest = await DonationRequest.findOne({
+      donation: donation._id,
+      ngo: req.user.id,
+      requestStatus: { $in: ["pending", "approved"] },
+    });
+
+    if (activeRequest) {
       throw new ApiError(409, "REQUEST_ALREADY_EXISTS", "You already requested this donation");
     }
 
@@ -120,8 +140,6 @@ export const requestDonation = async (req, res, next) => {
       pickupTime: req.body.pickupTime,
     });
 
-    donation.status = "requested";
-    await donation.save();
     await notifyDonationRequested(donation, request);
 
     return successResponse(res, 201, {
@@ -137,7 +155,10 @@ export const getMyRequests = async (req, res, next) => {
   try {
     await markExpiredDonations();
 
-    const requests = await DonationRequest.find({ ngo: req.user.id })
+    const requests = await DonationRequest.find({
+      ngo: req.user.id,
+      requestStatus: { $in: ["pending", "approved"] },
+    })
       .populate("donation")
       .sort({ createdAt: -1 });
 
@@ -181,27 +202,10 @@ export const cancelRequest = async (req, res, next) => {
       throw new ApiError(400, "REQUEST_NOT_CANCELABLE", "Only pending requests can be cancelled");
     }
 
-    const donation = await Donation.findById(request.donation);
-
-    request.requestStatus = "rejected";
-    request.adminMessage = req.body.reason || req.body.message || "Cancelled by NGO";
-    await request.save();
-
-    if (donation && donation.status === "requested") {
-      const pendingRequests = await DonationRequest.countDocuments({
-        donation: donation._id,
-        requestStatus: "pending",
-      });
-
-      if (pendingRequests === 0) {
-        donation.status = "available";
-        await donation.save();
-      }
-    }
+    await request.deleteOne();
 
     return successResponse(res, 200, {
       message: "Request cancelled successfully",
-      request,
     });
   } catch (err) {
     return next(err);
@@ -211,7 +215,12 @@ export const cancelRequest = async (req, res, next) => {
 export const getRequestStats = async (req, res, next) => {
   try {
     const groupedStats = await DonationRequest.aggregate([
-      { $match: { ngo: req.user.id } },
+      {
+        $match: {
+          ngo: req.user.id,
+          requestStatus: { $in: ["pending", "approved", "collected"] },
+        },
+      },
       {
         $group: {
           _id: "$requestStatus",
@@ -225,6 +234,7 @@ export const getRequestStats = async (req, res, next) => {
       pending: 0,
       approved: 0,
       rejected: 0,
+      collected: 0,
     };
 
     groupedStats.forEach((item) => {
@@ -272,6 +282,16 @@ export const markDonationCollected = async (req, res, next) => {
 
     donation.status = "collected";
     await donation.save();
+
+    await DonationRequest.findOneAndUpdate(
+      {
+        donation: donation._id,
+        ngo: req.user.id,
+        requestStatus: "approved",
+      },
+      { $set: { requestStatus: "collected" } }
+    );
+
     await notifyDonationCollected(donation);
 
     return successResponse(res, 200, {
@@ -286,12 +306,19 @@ export const markDonationCollected = async (req, res, next) => {
 export const getNgoHistory = async (req, res, next) => {
   try {
     const [requests, donations] = await Promise.all([
-      DonationRequest.find({ ngo: req.user.id })
+      DonationRequest.find({
+        ngo: req.user.id,
+        requestStatus: { $in: ["rejected", "collected"] },
+        $or: [
+          { requestStatus: { $ne: "rejected" } },
+          { adminMessage: { $ne: NGO_CANCELLED_MESSAGE } },
+        ],
+      })
         .populate("donation")
         .sort({ createdAt: -1 }),
       Donation.find({
         bookedByNgo: req.user.id,
-        status: { $in: ["booked", "collected", "completed"] },
+        status: { $in: ["collected", "completed"] },
       }).sort({ updatedAt: -1 }),
     ]);
 

@@ -46,6 +46,8 @@ export const useLoginForm = () => {
 
       if (result.data.data?.user?.role === 'donor') {
         navigate(ROUTES.donorDashboard);
+      } else if (result.data.data?.user?.role === 'ngo') {
+        navigate(ROUTES.ngoDashboard);
       } else {
         navigate(ROUTES.home);
       }

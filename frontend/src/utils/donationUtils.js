@@ -22,6 +22,13 @@ export const DEFAULT_DONATION_IMAGE = '/hero-image.JPG';
 
 export const getDonationImage = (donation) => donation?.images?.[0] || DEFAULT_DONATION_IMAGE;
 
+export const getPickupArea = (donation) =>
+  donation?.pickupAddress?.address ||
+  donation?.donor?.location?.address ||
+  donation?.pickupAddress?.city ||
+  donation?.donor?.location?.city ||
+  'Pickup area not available';
+
 export const toDateTimeInputValue = (dateValue) => {
   if (!dateValue) {
     return '';

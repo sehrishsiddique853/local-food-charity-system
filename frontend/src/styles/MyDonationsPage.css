@@ -242,9 +242,18 @@
   line-height: 1;
 }
 
+.donation-modal-content {
+  display: grid;
+  grid-template-columns: minmax(220px, 300px) minmax(0, 1fr);
+  gap: 1rem;
+  align-items: start;
+}
+
 .modal-donation-image {
   width: 100%;
-  height: 240px;
+  aspect-ratio: 1;
+  height: auto;
+  display: block;
   margin-bottom: 1.15rem;
   border-radius: 8px;
   object-fit: cover;
@@ -288,6 +297,14 @@
 }
 
 @media (max-width: 980px) {
+  .donation-modal-content {
+    grid-template-columns: 1fr;
+  }
+
+  .modal-donation-image {
+    width: min(320px, 100%);
+  }
+
   .donation-status-summary {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
@@ -320,9 +337,21 @@
     align-items: stretch;
   }
 
+  .donation-modal-content,
   .donation-status-summary,
   .donation-detail-grid {
     grid-template-columns: 1fr;
+  }
+
+  .donation-detail-grid p {
+    min-height: auto;
+    align-content: start;
+    gap: 0.55rem;
+    padding: 1rem;
+  }
+
+  .donation-detail-grid .status-pill {
+    justify-self: start;
   }
 
   .my-donation-card {

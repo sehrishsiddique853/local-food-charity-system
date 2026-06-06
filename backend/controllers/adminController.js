@@ -43,7 +43,7 @@ export const getDashboardStats = async (req, res, next) => {
       User.countDocuments({ role: "ngo", ngoVerificationStatus: "pending" }),
       Donation.countDocuments(),
       Donation.countDocuments({ status: "available" }),
-      Donation.countDocuments({ status: "requested" }),
+      DonationRequest.countDocuments({ requestStatus: "pending" }),
       Donation.countDocuments({ status: { $in: ["collected", "completed"] } }),
     ]);
 
@@ -433,6 +433,10 @@ export const approveDonationRequest = async (req, res, next) => {
       throw new ApiError(404, "REQUEST_NOT_FOUND", "Donation request not found");
     }
 
+    if (request.requestStatus !== "pending") {
+      throw new ApiError(400, "REQUEST_NOT_PENDING", "Only pending requests can be approved");
+    }
+
     const donation = await Donation.findById(request.donation);
 
     if (!donation) {
@@ -498,18 +502,21 @@ export const approveDonationRequest = async (req, res, next) => {
 
 export const getDonationReport = async (req, res, next) => {
   try {
-    const groupedStats = await Donation.aggregate([
-      {
-        $group: {
-          _id: "$status",
-          count: { $sum: 1 },
+    const [groupedDonationStats, requested] = await Promise.all([
+      Donation.aggregate([
+        {
+          $group: {
+            _id: "$status",
+            count: { $sum: 1 },
+          },
         },
-      },
+      ]),
+      DonationRequest.countDocuments({ requestStatus: "pending" }),
     ]);
 
     const stats = {
       available: 0,
-      requested: 0,
+      requested,
       booked: 0,
       collected: 0,
       completed: 0,
@@ -517,7 +524,7 @@ export const getDonationReport = async (req, res, next) => {
       cancelled: 0,
     };
 
-    groupedStats.forEach((item) => {
+    groupedDonationStats.forEach((item) => {
       if (Object.prototype.hasOwnProperty.call(stats, item._id)) {
         stats[item._id] = item.count;
       }
@@ -564,6 +571,10 @@ export const rejectDonationRequest = async (req, res, next) => {
       throw new ApiError(404, "REQUEST_NOT_FOUND", "Donation request not found");
     }
 
+    if (request.requestStatus !== "pending") {
+      throw new ApiError(400, "REQUEST_NOT_PENDING", "Only pending requests can be rejected");
+    }
+
     const donation = await Donation.findById(request.donation);
 
     if (!donation) {
@@ -573,16 +584,6 @@ export const rejectDonationRequest = async (req, res, next) => {
     request.requestStatus = "rejected";
     request.adminMessage = req.body.adminMessage || req.body.reason || "";
     await request.save();
-
-    const pendingRequestCount = await DonationRequest.countDocuments({
-      donation: donation._id,
-      requestStatus: "pending",
-    });
-
-    if (donation.status === "requested" && pendingRequestCount === 0) {
-      donation.status = "available";
-      await donation.save();
-    }
 
     await notifyNgoRequestRejected(request, donation, request.adminMessage);
 

@@ -12,4 +12,10 @@ export const API_ROUTES = {
   donations: '/api/donations',
   notifications: '/api/notifications',
   unreadNotifications: '/api/notifications/unread-count',
+  ngoRequestStats: '/api/ngo/requests/stats',
+  ngoAvailableDonations: '/api/ngo/donations/available',
+  ngoDonations: '/api/ngo/donations',
+  ngoRequests: '/api/ngo/requests',
+  ngoBookedDonations: '/api/ngo/donations/booked',
+  ngoHistory: '/api/ngo/history',
 };

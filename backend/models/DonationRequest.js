@@ -16,7 +16,7 @@ const donationRequestSchema = new mongoose.Schema(
 
     requestStatus: {
       type: String,
-      enum: ["pending", "approved", "rejected"],
+      enum: ["pending", "approved", "rejected", "collected"],
       default: "pending",
     },
 
@@ -33,7 +33,15 @@ const donationRequestSchema = new mongoose.Schema(
   }
 );
 
-donationRequestSchema.index({ donation: 1, ngo: 1 }, { unique: true });
+donationRequestSchema.index(
+  { donation: 1, ngo: 1, requestStatus: 1 },
+  {
+    unique: true,
+    partialFilterExpression: {
+      requestStatus: { $in: ["pending", "approved"] },
+    },
+  }
+);
 
 export default mongoose.model(
   "DonationRequest",

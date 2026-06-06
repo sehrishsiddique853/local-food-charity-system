@@ -1,0 +1,117 @@
+.ngo-requests-shell {
+  max-width: 1160px;
+}
+
+.ngo-request-summary {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.8rem;
+  margin-bottom: 1rem;
+}
+
+.ngo-request-summary article {
+  min-height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0 1rem;
+  border: 1px solid #e8ece9;
+  border-radius: 8px;
+  background: #f8faf9;
+}
+
+.ngo-request-summary span {
+  color: #374151;
+  font-size: 0.88rem;
+  font-weight: 800;
+}
+
+.ngo-request-summary strong {
+  color: #111827;
+  font-size: 1.25rem;
+}
+
+.ngo-requests-toolbar {
+  grid-template-columns: minmax(220px, 320px);
+}
+
+.ngo-request-card .request-badge.request-pending {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.ngo-request-card .request-badge.request-approved {
+  background: #e0e7ff;
+  color: #3730a3;
+}
+
+.ngo-request-card .request-badge.request-pending i {
+  background: #92400e;
+}
+
+.ngo-request-card .request-badge.request-approved i {
+  background: #3730a3;
+}
+
+.ngo-request-actions {
+  gap: 0.75rem;
+  justify-content: center;
+}
+
+.ngo-details-button.secondary-action,
+.ngo-cancel-button {
+  min-height: 42px;
+  min-width: 150px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 0.95rem;
+  border-radius: 6px;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.ngo-details-button.secondary-action {
+  border: 1px solid rgba(39, 174, 96, 0.3);
+  background: #ffffff;
+  color: #15803d;
+}
+
+.ngo-details-button.secondary-action:hover {
+  background: rgba(39, 174, 96, 0.08);
+}
+
+.ngo-cancel-button {
+  border: 0;
+  background: #b91c1c;
+  color: #ffffff;
+  box-shadow: 0 10px 22px rgba(185, 28, 28, 0.18);
+}
+
+.ngo-cancel-button:hover:not(:disabled) {
+  background: #991b1b;
+  color: #ffffff;
+}
+
+.ngo-cancel-button:disabled {
+  cursor: wait;
+  opacity: 0.65;
+}
+
+@media (max-width: 640px) {
+  .ngo-request-summary,
+  .ngo-requests-toolbar {
+    grid-template-columns: 1fr;
+  }
+
+  .ngo-request-actions {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .ngo-details-button.secondary-action,
+  .ngo-cancel-button {
+    width: 100%;
+  }
+}

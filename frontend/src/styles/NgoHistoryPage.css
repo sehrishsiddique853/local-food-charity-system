@@ -1,0 +1,79 @@
+.ngo-history-panel {
+  display: grid;
+  gap: 1.4rem;
+}
+
+.ngo-history-summary {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.ngo-history-list {
+  display: grid;
+  gap: 1rem;
+}
+
+.ngo-history-row {
+  display: grid;
+  grid-template-columns: 112px minmax(0, 1fr);
+  gap: 1.2rem;
+  align-items: center;
+  border: 1px solid #edf1ee;
+  border-radius: 8px;
+  background: #fff;
+  padding: 1rem;
+}
+
+.ngo-history-row img {
+  width: 112px;
+  height: 92px;
+  border-radius: 8px;
+  object-fit: cover;
+}
+
+.ngo-history-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 0.45rem;
+}
+
+.ngo-history-title strong {
+  color: #111827;
+  font-size: 1rem;
+}
+
+.ngo-history-row p {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem;
+  margin: 0;
+  color: #4b5563;
+}
+
+.ngo-history-note {
+  margin-top: 0.5rem !important;
+  color: #64748b !important;
+  font-size: 0.9rem;
+}
+
+@media (max-width: 760px) {
+  .ngo-history-summary {
+    grid-template-columns: 1fr;
+  }
+
+  .ngo-history-row {
+    grid-template-columns: 1fr;
+  }
+
+  .ngo-history-row img {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 4 / 3;
+  }
+
+  .ngo-history-title {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}

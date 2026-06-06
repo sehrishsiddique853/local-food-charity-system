@@ -62,9 +62,9 @@ const statsCards = [
   },
 ];
 
-const DonationStats = ({ summary }) => (
+const DonationStats = ({ summary, cards = statsCards }) => (
   <section className="stats-grid" aria-label="Donation statistics">
-    {statsCards.map((card) => (
+    {cards.map((card) => (
       <article className={`stat-card ${card.className}`} key={card.key}>
         <span className="stat-icon">{card.icon}</span>
         <div className="stat-info" >

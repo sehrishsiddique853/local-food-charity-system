@@ -10,7 +10,7 @@ import { FIXED_SERVICE_CITY } from "../constants/location.js";
 // Create a signed JWT access token containing the user id and role.
 const generateAccessToken = (user) => {
   return jwt.sign({ id: user._id, role: user.role }, process.env.JWT_SECRET, {
-    expiresIn: "15m",
+    expiresIn: "1d",
   });
 };
 

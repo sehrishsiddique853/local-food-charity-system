@@ -8,6 +8,12 @@ export const ROUTES = {
   donationHistory: '/donor/donation-history',
   donorProfile: '/donor/profile',
   notifications: '/donor/notifications',
+  ngoDashboard: '/ngo/dashboard',
+  ngoAvailableDonations: '/ngo/available-donations',
+  ngoRequests: '/ngo/requests',
+  ngoBookedDonations: '/ngo/booked-donations',
+  ngoHistory: '/ngo/history',
+  ngoNotifications: '/ngo/notifications',
   donorRegister: '/register?role=donor',
   ngoRegister: '/register?role=ngo',
 };

@@ -55,7 +55,7 @@ export const useDonorDashboard = () => {
     [donationSummary]
   );
 
-  const recentDonations = useMemo(() => donations.slice(0, 4), [donations]);
+  const recentDonations = useMemo(() => donations.slice(0, 5), [donations]);
 
   return {
     donationSummary,
