@@ -16,7 +16,7 @@ const donationRequestSchema = new mongoose.Schema(
 
     requestStatus: {
       type: String,
-      enum: ["pending", "approved", "rejected", "collected"],
+      enum: ["pending", "approved", "rejected", "collected", "cancelled"],
       default: "pending",
     },
 

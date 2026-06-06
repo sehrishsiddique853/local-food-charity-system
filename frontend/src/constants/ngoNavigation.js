@@ -28,7 +28,7 @@ export const ngoNavItems = [
   },
   {
     key: 'profile',
-    href: ROUTES.ngoDashboard,
+    href: ROUTES.ngoProfile,
     label: 'My Profile',
   },
 ];

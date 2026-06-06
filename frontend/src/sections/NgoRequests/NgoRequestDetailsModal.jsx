@@ -8,6 +8,8 @@ import {
 const requestStatusLabels = {
   pending: 'Pending',
   approved: 'Booked',
+  collected: 'Collected',
+  cancelled: 'Cancelled',
 };
 
 const NgoRequestDetailsModal = ({

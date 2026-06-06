@@ -4,6 +4,7 @@ export const API_ROUTES = {
   login: '/api/auth/login',
   register: '/api/auth/register',
   profile: '/api/auth/profile',
+  refresh: '/api/auth/refresh',
   changePassword: '/api/auth/change-password',
   logout: '/api/auth/logout',
   donationStats: '/api/donations/my/stats',

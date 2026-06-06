@@ -6,6 +6,7 @@ import { getNgoBookedDonations, markNgoDonationCollected } from '../services/ngo
 export const useNgoBookedDonations = () => {
   const navigate = useNavigate();
   const [donations, setDonations] = useState([]);
+  const [selectedDonation, setSelectedDonation] = useState(null);
   const [collectingDonationId, setCollectingDonationId] = useState('');
   const [isLoading, setIsLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState('');
@@ -61,6 +62,7 @@ export const useNgoBookedDonations = () => {
       }
 
       setSuccessMessage(result.data.data?.message || 'Donation marked as collected.');
+      setSelectedDonation(null);
       setDonations((currentDonations) =>
         currentDonations.filter((donation) => donation._id !== donationId)
       );
@@ -74,10 +76,12 @@ export const useNgoBookedDonations = () => {
 
   return {
     donations,
+    selectedDonation,
     collectingDonationId,
     isLoading,
     errorMessage,
     successMessage,
+    setSelectedDonation,
     handleMarkCollected,
   };
 };

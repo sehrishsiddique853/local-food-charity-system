@@ -98,7 +98,7 @@ const NgoAvailableDonationsList = ({
 
       {!isLoading && donations.map((donation) => (
         <article
-          className="ngo-available-card"
+          className="ngo-list-card"
           key={donation._id}
           role="button"
           tabIndex={0}
@@ -110,59 +110,23 @@ const NgoAvailableDonationsList = ({
             }
           }}
         >
-          <div className="ngo-card-body">
+          <div className="ngo-list-main">
             <img src={getDonationImage(donation)} alt={donation.foodTitle} />
 
-            <div className="ngo-available-copy">
-              <div>
-                <strong>{donation.foodTitle}</strong>
-                <span>
-                  <i aria-hidden="true"></i>
-                  {donation.foodType || 'Food'}
-                </span>
-              </div>
-
-              <dl className="ngo-donation-meta">
-                <div>
-                  <span className="meta-icon quantity" aria-hidden="true">
-                    <svg viewBox="0 0 24 24">
-                      <path d="M6 3v18" />
-                      <path d="M10 3v18" />
-                      <path d="M15 4v8" />
-                      <path d="M18 4v8" />
-                      <path d="M15 12c0 3 3 3 3 6v3" />
-                    </svg>
-                  </span>
-                  <dt>Quantity</dt>
-                  <dd>{formatQuantity(donation.quantity)}</dd>
-                </div>
-                <div>
-                  <span className="meta-icon expiry" aria-hidden="true">
-                    <svg viewBox="0 0 24 24">
-                      <path d="M8 2v4" />
-                      <path d="M16 2v4" />
-                      <path d="M4 9h16" />
-                      <path d="M5 5h14v17H5z" />
-                    </svg>
-                  </span>
-                  <dt>Expiry</dt>
-                  <dd>{formatDate(donation.expiryDate)}</dd>
-                </div>
-                <div>
-                  <span className="meta-icon area" aria-hidden="true">
-                    <svg viewBox="0 0 24 24">
-                      <path d="M12 21s7-5.2 7-11a7 7 0 0 0-14 0c0 5.8 7 11 7 11Z" />
-                      <path d="M12 10.5h.01" />
-                    </svg>
-                  </span>
-                  <dt>Pickup Area</dt>
-                  <dd>{getPickupArea(donation)}</dd>
-                </div>
-              </dl>
+            <div className="ngo-list-copy">
+              <strong>{donation.foodTitle}</strong>
+              <p>
+                {formatQuantity(donation.quantity)}
+                <span>•</span>
+                {getPickupArea(donation)}
+              </p>
+              <small>Posted {formatDate(donation.createdAt)}</small>
             </div>
           </div>
 
-          <div className="ngo-card-action">
+          <span className="status-pill available">Available</span>
+
+          <div className="ngo-list-actions">
             <button
               className="ngo-request-button"
               type="button"

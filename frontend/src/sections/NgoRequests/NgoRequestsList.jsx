@@ -73,7 +73,7 @@ const NgoRequestsList = ({
 
         return (
           <article
-            className="ngo-available-card ngo-request-card"
+            className="ngo-list-card ngo-request-card"
             key={request._id}
             role="button"
             tabIndex={0}
@@ -85,59 +85,25 @@ const NgoRequestsList = ({
               }
             }}
           >
-            <div className="ngo-card-body">
+            <div className="ngo-list-main">
               <img src={getDonationImage(donation)} alt={donation.foodTitle || 'Donation'} />
 
-              <div className="ngo-available-copy">
-                <div>
-                  <strong>{donation.foodTitle || 'Donation request'}</strong>
-                  <span className={`request-badge request-${status}`}>
-                    <i aria-hidden="true"></i>
-                    {requestStatusLabels[status] || status}
-                  </span>
-                </div>
-
-                <dl className="ngo-donation-meta">
-                  <div>
-                    <span className="meta-icon quantity" aria-hidden="true">
-                      <svg viewBox="0 0 24 24">
-                        <path d="M6 3v18" />
-                        <path d="M10 3v18" />
-                        <path d="M15 4v8" />
-                        <path d="M18 4v8" />
-                        <path d="M15 12c0 3 3 3 3 6v3" />
-                      </svg>
-                    </span>
-                    <dt>Quantity</dt>
-                    <dd>{formatQuantity(donation.quantity)}</dd>
-                  </div>
-                  <div>
-                    <span className="meta-icon expiry" aria-hidden="true">
-                      <svg viewBox="0 0 24 24">
-                        <path d="M8 2v4" />
-                        <path d="M16 2v4" />
-                        <path d="M4 9h16" />
-                        <path d="M5 5h14v17H5z" />
-                      </svg>
-                    </span>
-                    <dt>Requested</dt>
-                    <dd>{formatDate(request.createdAt)}</dd>
-                  </div>
-                  <div>
-                    <span className="meta-icon area" aria-hidden="true">
-                      <svg viewBox="0 0 24 24">
-                        <path d="M12 21s7-5.2 7-11a7 7 0 0 0-14 0c0 5.8 7 11 7 11Z" />
-                        <path d="M12 10.5h.01" />
-                      </svg>
-                    </span>
-                    <dt>Pickup Area</dt>
-                    <dd>{getPickupArea(donation)}</dd>
-                  </div>
-                </dl>
+              <div className="ngo-list-copy">
+                <strong>{donation.foodTitle || 'Donation request'}</strong>
+                <p>
+                  {formatQuantity(donation.quantity)}
+                  <span>•</span>
+                  {getPickupArea(donation)}
+                </p>
+                <small>Requested {formatDate(request.createdAt)}</small>
               </div>
             </div>
 
-            <div className="ngo-card-action ngo-request-actions">
+            <span className={`status-pill request-${status}`}>
+              {requestStatusLabels[status] || status}
+            </span>
+
+            <div className="ngo-list-actions ngo-request-actions">
               {isPending && (
                 <button
                   className="ngo-cancel-button"

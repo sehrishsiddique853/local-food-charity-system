@@ -122,8 +122,8 @@ export const validateUpdateProfile = [
     .notEmpty().withMessage("NGO registration number cannot be empty"),
 
   body("phone")
+    .optional()
     .trim()
-    .notEmpty().withMessage("Phone is required")
     .customSanitizer((value) => value.replace(/^\+92\s*/, ""))
     .matches(/^[0-9]{10}$/).withMessage("Phone must be exactly 10 digits"),
 

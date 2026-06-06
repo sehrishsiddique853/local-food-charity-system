@@ -44,8 +44,82 @@
 
 .ngo-available-list {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 1rem;
+}
+
+.ngo-list-card {
+  min-height: 136px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  gap: 1rem;
+  align-items: center;
+  padding: 1rem;
+  border: 1px solid #edf1ee;
+  border-radius: 8px;
+  background: #ffffff;
+  box-shadow: 0 14px 34px rgba(15, 23, 42, 0.06);
+  cursor: pointer;
+  transition: border-color 0.22s ease, box-shadow 0.22s ease, transform 0.22s ease;
+}
+
+.ngo-list-card:hover,
+.ngo-list-card:focus-visible {
+  border-color: rgba(39, 174, 96, 0.35);
+  box-shadow: 0 18px 42px rgba(15, 23, 42, 0.1);
+  transform: translateY(-2px);
+  outline: none;
+}
+
+.ngo-list-main {
+  min-width: 0;
+  display: grid;
+  grid-template-columns: 150px minmax(0, 1fr);
+  gap: 1rem;
+  align-items: center;
+}
+
+.ngo-list-main img {
+  width: 150px;
+  height: 104px;
+  border-radius: 8px;
+  object-fit: cover;
+}
+
+.ngo-list-copy {
+  min-width: 0;
+}
+
+.ngo-list-copy strong {
+  display: block;
+  margin-bottom: 0.45rem;
+  color: #111827;
+  font-size: 1.15rem;
+  line-height: 1.15;
+}
+
+.ngo-list-copy p {
+  display: flex;
+  gap: 0.6rem;
+  margin: 0 0 0.5rem;
+  color: #374151;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ngo-list-copy small {
+  display: block;
+  color: #64748b;
+  font-size: 0.84rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ngo-list-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.55rem;
 }
 
 .ngo-available-card {
@@ -178,11 +252,14 @@
 }
 
 .ngo-donation-meta dd {
+  max-width: 100%;
   margin: 0;
-  color: #111827;
+  color: #1f2937;
   font-size: 0.88rem;
-  font-weight: 700;
-  overflow-wrap: anywhere;
+  font-weight: 500;
+  line-height: 1.35;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .ngo-card-action {
@@ -195,7 +272,7 @@
 
 .ngo-request-button {
   min-height: 44px;
-  min-width: 220px;
+  min-width: 180px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -240,17 +317,14 @@
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
-  .ngo-available-list {
+  .ngo-list-card {
     grid-template-columns: 1fr;
+    align-items: start;
   }
 
-  .ngo-card-body {
-    grid-template-columns: 150px minmax(0, 1fr);
-  }
-
-  .ngo-available-card img {
-    width: 150px;
-    height: 126px;
+  .ngo-list-card .status-pill,
+  .ngo-list-actions {
+    justify-self: start;
   }
 
   .ngo-donation-meta {
@@ -260,12 +334,12 @@
 
 @media (max-width: 640px) {
   .ngo-donation-toolbar,
-  .ngo-card-body,
+  .ngo-list-main,
   .ngo-donation-meta {
     grid-template-columns: 1fr;
   }
 
-  .ngo-available-card img {
+  .ngo-list-main img {
     width: 100%;
     height: 180px;
   }

@@ -9,6 +9,8 @@ const ngoCancelledMessage = 'Cancelled by NGO';
 export const useNgoHistory = () => {
   const navigate = useNavigate();
   const [requests, setRequests] = useState([]);
+  const [statusFilter, setStatusFilter] = useState('');
+  const [selectedRequest, setSelectedRequest] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState('');
 
@@ -56,6 +58,14 @@ export const useNgoHistory = () => {
     [requests]
   );
 
+  const filteredHistoryRequests = useMemo(() => {
+    if (!statusFilter) {
+      return historyRequests;
+    }
+
+    return historyRequests.filter((request) => request.requestStatus === statusFilter);
+  }, [historyRequests, statusFilter]);
+
   const totals = useMemo(() => ({
     all: historyRequests.length,
     rejected: historyRequests.filter((request) => request.requestStatus === 'rejected').length,
@@ -63,9 +73,13 @@ export const useNgoHistory = () => {
   }), [historyRequests]);
 
   return {
-    historyRequests,
+    historyRequests: filteredHistoryRequests,
     totals,
+    statusFilter,
+    selectedRequest,
     isLoading,
     errorMessage,
+    setStatusFilter,
+    setSelectedRequest,
   };
 };

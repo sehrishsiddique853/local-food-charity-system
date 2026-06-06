@@ -10,6 +10,7 @@ import NgoBookedDonationsPage from '../pages/NgoBookedDonationsPage';
 import NgoDashboardPage from '../pages/NgoDashboardPage';
 import NgoHistoryPage from '../pages/NgoHistoryPage';
 import NgoNotificationsPage from '../pages/NgoNotificationsPage';
+import NgoProfilePage from '../pages/NgoProfilePage';
 import NgoRequestsPage from '../pages/NgoRequestsPage';
 import NotificationsPage from '../pages/NotificationsPage';
 import PostDonationPage from '../pages/PostDonationPage';
@@ -32,6 +33,7 @@ const AppRoutes = () => (
     <Route path={ROUTES.ngoRequests} element={<NgoRequestsPage />} />
     <Route path={ROUTES.ngoBookedDonations} element={<NgoBookedDonationsPage />} />
     <Route path={ROUTES.ngoHistory} element={<NgoHistoryPage />} />
+    <Route path={ROUTES.ngoProfile} element={<NgoProfilePage />} />
     <Route path={ROUTES.ngoNotifications} element={<NgoNotificationsPage />} />
   </Routes>
 );

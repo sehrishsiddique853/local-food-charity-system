@@ -10,12 +10,25 @@ const historyLabels = {
   collected: 'Collected',
 };
 
-const NgoHistoryList = ({ requests, totals, isLoading }) => (
+const statusOptions = [
+  { label: 'All history', value: '' },
+  { label: 'Rejected', value: 'rejected' },
+  { label: 'Collected', value: 'collected' },
+];
+
+const NgoHistoryList = ({
+  requests,
+  totals,
+  statusFilter,
+  isLoading,
+  onStatusChange,
+  onViewDetails,
+}) => (
   <section className="my-donations-panel ngo-history-panel">
     <div className="my-donations-heading ngo-available-heading">
       <div>
-        <h2>History</h2>
-        <p>Review rejected and collected donation requests.</p>
+        <h2>Donation History</h2>
+        <p>Review rejected requests and collected donations.</p>
       </div>
     </div>
 
@@ -34,7 +47,18 @@ const NgoHistoryList = ({ requests, totals, isLoading }) => (
       </article>
     </div>
 
-    <div className="ngo-history-list">
+    <div className="ngo-donation-toolbar ngo-history-toolbar" aria-label="History filters">
+      <label>
+        <span>Filter by status</span>
+        <select value={statusFilter} onChange={(event) => onStatusChange(event.target.value)}>
+          {statusOptions.map((option) => (
+            <option value={option.value} key={option.value}>{option.label}</option>
+          ))}
+        </select>
+      </label>
+    </div>
+
+    <div className="ngo-available-list">
       {isLoading && <p className="empty-state">Loading history...</p>}
 
       {!isLoading && requests.length === 0 && (
@@ -49,24 +73,38 @@ const NgoHistoryList = ({ requests, totals, isLoading }) => (
         const status = request.requestStatus;
 
         return (
-          <article className="ngo-history-row" key={request._id}>
-            <img src={getDonationImage(donation)} alt={donation.foodTitle || 'Donation'} />
-            <div>
-              <div className="ngo-history-title">
+          <article
+            className="ngo-list-card ngo-history-card"
+            key={request._id}
+            role="button"
+            tabIndex={0}
+            onClick={() => onViewDetails(request)}
+            onKeyDown={(event) => {
+              if (event.key === 'Enter' || event.key === ' ') {
+                event.preventDefault();
+                onViewDetails(request);
+              }
+            }}
+          >
+            <div className="ngo-list-main">
+              <img src={getDonationImage(donation)} alt={donation.foodTitle || 'Donation'} />
+
+              <div className="ngo-list-copy">
                 <strong>{donation.foodTitle || 'Donation request'}</strong>
-                <span className={`status-pill request-${status}`}>
-                  {historyLabels[status] || status}
-                </span>
+                <p>
+                  {formatQuantity(donation.quantity)}
+                  <span>•</span>
+                  {getPickupArea(donation)}
+                </p>
+                <small>
+                  {status === 'collected' ? 'Collected' : 'Rejected'} {formatDate(request.updatedAt || request.createdAt)}
+                </small>
               </div>
-              <p>
-                {formatQuantity(donation.quantity)}
-                <span>•</span>
-                {getPickupArea(donation)}
-                <span>•</span>
-                {formatDate(request.updatedAt || request.createdAt)}
-              </p>
-              {request.adminMessage && <p className="ngo-history-note">{request.adminMessage}</p>}
             </div>
+
+            <span className={`status-pill request-${status}`}>
+              {historyLabels[status] || status}
+            </span>
           </article>
         );
       })}

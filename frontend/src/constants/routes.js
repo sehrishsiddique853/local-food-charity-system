@@ -13,6 +13,7 @@ export const ROUTES = {
   ngoRequests: '/ngo/requests',
   ngoBookedDonations: '/ngo/booked-donations',
   ngoHistory: '/ngo/history',
+  ngoProfile: '/ngo/profile',
   ngoNotifications: '/ngo/notifications',
   donorRegister: '/register?role=donor',
   ngoRegister: '/register?role=ngo',

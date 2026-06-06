@@ -1,0 +1,75 @@
+.ngo-booked-panel {
+  display: grid;
+  gap: 1rem;
+}
+
+.ngo-booked-card .ngo-card-body {
+  align-items: start;
+}
+
+.ngo-booked-card .ngo-available-copy {
+  display: grid;
+  gap: 1rem;
+}
+
+.ngo-booked-card .ngo-available-copy > div {
+  margin-bottom: 0;
+}
+
+.ngo-booked-card .ngo-donation-meta dd {
+  max-width: 100%;
+  color: #1f2937;
+  font-weight: 500;
+  line-height: 1.35;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ngo-booked-badge {
+  background: #e0f2fe !important;
+  color: #0369a1 !important;
+}
+
+.ngo-booked-badge i {
+  background: #0369a1 !important;
+}
+
+.ngo-booked-donor {
+  display: grid !important;
+  gap: 0.2rem !important;
+  align-items: start !important;
+  margin: 0 !important;
+  padding: 0.85rem;
+  border: 1px solid #edf1ee;
+  border-radius: 8px;
+  background: #fbfffc;
+}
+
+.ngo-booked-donor span {
+  padding: 0;
+  background: transparent;
+  color: #64748b;
+  font-size: 0.74rem;
+  font-weight: 800;
+  text-transform: none;
+}
+
+.ngo-booked-donor strong {
+  font-size: 0.95rem;
+  font-weight: 500;
+  line-height: 1.25;
+}
+
+.ngo-booked-donor p {
+  margin: 0;
+  color: #374151;
+  font-size: 0.86rem;
+  font-weight: 400;
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 640px) {
+  .ngo-booked-meta {
+    grid-template-columns: 1fr;
+  }
+}

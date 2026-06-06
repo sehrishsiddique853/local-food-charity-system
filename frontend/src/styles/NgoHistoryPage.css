@@ -7,54 +7,33 @@
   grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
-.ngo-history-list {
-  display: grid;
-  gap: 1rem;
+.ngo-history-toolbar {
+  grid-template-columns: minmax(220px, 360px);
+  margin-bottom: 1rem;
 }
 
-.ngo-history-row {
-  display: grid;
-  grid-template-columns: 112px minmax(0, 1fr);
-  gap: 1.2rem;
+.ngo-history-card .ngo-card-body {
   align-items: center;
-  border: 1px solid #edf1ee;
-  border-radius: 8px;
-  background: #fff;
-  padding: 1rem;
 }
 
-.ngo-history-row img {
-  width: 112px;
-  height: 92px;
-  border-radius: 8px;
-  object-fit: cover;
+.status-pill.request-cancelled,
+.request-badge.request-cancelled {
+  background: #fee2e2;
+  color: #b91c1c;
 }
 
-.ngo-history-title {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
-  margin-bottom: 0.45rem;
+.request-badge.request-cancelled i {
+  background: #b91c1c;
 }
 
-.ngo-history-title strong {
-  color: #111827;
-  font-size: 1rem;
+.status-pill.request-collected,
+.request-badge.request-collected {
+  background: #dcfce7;
+  color: #15803d;
 }
 
-.ngo-history-row p {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.55rem;
-  margin: 0;
-  color: #4b5563;
-}
-
-.ngo-history-note {
-  margin-top: 0.5rem !important;
-  color: #64748b !important;
-  font-size: 0.9rem;
+.request-badge.request-collected i {
+  background: #15803d;
 }
 
 @media (max-width: 760px) {
@@ -62,18 +41,7 @@
     grid-template-columns: 1fr;
   }
 
-  .ngo-history-row {
+  .ngo-history-toolbar {
     grid-template-columns: 1fr;
-  }
-
-  .ngo-history-row img {
-    width: 100%;
-    height: auto;
-    aspect-ratio: 4 / 3;
-  }
-
-  .ngo-history-title {
-    align-items: flex-start;
-    flex-direction: column;
   }
 }

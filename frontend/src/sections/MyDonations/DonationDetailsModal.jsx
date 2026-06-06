@@ -5,6 +5,7 @@ const DonationDetailsModal = ({
   donation,
   onClose,
   actionLabel = '',
+  actionLoadingLabel = 'Working...',
   onAction,
   isActionLoading = false,
 }) => {
@@ -53,6 +54,18 @@ const DonationDetailsModal = ({
               <span>Description</span>
               <strong>{donation.description || 'No description provided'}</strong>
             </p>
+            {donation.donor && (
+              <>
+                <p>
+                  <span>Donor</span>
+                  <strong>{donation.donor.name || donation.donor.ngoName || 'Donor'}</strong>
+                </p>
+                <p>
+                  <span>Donor Contact</span>
+                  <strong>{donation.donor.phone || donation.donor.email || 'Contact not available'}</strong>
+                </p>
+              </>
+            )}
           </div>
         </div>
 
@@ -68,7 +81,7 @@ const DonationDetailsModal = ({
                 <path d="M21 3 10 14" />
                 <path d="m21 3-7 20-4-9-9-4 20-7Z" />
               </svg>
-              {isActionLoading ? 'Requesting...' : actionLabel}
+              {isActionLoading ? actionLoadingLabel : actionLabel}
             </button>
           </div>
         )}

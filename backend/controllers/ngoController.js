@@ -101,13 +101,6 @@ export const requestDonation = async (req, res, next) => {
     const donation = await Donation.findById(req.params.id);
     ensureDonationCanBeRequested(donation);
 
-    await DonationRequest.deleteOne({
-      donation: donation._id,
-      ngo: req.user.id,
-      requestStatus: "rejected",
-      adminMessage: NGO_CANCELLED_MESSAGE,
-    });
-
     const activeRequest = await DonationRequest.findOne({
       donation: donation._id,
       ngo: req.user.id,
@@ -202,10 +195,13 @@ export const cancelRequest = async (req, res, next) => {
       throw new ApiError(400, "REQUEST_NOT_CANCELABLE", "Only pending requests can be cancelled");
     }
 
-    await request.deleteOne();
+    request.requestStatus = "cancelled";
+    request.adminMessage = NGO_CANCELLED_MESSAGE;
+    await request.save();
 
     return successResponse(res, 200, {
       message: "Request cancelled successfully",
+      request,
     });
   } catch (err) {
     return next(err);
@@ -218,7 +214,7 @@ export const getRequestStats = async (req, res, next) => {
       {
         $match: {
           ngo: req.user.id,
-          requestStatus: { $in: ["pending", "approved", "collected"] },
+          requestStatus: { $in: ["pending", "approved", "collected", "cancelled"] },
         },
       },
       {
@@ -235,6 +231,7 @@ export const getRequestStats = async (req, res, next) => {
       approved: 0,
       rejected: 0,
       collected: 0,
+      cancelled: 0,
     };
 
     groupedStats.forEach((item) => {
@@ -255,7 +252,7 @@ export const getBookedDonations = async (req, res, next) => {
       status: "booked",
       isActive: true,
     })
-      .populate("donor", "name phone location")
+      .populate("donor", "name email phone location")
       .sort({ updatedAt: -1 });
 
     return successResponse(res, 200, { donations });
