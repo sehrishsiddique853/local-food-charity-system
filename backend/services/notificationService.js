@@ -178,10 +178,10 @@ export const notifyDonationRequested = (donation, request) =>
       title: "Donation Requested",
       message: `An NGO requested your donation "${donation.foodTitle}".`,
       type: "request",
-      eventKey: "donation_requested",
-      relatedDonation: donation._id,
-      relatedRequest: request._id,
-      dedupe: true,
+    eventKey: "donation_requested",
+    relatedDonation: donation._id,
+    relatedRequest: request._id,
+    dedupe: false,
     }),
     createAdminNotifications({
       title: "New Donation Request",
@@ -190,6 +190,7 @@ export const notifyDonationRequested = (donation, request) =>
       eventKey: "admin_donation_requested",
       relatedDonation: donation._id,
       relatedRequest: request._id,
+      dedupe: false,
     }),
   ]);
 

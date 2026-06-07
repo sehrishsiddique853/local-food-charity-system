@@ -22,6 +22,8 @@ export const useAdminNgos = () => {
   const [ngos, setNgos] = useState([]);
   const [activeTab, setActiveTab] = useState('all');
   const [selectedNgoDetails, setSelectedNgoDetails] = useState(null);
+  const [rejectDialogNgoId, setRejectDialogNgoId] = useState('');
+  const [rejectReason, setRejectReason] = useState('');
   const [isLoading, setIsLoading] = useState(true);
   const [isDetailsLoading, setIsDetailsLoading] = useState(false);
   const [actionNgoId, setActionNgoId] = useState('');
@@ -139,8 +141,17 @@ export const useAdminNgos = () => {
     }
   };
 
-  const rejectNgo = async (ngoId) => {
-    const reason = window.prompt('Reason for rejecting this NGO?') || '';
+  const openRejectDialog = (ngoId) => {
+    setRejectDialogNgoId(ngoId);
+    setRejectReason('');
+  };
+
+  const closeRejectDialog = () => {
+    setRejectDialogNgoId('');
+    setRejectReason('');
+  };
+
+  const rejectNgo = async (ngoId, reason = '') => {
     setActionNgoId(ngoId);
     setErrorMessage('');
     setSuccessMessage('');
@@ -152,6 +163,7 @@ export const useAdminNgos = () => {
       }
 
       setSuccessMessage('NGO rejected successfully.');
+      closeRejectDialog();
       await loadNgos();
       if (selectedNgoDetails?.ngo?._id === ngoId) {
         await openNgoDetails(ngoId);
@@ -167,15 +179,20 @@ export const useAdminNgos = () => {
     activeTab,
     actionNgoId,
     closeNgoDetails,
+    closeRejectDialog,
     errorMessage,
     filteredNgos,
     isDetailsLoading,
     isLoading,
     openNgoDetails,
+    openRejectDialog,
     approveNgo,
+    rejectDialogNgoId,
     rejectNgo,
+    rejectReason,
     selectedNgoDetails,
     setActiveTab,
+    setRejectReason,
     statusTabs,
     successMessage,
     tabCounts,

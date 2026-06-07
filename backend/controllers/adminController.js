@@ -27,6 +27,11 @@ const getDateRange = ({ from, to } = {}) => {
   return Object.keys(range).length ? range : null;
 };
 
+const removeInactiveDonationRequests = () =>
+  DonationRequest.deleteMany({
+    requestStatus: { $in: ["cancelled", "rejected"] },
+  });
+
 export const getPendingNgos = async (req, res, next) => {
   try {
     const ngos = await User.find({
@@ -425,6 +430,7 @@ export const changeDonationStatus = async (req, res, next) => {
 export const getDonationRequests = async (req, res, next) => {
   try {
     await expireStaleDonations();
+    await removeInactiveDonationRequests();
 
     const { status } = req.query;
     const filter = {};
@@ -873,15 +879,26 @@ export const rejectDonationRequest = async (req, res, next) => {
       throw new ApiError(404, "DONATION_NOT_FOUND", "Donation not found");
     }
 
-    request.requestStatus = "rejected";
-    request.adminMessage = req.body.adminMessage || req.body.reason || "";
-    await request.save();
+    if (donation.status !== "booked" && donation.status !== "collected" && donation.status !== "completed") {
+      const activeRequestsForDonation = await DonationRequest.countDocuments({
+        donation: donation._id,
+        _id: { $ne: request._id },
+        requestStatus: { $in: ["pending", "approved"] },
+      });
 
-    await notifyNgoRequestRejected(request, donation, request.adminMessage);
+      if (activeRequestsForDonation === 0 && donation.isActive && donation.expiryDate > new Date()) {
+        donation.status = "available";
+        donation.bookedByNgo = null;
+        await donation.save();
+      }
+    }
+
+    const adminMessage = req.body.adminMessage || req.body.reason || "Request rejected by admin.";
+    await notifyNgoRequestRejected(request, donation, adminMessage);
+    await DonationRequest.deleteOne({ _id: request._id });
 
     return successResponse(res, 200, {
       message: "Donation request rejected successfully",
-      request,
       donation,
     });
   } catch (err) {

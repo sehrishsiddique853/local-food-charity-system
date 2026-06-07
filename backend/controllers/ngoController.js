@@ -10,6 +10,7 @@ import {
 
 const DAILY_REQUEST_LIMIT = 5;
 const NGO_CANCELLED_MESSAGE = "Cancelled by NGO";
+const INACTIVE_REQUEST_STATUSES = ["rejected", "cancelled"];
 
 const markExpiredDonations = async () => {
   const filter = {
@@ -126,6 +127,12 @@ export const requestDonation = async (req, res, next) => {
       );
     }
 
+    await DonationRequest.deleteMany({
+      donation: donation._id,
+      ngo: req.user.id,
+      requestStatus: { $in: INACTIVE_REQUEST_STATUSES },
+    });
+
     const request = await DonationRequest.create({
       donation: donation._id,
       ngo: req.user.id,
@@ -195,13 +202,10 @@ export const cancelRequest = async (req, res, next) => {
       throw new ApiError(400, "REQUEST_NOT_CANCELABLE", "Only pending requests can be cancelled");
     }
 
-    request.requestStatus = "cancelled";
-    request.adminMessage = NGO_CANCELLED_MESSAGE;
-    await request.save();
+    await DonationRequest.deleteOne({ _id: request._id });
 
     return successResponse(res, 200, {
       message: "Request cancelled successfully",
-      request,
     });
   } catch (err) {
     return next(err);

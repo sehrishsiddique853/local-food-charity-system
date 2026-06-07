@@ -2,6 +2,7 @@ import { Route, Routes } from 'react-router-dom';
 import AdminDashboardPage from '../pages/AdminDashboardPage';
 import AdminNgosPage from '../pages/AdminNgosPage';
 import AdminNotificationsPage from '../pages/AdminNotificationsPage';
+import AdminRequestsPage from '../pages/AdminRequestsPage';
 import DonationHistoryPage from '../pages/DonationHistoryPage';
 import DonorDashboard from '../pages/DonorDashboard';
 import DonorProfilePage from '../pages/DonorProfilePage';
@@ -40,6 +41,7 @@ const AppRoutes = () => (
     <Route path={ROUTES.ngoNotifications} element={<NgoNotificationsPage />} />
     <Route path={ROUTES.adminDashboard} element={<AdminDashboardPage />} />
     <Route path={ROUTES.adminNgos} element={<AdminNgosPage />} />
+    <Route path={ROUTES.adminRequests} element={<AdminRequestsPage />} />
     <Route path={ROUTES.adminNotifications} element={<AdminNotificationsPage />} />
   </Routes>
 );

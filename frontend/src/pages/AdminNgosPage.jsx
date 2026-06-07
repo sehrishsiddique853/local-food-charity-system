@@ -14,15 +14,20 @@ const AdminNgosPage = () => {
     activeTab,
     actionNgoId,
     closeNgoDetails,
+    closeRejectDialog,
     errorMessage,
     filteredNgos,
     isDetailsLoading,
     isLoading,
     openNgoDetails,
+    openRejectDialog,
     approveNgo,
+    rejectDialogNgoId,
     rejectNgo,
+    rejectReason,
     selectedNgoDetails,
     setActiveTab,
+    setRejectReason,
     statusTabs,
     successMessage,
     tabCounts,
@@ -54,8 +59,14 @@ const AdminNgosPage = () => {
           isLoading={isLoading}
           onApprove={approveNgo}
           onCloseDetails={closeNgoDetails}
+          onCloseRejectDialog={closeRejectDialog}
           onOpenDetails={openNgoDetails}
-          onReject={rejectNgo}
+          onOpenRejectDialog={openRejectDialog}
+          onRejectReasonChange={setRejectReason}
+          onSubmitReject={() => rejectNgo(rejectDialogNgoId, rejectReason)}
+          onSubmitRejectWithoutReason={() => rejectNgo(rejectDialogNgoId)}
+          rejectDialogNgoId={rejectDialogNgoId}
+          rejectReason={rejectReason}
           selectedNgoDetails={selectedNgoDetails}
           setActiveTab={setActiveTab}
           statusTabs={statusTabs}

@@ -1,4 +1,5 @@
 import AdminNgoDetailsModal from './AdminNgoDetailsModal';
+import AdminNgoRejectDialog from './AdminNgoRejectDialog';
 import AdminNgosList from './AdminNgosList';
 import AdminNgosTabs from './AdminNgosTabs';
 
@@ -10,8 +11,14 @@ const AdminNgosPanel = ({
   isLoading,
   onApprove,
   onCloseDetails,
+  onCloseRejectDialog,
   onOpenDetails,
-  onReject,
+  onOpenRejectDialog,
+  onRejectReasonChange,
+  onSubmitReject,
+  onSubmitRejectWithoutReason,
+  rejectDialogNgoId,
+  rejectReason,
   selectedNgoDetails,
   setActiveTab,
   statusTabs,
@@ -39,7 +46,7 @@ const AdminNgosPanel = ({
         actionNgoId={actionNgoId}
         onOpenDetails={onOpenDetails}
         onApprove={onApprove}
-        onReject={onReject}
+        onReject={onOpenRejectDialog}
       />
     </section>
 
@@ -50,9 +57,19 @@ const AdminNgosPanel = ({
         actionNgoId={actionNgoId}
         onClose={onCloseDetails}
         onApprove={onApprove}
-        onReject={onReject}
+        onReject={onOpenRejectDialog}
       />
     )}
+
+    <AdminNgoRejectDialog
+      isOpen={Boolean(rejectDialogNgoId)}
+      reason={rejectReason}
+      isSubmitting={actionNgoId === rejectDialogNgoId}
+      onChangeReason={onRejectReasonChange}
+      onClose={onCloseRejectDialog}
+      onSubmit={onSubmitReject}
+      onSkipReason={onSubmitRejectWithoutReason}
+    />
   </>
 );
 
