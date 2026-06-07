@@ -91,6 +91,9 @@ const NgoHistoryList = ({
 
               <div className="ngo-list-copy">
                 <strong>{donation.foodTitle || 'Donation request'}</strong>
+                <span className={`status-pill request-${status} ngo-mobile-status`}>
+                  {historyLabels[status] || status}
+                </span>
                 <p>
                   {formatQuantity(donation.quantity)}
                   <span>•</span>
@@ -102,7 +105,7 @@ const NgoHistoryList = ({
               </div>
             </div>
 
-            <span className={`status-pill request-${status}`}>
+            <span className={`status-pill request-${status} ngo-desktop-status`}>
               {historyLabels[status] || status}
             </span>
           </article>

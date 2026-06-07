@@ -90,6 +90,9 @@ const NgoRequestsList = ({
 
               <div className="ngo-list-copy">
                 <strong>{donation.foodTitle || 'Donation request'}</strong>
+                <span className={`status-pill request-${status} ngo-mobile-status`}>
+                  {requestStatusLabels[status] || status}
+                </span>
                 <p>
                   {formatQuantity(donation.quantity)}
                   <span>•</span>
@@ -99,7 +102,7 @@ const NgoRequestsList = ({
               </div>
             </div>
 
-            <span className={`status-pill request-${status}`}>
+            <span className={`status-pill request-${status} ngo-desktop-status`}>
               {requestStatusLabels[status] || status}
             </span>
 

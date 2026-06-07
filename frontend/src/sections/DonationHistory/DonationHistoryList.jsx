@@ -1,25 +1,20 @@
-import { Link } from 'react-router-dom';
 import { donationStatusClasses, donationStatusLabels } from '../../constants/donationConstants';
-import { ROUTES } from '../../constants/routes';
 import { formatDate, formatQuantity, getDonationImage } from '../../utils/donationUtils';
 
 const historyGroups = [
   {
     key: 'collected',
     title: 'Collected Donations',
-    description: 'Food donations that were picked up and marked collected.',
     statuses: ['collected', 'completed'],
   },
   {
     key: 'expired',
     title: 'Expired Donations',
-    description: 'Donations that passed their expiry time before completion.',
     statuses: ['expired'],
   },
   {
     key: 'cancelled',
-    title: 'Cancelled / Deleted Donations',
-    description: 'Donations removed from active listings.',
+    title: 'Cancelled Donations',
     statuses: ['cancelled'],
   },
 ];
@@ -30,15 +25,6 @@ const DonationHistoryList = ({ donations, totals, isLoading, onView }) => (
       <div>
         <h2>Donation History</h2>
         <p>Review donations that are no longer active.</p>
-      </div>
-      <div className="history-heading-actions">
-        <Link className="post-primary-link secondary-history-link" to={ROUTES.myDonations}>
-          My Donations
-        </Link>
-        <Link className="post-primary-link" to={ROUTES.postDonation}>
-          <span>＋</span>
-          Post Donation
-        </Link>
       </div>
     </div>
 
@@ -67,7 +53,6 @@ const DonationHistoryList = ({ donations, totals, isLoading, onView }) => (
       <div className="my-donations-empty">
         <h3>No donation history yet</h3>
         <p>Collected, expired, and cancelled donations will appear here.</p>
-        <Link className="post-primary-link" to={ROUTES.myDonations}>View Active Donations</Link>
       </div>
     )}
 
@@ -81,9 +66,7 @@ const DonationHistoryList = ({ donations, totals, isLoading, onView }) => (
               <div className="history-group-heading">
                 <div>
                   <h3>{group.title}</h3>
-                  <p>{group.description}</p>
                 </div>
-                <strong>{groupDonations.length}</strong>
               </div>
 
               {groupDonations.length === 0 ? (
@@ -91,11 +74,26 @@ const DonationHistoryList = ({ donations, totals, isLoading, onView }) => (
               ) : (
                 <div className="history-list">
                   {groupDonations.map((donation) => (
-                    <article className="history-card" key={donation._id}>
+                    <article
+                      className="history-card"
+                      key={donation._id}
+                      role="button"
+                      tabIndex={0}
+                      onClick={() => onView(donation)}
+                      onKeyDown={(event) => {
+                        if (event.key === 'Enter' || event.key === ' ') {
+                          event.preventDefault();
+                          onView(donation);
+                        }
+                      }}
+                    >
                       <img src={getDonationImage(donation)} alt={donation.foodTitle} />
 
                       <div className="my-donation-copy">
                         <strong>{donation.foodTitle}</strong>
+                        <span className={`status-pill donor-mobile-status ${donationStatusClasses[donation.status] || 'expired'}`}>
+                          {donationStatusLabels[donation.status] || donation.status}
+                        </span>
                         <p>
                           {formatQuantity(donation.quantity)}
                           <span>•</span>
@@ -104,11 +102,10 @@ const DonationHistoryList = ({ donations, totals, isLoading, onView }) => (
                         <small>Posted {formatDate(donation.createdAt)}</small>
                       </div>
 
-                      <span className={`status-pill ${donationStatusClasses[donation.status] || 'expired'}`}>
+                      <span className={`status-pill donor-desktop-status ${donationStatusClasses[donation.status] || 'expired'}`}>
                         {donationStatusLabels[donation.status] || donation.status}
                       </span>
 
-                      <button type="button" onClick={() => onView(donation)}>View</button>
                     </article>
                   ))}
                 </div>

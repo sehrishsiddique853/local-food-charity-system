@@ -103,6 +103,16 @@
   border: 1px solid #edf1ee;
   border-radius: 8px;
   background: #ffffff;
+  cursor: pointer;
+  transition: border-color 0.22s ease, box-shadow 0.22s ease, transform 0.22s ease;
+}
+
+.my-donation-card:hover,
+.my-donation-card:focus-visible {
+  border-color: rgba(39, 174, 96, 0.35);
+  box-shadow: 0 14px 34px rgba(15, 23, 42, 0.08);
+  transform: translateY(-1px);
+  outline: none;
 }
 
 .my-donation-card img {
@@ -114,6 +124,14 @@
 
 .my-donation-copy {
   min-width: 0;
+}
+
+.donor-mobile-status {
+  display: none;
+}
+
+.donor-desktop-status {
+  display: inline-flex;
 }
 
 .my-donation-copy strong {
@@ -158,13 +176,26 @@
   background: rgba(39, 174, 96, 0.08);
 }
 
+.donation-actions button.edit {
+  border-color: rgba(39, 174, 96, 0.45);
+  background: #16a34a;
+  color: #ffffff;
+}
+
+.donation-actions button.edit:hover:not(:disabled) {
+  background: #15803d;
+  color: #ffffff;
+}
+
 .donation-actions button.danger {
-  border-color: rgba(239, 68, 68, 0.24);
-  color: #b91c1c;
+  border-color: #dc2626;
+  background: #dc2626;
+  color: #ffffff;
 }
 
 .donation-actions button.danger:hover:not(:disabled) {
-  background: rgba(239, 68, 68, 0.08);
+  background: #b91c1c;
+  color: #ffffff;
 }
 
 .donation-actions button:disabled {
@@ -333,9 +364,12 @@
   }
 
   .donation-modal-content,
-  .donation-status-summary,
   .donation-detail-grid {
     grid-template-columns: 1fr;
+  }
+
+  .donation-status-summary {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .donation-detail-grid p {
@@ -351,15 +385,55 @@
 
   .my-donation-card {
     grid-template-columns: 1fr;
+    gap: 0.85rem;
+    padding: 1rem;
+    border-radius: 10px;
   }
 
   .my-donation-card img {
     width: 100%;
-    height: 180px;
+    height: auto;
+    aspect-ratio: 4 / 3;
+    max-height: 260px;
+  }
+
+  .my-donation-copy strong {
+    margin-bottom: 0.55rem;
+    font-size: 1.2rem;
+    line-height: 1.15;
+  }
+
+  .my-donation-copy p {
+    flex-wrap: nowrap;
+    gap: 0.55rem;
+    margin-bottom: 0.4rem;
+    white-space: nowrap;
+  }
+
+  .my-donation-copy p span {
+    flex: 0 0 auto;
+  }
+
+  .donor-mobile-status {
+    width: max-content;
+    display: inline-flex;
+    margin-bottom: 0.55rem;
+  }
+
+  .donor-desktop-status {
+    display: none;
   }
 
   .my-donation-card .status-pill,
   .donation-actions {
     grid-column: auto;
+  }
+
+  .donation-actions {
+    width: 100%;
+  }
+
+  .donation-actions button {
+    width: 100%;
   }
 }

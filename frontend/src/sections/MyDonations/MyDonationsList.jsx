@@ -1,6 +1,4 @@
-import { Link } from 'react-router-dom';
 import { donationStatusClasses, donationStatusLabels } from '../../constants/donationConstants';
-import { ROUTES } from '../../constants/routes';
 import { formatDate, formatQuantity, getDonationImage } from '../../utils/donationUtils';
 
 const statusOrder = ['all', 'available', 'requested', 'booked'];
@@ -26,10 +24,6 @@ const MyDonationsList = ({
         <h2>Posted Donations</h2>
         <p>Track every donation you posted and manage available items.</p>
       </div>
-      <Link className="post-primary-link" to={ROUTES.postDonation}>
-        <span>＋</span>
-        Post Donation
-      </Link>
     </div>
 
     <div className="donation-status-summary" aria-label="Donation status summary">
@@ -47,7 +41,6 @@ const MyDonationsList = ({
       <div className="my-donations-empty">
         <h3>No donations posted yet</h3>
         <p>Your posted donations will appear here once you share surplus food.</p>
-        <Link className="post-primary-link" to={ROUTES.postDonation}>Post Your First Donation</Link>
       </div>
     )}
 
@@ -57,11 +50,26 @@ const MyDonationsList = ({
           const canManage = donation.status === 'available';
 
           return (
-            <article className="my-donation-card" key={donation._id}>
+            <article
+              className="my-donation-card"
+              key={donation._id}
+              role="button"
+              tabIndex={0}
+              onClick={() => onView(donation)}
+              onKeyDown={(event) => {
+                if (event.key === 'Enter' || event.key === ' ') {
+                  event.preventDefault();
+                  onView(donation);
+                }
+              }}
+            >
               <img src={getDonationImage(donation)} alt={donation.foodTitle} />
 
               <div className="my-donation-copy">
                 <strong>{donation.foodTitle}</strong>
+                <span className={`status-pill donor-mobile-status ${donationStatusClasses[donation.status] || 'available'}`}>
+                  {donationStatusLabels[donation.status] || donation.status}
+                </span>
                 <p>
                   {formatQuantity(donation.quantity)}
                   <span>•</span>
@@ -70,20 +78,30 @@ const MyDonationsList = ({
                 <small>Posted {formatDate(donation.createdAt)}</small>
               </div>
 
-              <span className={`status-pill ${donationStatusClasses[donation.status] || 'available'}`}>
+              <span className={`status-pill donor-desktop-status ${donationStatusClasses[donation.status] || 'available'}`}>
                 {donationStatusLabels[donation.status] || donation.status}
               </span>
 
               <div className="donation-actions" aria-label={`${donation.foodTitle} actions`}>
-                <button type="button" onClick={() => onView(donation)}>View</button>
-                <button type="button" disabled={!canManage} onClick={() => onEdit(donation)}>
+                <button
+                  type="button"
+                  className="edit"
+                  disabled={!canManage}
+                  onClick={(event) => {
+                    event.stopPropagation();
+                    onEdit(donation);
+                  }}
+                >
                   Edit
                 </button>
                 <button
                   type="button"
                   className="danger"
                   disabled={!canManage}
-                  onClick={() => onDelete(donation)}
+                  onClick={(event) => {
+                    event.stopPropagation();
+                    onDelete(donation);
+                  }}
                 >
                   Delete
                 </button>

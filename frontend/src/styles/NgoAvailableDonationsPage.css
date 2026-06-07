@@ -89,6 +89,14 @@
   min-width: 0;
 }
 
+.ngo-mobile-status {
+  display: none;
+}
+
+.ngo-desktop-status {
+  display: inline-flex;
+}
+
 .ngo-list-copy strong {
   display: block;
   margin-bottom: 0.45rem;
@@ -339,9 +347,57 @@
     grid-template-columns: 1fr;
   }
 
+  .ngo-list-card {
+    gap: 0.85rem;
+    padding: 1rem;
+    border-radius: 10px;
+  }
+
+  .ngo-list-main {
+    gap: 0.95rem;
+  }
+
   .ngo-list-main img {
     width: 100%;
-    height: 180px;
+    height: auto;
+    aspect-ratio: 4 / 3;
+    max-height: 260px;
+  }
+
+  .ngo-list-copy strong {
+    margin-bottom: 0.55rem;
+    font-size: 1.2rem;
+  }
+
+  .ngo-list-copy p {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 0.55rem;
+    margin-bottom: 0.4rem;
+    white-space: nowrap;
+  }
+
+  .ngo-list-copy p span {
+    flex: 0 0 auto;
+  }
+
+  .ngo-list-copy small {
+    white-space: normal;
+  }
+
+  .ngo-mobile-status {
+    width: max-content;
+    display: inline-flex;
+    margin-bottom: 0.55rem;
+  }
+
+  .ngo-desktop-status {
+    display: none;
+  }
+
+  .ngo-list-actions {
+    width: 100%;
+    justify-content: stretch;
   }
 
   .ngo-donation-meta {

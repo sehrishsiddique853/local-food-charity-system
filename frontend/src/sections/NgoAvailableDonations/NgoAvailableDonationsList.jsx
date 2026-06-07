@@ -115,6 +115,7 @@ const NgoAvailableDonationsList = ({
 
             <div className="ngo-list-copy">
               <strong>{donation.foodTitle}</strong>
+              <span className="status-pill available ngo-mobile-status">Available</span>
               <p>
                 {formatQuantity(donation.quantity)}
                 <span>•</span>
@@ -124,7 +125,7 @@ const NgoAvailableDonationsList = ({
             </div>
           </div>
 
-          <span className="status-pill available">Available</span>
+          <span className="status-pill available ngo-desktop-status">Available</span>
 
           <div className="ngo-list-actions">
             <button
