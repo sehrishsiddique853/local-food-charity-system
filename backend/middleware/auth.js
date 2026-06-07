@@ -49,6 +49,10 @@ const auth = async (req, res, next) => {
       return errorResponse(res, 401, "USER_NOT_FOUND", "User not found");
     }
 
+    if (user.isBlocked) {
+      return errorResponse(res, 403, "ACCOUNT_DEACTIVATED", "Your account has been deactivated");
+    }
+
     // Attach user identity to the request for downstream middleware/routes.
     req.user = { id: user._id, role: user.role };
     next();

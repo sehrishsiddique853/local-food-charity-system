@@ -11,6 +11,7 @@ import donationRoutes from "./routes/donationRoutes.js";
 import ngoRoutes from "./routes/ngoRoutes.js";
 import notificationRoutes from "./routes/notificationRoutes.js";
 import errorHandler from "./middleware/errorHandler.js";
+import { startDonationExpiryJob } from "./services/donationExpiryService.js";
 // import { apiRateLimiter } from "./middleware/rateLimiter.js";
 
 dotenv.config();
@@ -18,6 +19,7 @@ dotenv.config();
 const app = express();
 
 await connectDB();
+startDonationExpiryJob();
 
 const allowedOrigins = [
   "http://localhost:5173",

@@ -27,8 +27,13 @@ export const register = async (req, res, next) => {
     const registerData = { ...req.body };
 
     if (registerData.role === "ngo" && req.file) {
+      const isPdfDocument = req.file.mimetype === "application/pdf";
+      const safeOriginalName = req.file.originalname.replace(/[^a-zA-Z0-9._-]/g, "_");
+      const nameWithoutExtension = safeOriginalName.replace(/\.[^/.]+$/, "");
+
       const uploadedDocument = await uploadBufferToCloudinary(req.file.buffer, {
-        public_id: `${Date.now()}-${req.file.originalname.replace(/\.[^/.]+$/, "")}`,
+        resource_type: isPdfDocument ? "raw" : "image",
+        public_id: `${Date.now()}-${isPdfDocument ? safeOriginalName : nameWithoutExtension}`,
       });
 
       registerData.ngoDocument = uploadedDocument.secure_url;

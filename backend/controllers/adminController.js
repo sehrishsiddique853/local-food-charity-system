@@ -11,6 +11,21 @@ import {
   notifyNgoVerificationApproved,
   notifyNgoVerificationRejected,
 } from "../services/notificationService.js";
+import { expireStaleDonations } from "../services/donationExpiryService.js";
+
+const getDateRange = ({ from, to } = {}) => {
+  const range = {};
+
+  if (from) {
+    range.$gte = new Date(from);
+  }
+
+  if (to) {
+    range.$lte = new Date(to);
+  }
+
+  return Object.keys(range).length ? range : null;
+};
 
 export const getPendingNgos = async (req, res, next) => {
   try {
@@ -27,24 +42,38 @@ export const getPendingNgos = async (req, res, next) => {
 
 export const getDashboardStats = async (req, res, next) => {
   try {
+    await expireStaleDonations();
+
     const [
       totalDonors,
       totalNGOs,
       verifiedNGOs,
       pendingNGOs,
+      rejectedNGOs,
       totalDonations,
       availableDonations,
       requestedDonations,
+      bookedDonations,
       collectedDonations,
+      expiredDonations,
+      cancelledDonations,
+      pendingRequests,
+      approvedRequests,
     ] = await Promise.all([
       User.countDocuments({ role: "donor" }),
       User.countDocuments({ role: "ngo" }),
       User.countDocuments({ role: "ngo", ngoVerificationStatus: "approved" }),
       User.countDocuments({ role: "ngo", ngoVerificationStatus: "pending" }),
+      User.countDocuments({ role: "ngo", ngoVerificationStatus: "rejected" }),
       Donation.countDocuments(),
       Donation.countDocuments({ status: "available" }),
       DonationRequest.countDocuments({ requestStatus: "pending" }),
+      Donation.countDocuments({ status: "booked" }),
       Donation.countDocuments({ status: { $in: ["collected", "completed"] } }),
+      Donation.countDocuments({ status: "expired" }),
+      Donation.countDocuments({ status: "cancelled" }),
+      DonationRequest.countDocuments({ requestStatus: "pending" }),
+      DonationRequest.countDocuments({ requestStatus: "approved" }),
     ]);
 
     return successResponse(res, 200, {
@@ -52,10 +81,16 @@ export const getDashboardStats = async (req, res, next) => {
       totalNGOs,
       verifiedNGOs,
       pendingNGOs,
+      rejectedNGOs,
       totalDonations,
       availableDonations,
       requestedDonations,
+      bookedDonations,
       collectedDonations,
+      expiredDonations,
+      cancelledDonations,
+      pendingRequests,
+      approvedRequests,
     });
   } catch (err) {
     return next(err);
@@ -294,6 +329,8 @@ export const rejectNgo = async (req, res, next) => {
 
 export const getDonations = async (req, res, next) => {
   try {
+    await expireStaleDonations();
+
     const { status } = req.query;
     const filter = {};
     if (status) {
@@ -312,6 +349,8 @@ export const getDonations = async (req, res, next) => {
 
 export const getDonationById = async (req, res, next) => {
   try {
+    await expireStaleDonations();
+
     const donation = await Donation.findById(req.params.id)
       .populate("donor", "name email phone location")
       .populate("bookedByNgo", "ngoName email phone location ngoVerificationStatus");
@@ -385,6 +424,8 @@ export const changeDonationStatus = async (req, res, next) => {
 
 export const getDonationRequests = async (req, res, next) => {
   try {
+    await expireStaleDonations();
+
     const { status } = req.query;
     const filter = {};
 
@@ -405,6 +446,8 @@ export const getDonationRequests = async (req, res, next) => {
 
 export const getDonationRequestById = async (req, res, next) => {
   try {
+    await expireStaleDonations();
+
     const request = await DonationRequest.findById(req.params.id)
       .populate("ngo", "ngoName email phone location ngoVerificationStatus")
       .populate({
@@ -502,6 +545,8 @@ export const approveDonationRequest = async (req, res, next) => {
 
 export const getDonationReport = async (req, res, next) => {
   try {
+    await expireStaleDonations();
+
     const [groupedDonationStats, requested] = await Promise.all([
       Donation.aggregate([
         {
@@ -538,6 +583,8 @@ export const getDonationReport = async (req, res, next) => {
 
 export const getUserReport = async (req, res, next) => {
   try {
+    await expireStaleDonations();
+
     const [donors, ngos, verifiedNGOs, pendingNGOs, rejectedNGOs, admins, blockedUsers] =
       await Promise.all([
         User.countDocuments({ role: "donor" }),
@@ -557,6 +604,251 @@ export const getUserReport = async (req, res, next) => {
       rejectedNGOs,
       admins,
       blockedUsers,
+    });
+  } catch (err) {
+    return next(err);
+  }
+};
+
+export const getRequestReport = async (req, res, next) => {
+  try {
+    await expireStaleDonations();
+
+    const createdAtRange = getDateRange(req.query);
+    const match = createdAtRange ? { createdAt: createdAtRange } : {};
+
+    const groupedRequests = await DonationRequest.aggregate([
+      { $match: match },
+      {
+        $group: {
+          _id: "$requestStatus",
+          count: { $sum: 1 },
+        },
+      },
+    ]);
+
+    const stats = {
+      total: 0,
+      pending: 0,
+      approved: 0,
+      rejected: 0,
+      collected: 0,
+      cancelled: 0,
+    };
+
+    groupedRequests.forEach((item) => {
+      if (Object.prototype.hasOwnProperty.call(stats, item._id)) {
+        stats[item._id] = item.count;
+        stats.total += item.count;
+      }
+    });
+
+    return successResponse(res, 200, stats);
+  } catch (err) {
+    return next(err);
+  }
+};
+
+export const getCollectionReport = async (req, res, next) => {
+  try {
+    await expireStaleDonations();
+
+    const createdAtRange = getDateRange(req.query);
+    const dateFilter = createdAtRange ? { updatedAt: createdAtRange } : {};
+
+    const [collectedDonations, collectedRequests, recentCollections] = await Promise.all([
+      Donation.countDocuments({
+        status: { $in: ["collected", "completed"] },
+        ...dateFilter,
+      }),
+      DonationRequest.countDocuments({
+        requestStatus: "collected",
+        ...dateFilter,
+      }),
+      DonationRequest.find({
+        requestStatus: "collected",
+        ...dateFilter,
+      })
+        .populate("ngo", "ngoName email phone")
+        .populate("donation", "foodTitle quantity pickupAddress updatedAt")
+        .sort({ updatedAt: -1 })
+        .limit(10),
+    ]);
+
+    return successResponse(res, 200, {
+      collectedDonations,
+      collectedRequests,
+      recentCollections,
+    });
+  } catch (err) {
+    return next(err);
+  }
+};
+
+export const getDonationTimelineReport = async (req, res, next) => {
+  try {
+    await expireStaleDonations();
+
+    const period = req.query.period === "weekly" ? "weekly" : "monthly";
+    const createdAtRange = getDateRange(req.query);
+    const match = createdAtRange ? { createdAt: createdAtRange } : {};
+    const dateFormat = period === "weekly" ? "%G-W%V" : "%Y-%m";
+
+    const timeline = await Donation.aggregate([
+      { $match: match },
+      {
+        $group: {
+          _id: {
+            period: { $dateToString: { format: dateFormat, date: "$createdAt" } },
+            status: "$status",
+          },
+          count: { $sum: 1 },
+        },
+      },
+      { $sort: { "_id.period": 1 } },
+    ]);
+
+    const rowsByPeriod = new Map();
+
+    timeline.forEach((item) => {
+      const periodKey = item._id.period;
+      if (!rowsByPeriod.has(periodKey)) {
+        rowsByPeriod.set(periodKey, {
+          period: periodKey,
+          total: 0,
+          available: 0,
+          requested: 0,
+          booked: 0,
+          collected: 0,
+          completed: 0,
+          expired: 0,
+          cancelled: 0,
+        });
+      }
+
+      const row = rowsByPeriod.get(periodKey);
+      row[item._id.status] = item.count;
+      row.total += item.count;
+    });
+
+    return successResponse(res, 200, {
+      period,
+      timeline: Array.from(rowsByPeriod.values()),
+    });
+  } catch (err) {
+    return next(err);
+  }
+};
+
+export const getNgoPerformanceReport = async (req, res, next) => {
+  try {
+    await expireStaleDonations();
+
+    const performance = await DonationRequest.aggregate([
+      {
+        $group: {
+          _id: "$ngo",
+          totalRequests: { $sum: 1 },
+          pendingRequests: {
+            $sum: { $cond: [{ $eq: ["$requestStatus", "pending"] }, 1, 0] },
+          },
+          approvedRequests: {
+            $sum: { $cond: [{ $eq: ["$requestStatus", "approved"] }, 1, 0] },
+          },
+          rejectedRequests: {
+            $sum: { $cond: [{ $eq: ["$requestStatus", "rejected"] }, 1, 0] },
+          },
+          collectedRequests: {
+            $sum: { $cond: [{ $eq: ["$requestStatus", "collected"] }, 1, 0] },
+          },
+        },
+      },
+      {
+        $lookup: {
+          from: "users",
+          localField: "_id",
+          foreignField: "_id",
+          as: "ngo",
+        },
+      },
+      { $unwind: "$ngo" },
+      {
+        $project: {
+          _id: 0,
+          ngoId: "$ngo._id",
+          ngoName: "$ngo.ngoName",
+          email: "$ngo.email",
+          verificationStatus: "$ngo.ngoVerificationStatus",
+          totalRequests: 1,
+          pendingRequests: 1,
+          approvedRequests: 1,
+          rejectedRequests: 1,
+          collectedRequests: 1,
+        },
+      },
+      { $sort: { collectedRequests: -1, totalRequests: -1 } },
+    ]);
+
+    return successResponse(res, 200, { performance });
+  } catch (err) {
+    return next(err);
+  }
+};
+
+export const getAdminProfile = async (req, res, next) => {
+  try {
+    const admin = await User.findOne({ _id: req.user.id, role: "admin" }).select("-password");
+
+    if (!admin) {
+      throw new ApiError(404, "ADMIN_NOT_FOUND", "Admin profile not found");
+    }
+
+    return successResponse(res, 200, { admin });
+  } catch (err) {
+    return next(err);
+  }
+};
+
+export const updateAdminProfile = async (req, res, next) => {
+  try {
+    const admin = await User.findOne({ _id: req.user.id, role: "admin" });
+
+    if (!admin) {
+      throw new ApiError(404, "ADMIN_NOT_FOUND", "Admin profile not found");
+    }
+
+    const { name, email, phone, location } = req.body;
+
+    if (email && email !== admin.email) {
+      const existingEmail = await User.findOne({ email, _id: { $ne: admin._id } });
+      if (existingEmail) {
+        throw new ApiError(409, "EMAIL_ALREADY_EXISTS", "Email already in use");
+      }
+      admin.email = email;
+    }
+
+    if (phone && phone !== admin.phone) {
+      const existingPhone = await User.findOne({ phone, _id: { $ne: admin._id } });
+      if (existingPhone) {
+        throw new ApiError(409, "PHONE_ALREADY_EXISTS", "Phone number already in use");
+      }
+      admin.phone = phone;
+    }
+
+    if (name !== undefined) {
+      admin.name = name;
+    }
+
+    if (location?.address) {
+      admin.location.address = location.address;
+    }
+
+    await admin.save();
+
+    const updatedAdmin = await User.findById(admin._id).select("-password");
+    return successResponse(res, 200, {
+      message: "Admin profile updated successfully",
+      admin: updatedAdmin,
     });
   } catch (err) {
     return next(err);

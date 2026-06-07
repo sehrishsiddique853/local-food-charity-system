@@ -91,6 +91,10 @@ export const loginUser = async ({ email, password }) => {
     throw new ApiError(401, "INVALID_CREDENTIALS", "Invalid credentials");
   }
 
+  if (user.isBlocked) {
+    throw new ApiError(403, "ACCOUNT_DEACTIVATED", "Your account has been deactivated");
+  }
+
   const match = await bcrypt.compare(password, user.password);
   if (!match) {
     throw new ApiError(401, "INVALID_CREDENTIALS", "Invalid credentials");
@@ -111,6 +115,10 @@ export const getProfileById = async (userId) => {
   const user = await User.findById(userId).select("-password");
   if (!user) {
     throw new ApiError(404, "USER_NOT_FOUND", "User not found");
+  }
+
+  if (user.isBlocked) {
+    throw new ApiError(403, "ACCOUNT_DEACTIVATED", "Your account has been deactivated");
   }
 
   const profile = user.toObject();
@@ -200,6 +208,11 @@ export const refreshAccessToken = async (refreshToken) => {
   const user = storedToken.user;
   if (!user) {
     throw new ApiError(401, "USER_NOT_FOUND", "User not found");
+  }
+
+  if (user.isBlocked) {
+    await RefreshToken.deleteMany({ user: user._id });
+    throw new ApiError(403, "ACCOUNT_DEACTIVATED", "Your account has been deactivated");
   }
 
   const accessToken = generateAccessToken(user);
