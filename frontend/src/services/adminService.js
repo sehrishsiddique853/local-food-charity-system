@@ -11,3 +11,24 @@ export const getAdminUserReport = () => apiRequest(API_ROUTES.adminUserReport);
 
 export const getAdminDonationTimelineReport = (period = 'monthly') =>
   apiRequest(`${API_ROUTES.adminDonationTimelineReport}?period=${period}`);
+
+export const getAdminNgos = (status = '') => {
+  const queryString = status ? `?status=${status}` : '';
+  return apiRequest(`${API_ROUTES.adminNgos}${queryString}`);
+};
+
+export const getAdminNgoById = (ngoId) => apiRequest(`${API_ROUTES.adminNgos}/${ngoId}`);
+
+export const approveAdminNgo = (ngoId) =>
+  apiRequest(`${API_ROUTES.adminNgos}/${ngoId}/approve`, {
+    method: 'PUT',
+  });
+
+export const rejectAdminNgo = (ngoId, payload = {}) =>
+  apiRequest(`${API_ROUTES.adminNgos}/${ngoId}/reject`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(payload),
+  });

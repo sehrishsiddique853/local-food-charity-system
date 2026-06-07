@@ -24,4 +24,5 @@ export const API_ROUTES = {
   adminRequestReport: '/api/admin/reports/requests',
   adminUserReport: '/api/admin/reports/users',
   adminDonationTimelineReport: '/api/admin/reports/donations/timeline',
+  adminNgos: '/api/admin/ngos',
 };

@@ -1,0 +1,249 @@
+.admin-ngos-panel {
+  margin-top: 1.25rem;
+}
+
+.admin-ngos-page .dashboard-alert.success {
+  border-color: rgba(34, 197, 94, 0.28);
+  background: rgba(34, 197, 94, 0.1);
+  color: #166534;
+}
+
+.admin-tabs {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.75rem;
+  margin-bottom: 1.35rem;
+}
+
+.admin-tabs button {
+  min-height: 58px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0 0.9rem;
+  border: 1px solid #e8ece9;
+  border-radius: 8px;
+  background: #ffffff;
+  color: #374151;
+  cursor: pointer;
+  font: inherit;
+  font-weight: 800;
+  text-align: left;
+}
+
+.admin-tabs button.active {
+  border-color: rgba(39, 174, 96, 0.35);
+  background: #effaf2;
+  color: #15803d;
+}
+
+.admin-tabs strong {
+  color: #111827;
+  font-size: 1.1rem;
+}
+
+.admin-ngo-table {
+  display: grid;
+  gap: 0.85rem;
+}
+
+.admin-ngo-table-head,
+.admin-ngo-row {
+  display: grid;
+  grid-template-columns:
+    minmax(170px, 1.2fr)
+    minmax(180px, 1fr)
+    minmax(130px, 0.8fr)
+    minmax(150px, 0.9fr)
+    112px
+    minmax(160px, 0.9fr);
+  gap: 1rem;
+  align-items: center;
+}
+
+.admin-ngo-table-head {
+  padding: 0 1rem;
+  color: #64748b;
+  font-size: 0.78rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.admin-ngo-list {
+  display: grid;
+  gap: 0.85rem;
+}
+
+.admin-ngo-row {
+  min-height: 92px;
+  padding: 1rem;
+  border: 1px solid #edf1ee;
+  border-radius: 8px;
+  background: #ffffff;
+  cursor: pointer;
+  transition: border-color 0.22s ease, box-shadow 0.22s ease, transform 0.22s ease;
+}
+
+.admin-ngo-row:hover,
+.admin-ngo-row:focus-visible {
+  border-color: rgba(39, 174, 96, 0.35);
+  box-shadow: 0 14px 34px rgba(15, 23, 42, 0.08);
+  outline: none;
+  transform: translateY(-1px);
+}
+
+.admin-ngo-row strong,
+.admin-ngo-row span {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.admin-ngo-row strong {
+  color: #111827;
+  font-size: 1rem;
+}
+
+.admin-ngo-row span {
+  color: #374151;
+  font-size: 0.9rem;
+}
+
+.status-pill.pending {
+  background: #fff7df;
+  color: #b45309;
+}
+
+.status-pill.approved {
+  background: #dff3e5;
+  color: #15803d;
+}
+
+.status-pill.rejected {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+
+.admin-ngo-actions,
+.admin-modal-actions {
+  display: flex;
+  gap: 0.55rem;
+  justify-content: flex-end;
+}
+
+.admin-ngo-actions button,
+.admin-modal-actions button {
+  min-height: 38px;
+  padding: 0 0.85rem;
+  border-radius: 6px;
+  font: inherit;
+  font-weight: 800;
+}
+
+.admin-ngo-actions .approve,
+.admin-modal-actions .approve {
+  border: 1px solid rgba(39, 174, 96, 0.45);
+  background: #16a34a;
+  color: #ffffff;
+}
+
+.admin-ngo-actions .approve:hover:not(:disabled),
+.admin-modal-actions .approve:hover:not(:disabled) {
+  background: #15803d;
+}
+
+.admin-ngo-actions .reject,
+.admin-modal-actions .reject {
+  border: 1px solid #dc2626;
+  background: #dc2626;
+  color: #ffffff;
+}
+
+.admin-ngo-actions .reject:hover:not(:disabled),
+.admin-modal-actions .reject:hover:not(:disabled) {
+  background: #b91c1c;
+}
+
+.admin-ngo-actions button:disabled,
+.admin-modal-actions button:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+
+.admin-ngo-modal {
+  width: min(820px, 100%);
+}
+
+.admin-ngo-detail-grid .status-pill {
+  justify-self: start;
+}
+
+.admin-ngo-detail-wide {
+  grid-column: 1 / -1;
+}
+
+.admin-document-link {
+  width: max-content;
+  color: #15803d;
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.admin-document-link:hover {
+  text-decoration: underline;
+}
+
+.admin-modal-actions {
+  margin-top: 1rem;
+}
+
+@media (max-width: 1100px) {
+  .admin-tabs {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .admin-ngo-table-head {
+    display: none;
+  }
+
+  .admin-ngo-row {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+
+  .admin-ngo-row > span:not(.status-pill) {
+    grid-column: 1;
+  }
+
+  .admin-ngo-row .status-pill {
+    grid-column: 2;
+    grid-row: 1;
+  }
+
+  .admin-ngo-actions {
+    grid-column: 1 / -1;
+    justify-content: flex-start;
+  }
+}
+
+@media (max-width: 640px) {
+  .admin-tabs {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-ngo-row {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-ngo-row .status-pill,
+  .admin-ngo-actions {
+    grid-column: auto;
+  }
+
+  .admin-ngo-actions,
+  .admin-modal-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
