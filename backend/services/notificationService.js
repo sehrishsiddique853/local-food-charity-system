@@ -39,6 +39,33 @@ const createNotification = async ({
   });
 };
 
+const createAdminNotifications = async ({
+  title,
+  message,
+  type = "system",
+  eventKey,
+  relatedDonation = null,
+  relatedRequest = null,
+  dedupe = true,
+}) => {
+  const admins = await User.find({ role: "admin", isBlocked: false }).select("_id");
+
+  return Promise.all(
+    admins.map((admin) =>
+      createNotification({
+        receiver: admin._id,
+        title,
+        message,
+        type,
+        eventKey,
+        relatedDonation,
+        relatedRequest,
+        dedupe,
+      })
+    )
+  );
+};
+
 export const notifyDonationPosted = (donation) =>
   createNotification({
     receiver: donation.donor,
@@ -94,15 +121,24 @@ export const notifyDonationCancelled = (donation) =>
   });
 
 export const notifyDonationExpired = (donation) =>
-  createNotification({
-    receiver: donation.donor,
-    title: "Donation Expired",
-    message: `Your donation "${donation.foodTitle}" expired before it was collected.`,
-    type: "system",
-    eventKey: "donation_expired",
-    relatedDonation: donation._id,
-    dedupe: true,
-  });
+  Promise.all([
+    createNotification({
+      receiver: donation.donor,
+      title: "Donation Expired",
+      message: `Your donation "${donation.foodTitle}" expired before it was collected.`,
+      type: "system",
+      eventKey: "donation_expired",
+      relatedDonation: donation._id,
+      dedupe: true,
+    }),
+    createAdminNotifications({
+      title: "Donation Expired",
+      message: `"${donation.foodTitle}" expired before collection.`,
+      type: "system",
+      eventKey: "admin_donation_expired",
+      relatedDonation: donation._id,
+    }),
+  ]);
 
 export const notifyDonationBooked = (donation) =>
   createNotification({
@@ -116,26 +152,53 @@ export const notifyDonationBooked = (donation) =>
   });
 
 export const notifyDonationCollected = (donation) =>
-  createNotification({
-    receiver: donation.donor,
-    title: "Donation Collected",
-    message: `Your donation "${donation.foodTitle}" has been collected.`,
-    type: "donation",
-    eventKey: "donation_collected",
-    relatedDonation: donation._id,
-    dedupe: true,
-  });
+  Promise.all([
+    createNotification({
+      receiver: donation.donor,
+      title: "Donation Collected",
+      message: `Your donation "${donation.foodTitle}" has been collected.`,
+      type: "donation",
+      eventKey: "donation_collected",
+      relatedDonation: donation._id,
+      dedupe: true,
+    }),
+    createAdminNotifications({
+      title: "Donation Collected",
+      message: `"${donation.foodTitle}" was marked collected by an NGO.`,
+      type: "donation",
+      eventKey: "admin_donation_collected",
+      relatedDonation: donation._id,
+    }),
+  ]);
 
 export const notifyDonationRequested = (donation, request) =>
-  createNotification({
-    receiver: donation.donor,
-    title: "Donation Requested",
-    message: `An NGO requested your donation "${donation.foodTitle}".`,
-    type: "request",
-    eventKey: "donation_requested",
-    relatedDonation: donation._id,
-    relatedRequest: request._id,
-    dedupe: true,
+  Promise.all([
+    createNotification({
+      receiver: donation.donor,
+      title: "Donation Requested",
+      message: `An NGO requested your donation "${donation.foodTitle}".`,
+      type: "request",
+      eventKey: "donation_requested",
+      relatedDonation: donation._id,
+      relatedRequest: request._id,
+      dedupe: true,
+    }),
+    createAdminNotifications({
+      title: "New Donation Request",
+      message: `An NGO requested "${donation.foodTitle}".`,
+      type: "request",
+      eventKey: "admin_donation_requested",
+      relatedDonation: donation._id,
+      relatedRequest: request._id,
+    }),
+  ]);
+
+export const notifyAdminNgoRegistration = (ngo) =>
+  createAdminNotifications({
+    title: "New NGO Registration",
+    message: `${ngo.ngoName || ngo.email} registered and is awaiting verification.`,
+    type: "system",
+    eventKey: `admin_new_ngo_registration_${ngo._id}`,
   });
 
 export const notifyNgoVerificationApproved = (ngo) =>
@@ -194,6 +257,7 @@ export default {
   notifyDonationBooked,
   notifyDonationCollected,
   notifyDonationRequested,
+  notifyAdminNgoRegistration,
   notifyNgoVerificationApproved,
   notifyNgoVerificationRejected,
   notifyNgoRequestApproved,

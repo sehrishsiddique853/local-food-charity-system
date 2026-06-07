@@ -4,6 +4,10 @@ import { notificationTypeIcons, notificationTypeLabels } from '../../utils/notif
 const NotificationsList = ({
   groupedNotifications,
   isLoading,
+  title = 'Notifications',
+  description = 'Stay updated on donation activity, approvals, and system messages.',
+  emptyTitle = 'No notifications yet',
+  emptyDescription = 'Donation updates and system messages will appear here.',
 }) => {
   const notifications = [
     ...groupedNotifications.unread,
@@ -14,8 +18,8 @@ const NotificationsList = ({
     <section className="notifications-panel">
       <div className="notifications-heading">
         <div>
-          <h2>Notifications</h2>
-          <p>Stay updated on donation activity, approvals, and system messages.</p>
+          <h2>{title}</h2>
+          <p>{description}</p>
         </div>
       </div>
 
@@ -23,8 +27,8 @@ const NotificationsList = ({
 
       {!isLoading && notifications.length === 0 && (
         <div className="my-donations-empty">
-          <h3>No notifications yet</h3>
-          <p>Donation updates and system messages will appear here.</p>
+          <h3>{emptyTitle}</h3>
+          <p>{emptyDescription}</p>
         </div>
       )}
 

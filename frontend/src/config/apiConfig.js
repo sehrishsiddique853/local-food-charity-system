@@ -19,4 +19,9 @@ export const API_ROUTES = {
   ngoRequests: '/api/ngo/requests',
   ngoBookedDonations: '/api/ngo/donations/booked',
   ngoHistory: '/api/ngo/history',
+  adminDashboard: '/api/admin/dashboard',
+  adminDonationReport: '/api/admin/reports/donations',
+  adminRequestReport: '/api/admin/reports/requests',
+  adminUserReport: '/api/admin/reports/users',
+  adminDonationTimelineReport: '/api/admin/reports/donations/timeline',
 };

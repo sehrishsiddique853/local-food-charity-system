@@ -1,19 +1,25 @@
 import { buildDonutGradient } from '../../utils/donationUtils';
 
-const DonationOverviewPanel = ({ rows, total }) => (
+const DonationOverviewPanel = ({
+  rows,
+  total,
+  title = 'Donations Overview',
+  centerLabel = 'Status Mix',
+  ariaLabel = 'Status distribution',
+}) => (
   <article className="dashboard-panel overview-panel">
     <div className="panel-heading">
-      <h2>Donations Overview</h2>
+      <h2>{title}</h2>
     </div>
 
     <div className="overview-body">
       <div
         className="donut-chart"
         style={{ '--donut-gradient': buildDonutGradient(rows, total) }}
-        aria-label="Donation status distribution"
+        aria-label={ariaLabel}
       >
         <strong>{total ? '100%' : '0%'}</strong>
-        <span>Status Mix</span>
+        <span>{centerLabel}</span>
       </div>
 
       <div className="overview-list">

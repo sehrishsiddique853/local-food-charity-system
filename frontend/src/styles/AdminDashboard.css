@@ -1,0 +1,51 @@
+.admin-content {
+  max-width: 1360px;
+}
+
+.admin-dashboard .stats-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.admin-chart-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+  align-items: stretch;
+}
+
+.admin-chart-grid .dashboard-panel {
+  min-width: 0;
+}
+
+.admin-chart-grid .overview-body {
+  grid-template-columns: 1fr;
+  min-height: 360px;
+}
+
+.admin-chart-grid .overview-list {
+  width: 100%;
+}
+
+.dashboard-loading {
+  margin: 0 0 1rem;
+  color: #4b5563;
+  font-weight: 700;
+}
+
+@media (max-width: 1250px) {
+  .admin-dashboard .stats-grid,
+  .admin-chart-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 760px) {
+  .admin-dashboard .stats-grid,
+  .admin-chart-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-chart-grid .overview-body {
+    min-height: auto;
+  }
+}

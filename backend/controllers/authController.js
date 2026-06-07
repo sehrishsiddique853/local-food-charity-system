@@ -3,6 +3,7 @@
 import { successResponse } from "../utils/apiResponse.js";
 import * as authService from "../services/authService.js";
 import { uploadBufferToCloudinary } from "../config/cloudinary.js";
+import { notifyAdminNgoRegistration } from "../services/notificationService.js";
 
 // Cookie settings for access and refresh tokens.
 // Access tokens are short-lived, refresh tokens are longer-lived.
@@ -40,6 +41,10 @@ export const register = async (req, res, next) => {
     }
 
     const { user, accessToken, refreshToken } = await authService.registerUser(registerData);
+
+    if (user.role === "ngo") {
+      await notifyAdminNgoRegistration(user);
+    }
 
     res.cookie("accessToken", accessToken, accessCookieOptions);
     res.cookie("refreshToken", refreshToken, refreshCookieOptions);

@@ -1,5 +1,6 @@
 import Donation from "../models/Donation.js";
 import DonationRequest from "../models/DonationRequest.js";
+import { notifyDonationExpired } from "./notificationService.js";
 
 const EXPIRABLE_DONATION_STATUSES = ["available", "requested"];
 
@@ -8,7 +9,7 @@ export const expireStaleDonations = async (now = new Date()) => {
     status: { $in: EXPIRABLE_DONATION_STATUSES },
     expiryDate: { $lte: now },
     isActive: true,
-  }).select("_id");
+  }).select("_id donor foodTitle");
 
   if (!expiredDonations.length) {
     return { expiredDonations: 0, cancelledRequests: 0 };
@@ -34,6 +35,8 @@ export const expireStaleDonations = async (now = new Date()) => {
       }
     ),
   ]);
+
+  await Promise.all(expiredDonations.map((donation) => notifyDonationExpired(donation)));
 
   return {
     expiredDonations: donationResult.modifiedCount || 0,
