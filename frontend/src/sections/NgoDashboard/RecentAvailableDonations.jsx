@@ -26,8 +26,10 @@ const RecentAvailableDonations = ({
             <strong>{donation.foodTitle}</strong>
             <p>
               {formatQuantity(donation.quantity)}
-              <span>•</span>
-              {donation.pickupAddress?.address || donation.donor?.location?.address || 'Address not available'}
+              <span className="responsive-address-separator">•</span>
+              <span className="responsive-address">
+                {donation.pickupAddress?.address || donation.donor?.location?.address || 'Address not available'}
+              </span>
             </p>
           </div>
           <span className={`status-pill ${donationStatusClasses[donation.status] || 'available'}`}>
