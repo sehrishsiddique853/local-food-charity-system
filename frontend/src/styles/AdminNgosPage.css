@@ -308,22 +308,59 @@
 
 @media (max-width: 640px) {
   .admin-tabs {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .admin-tabs button {
+    min-height: 64px;
+    padding: 0 0.75rem;
   }
 
   .admin-ngo-row {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 0.7rem 1rem;
+    align-items: start;
+    padding: 1rem;
   }
 
-  .admin-ngo-row .status-pill,
+  .admin-ngo-row strong {
+    grid-column: 1;
+    grid-row: 1;
+  }
+
+  .admin-ngo-row .status-pill {
+    grid-column: 2;
+    grid-row: 1;
+    justify-self: end;
+    align-self: start;
+  }
+
+  .admin-ngo-row > span:not(.status-pill) {
+    grid-column: 1 / -1;
+  }
+
   .admin-ngo-actions {
-    grid-column: auto;
+    grid-column: 1 / -1;
   }
 
   .admin-ngo-actions,
   .admin-modal-actions,
   .admin-reject-actions {
-    flex-direction: column;
     align-items: stretch;
+  }
+
+  .admin-ngo-actions {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.6rem;
+  }
+
+  .admin-modal-actions,
+  .admin-reject-actions {
+    flex-direction: column;
+  }
+
+  .admin-ngo-actions button {
+    width: 100%;
   }
 }

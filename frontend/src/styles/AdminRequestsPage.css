@@ -168,16 +168,48 @@
 
 @media (max-width: 640px) {
   .admin-request-row {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 0.75rem 1rem;
+    align-items: start;
+    padding: 1rem;
   }
 
-  .admin-request-row .status-pill,
-  .admin-request-actions {
-    grid-column: auto;
+  .admin-request-donation {
+    grid-column: 1;
+    grid-row: 1;
+  }
+
+  .admin-request-row .status-pill {
+    grid-column: 2;
+    grid-row: 1;
+    justify-self: end;
+    align-self: start;
+  }
+
+  .admin-request-row > span:not(.status-pill) {
+    grid-column: 1;
+    grid-row: 2;
+  }
+
+  .admin-request-row time {
+    grid-column: 2;
+    grid-row: 2;
+    justify-self: end;
+    text-align: right;
   }
 
   .admin-request-actions {
-    flex-direction: column;
+    grid-column: 1 / -1;
+  }
+
+  .admin-request-actions {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.6rem;
     align-items: stretch;
+  }
+
+  .admin-request-actions button {
+    width: 100%;
   }
 }

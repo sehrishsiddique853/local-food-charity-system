@@ -394,15 +394,7 @@ export const deleteDonation = async (req, res, next) => {
 export const changeDonationStatus = async (req, res, next) => {
   try {
     const { status } = req.body;
-    const allowed = [
-      "available",
-      "requested",
-      "booked",
-      "collected",
-      "completed",
-      "expired",
-      "cancelled",
-    ];
+    const allowed = ["available", "collected", "expired", "cancelled"];
 
     if (!allowed.includes(status)) {
       throw new ApiError(400, "INVALID_DONATION_STATUS", "Invalid donation status");
@@ -413,8 +405,57 @@ export const changeDonationStatus = async (req, res, next) => {
       throw new ApiError(404, "DONATION_NOT_FOUND", "Donation not found");
     }
 
+    const currentStatus = donation.status || "available";
+    const terminalStatuses = ["collected", "completed", "expired", "cancelled"];
+
+    if (terminalStatuses.includes(currentStatus)) {
+      throw new ApiError(
+        400,
+        "DONATION_STATUS_LOCKED",
+        "Collected, expired, and cancelled donations cannot be changed"
+      );
+    }
+
+    if (["available", "requested"].includes(currentStatus) && !["expired", "cancelled"].includes(status)) {
+      throw new ApiError(
+        400,
+        "INVALID_DONATION_TRANSITION",
+        "Available donations can only be marked expired or cancelled"
+      );
+    }
+
+    if (currentStatus === "booked" && !["collected", "available"].includes(status)) {
+      throw new ApiError(
+        400,
+        "INVALID_DONATION_TRANSITION",
+        "Booked donations can only be marked collected or have their booking cancelled"
+      );
+    }
+
     donation.status = status;
     donation.isActive = !["expired", "cancelled", "completed"].includes(status);
+
+    if (status === "available") {
+      donation.bookedByNgo = null;
+      await DonationRequest.deleteMany({ donation: donation._id });
+    }
+
+    if (["expired", "cancelled"].includes(status)) {
+      donation.bookedByNgo = null;
+      await DonationRequest.deleteMany({ donation: donation._id });
+    }
+
+    if (status === "collected") {
+      await DonationRequest.updateMany(
+        {
+          donation: donation._id,
+          requestStatus: "approved",
+        },
+        {
+          $set: { requestStatus: "collected" },
+        }
+      );
+    }
 
     await donation.save();
 

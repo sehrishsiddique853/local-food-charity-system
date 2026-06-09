@@ -24,6 +24,10 @@ export const API_ROUTES = {
   adminRequestReport: '/api/admin/reports/requests',
   adminUserReport: '/api/admin/reports/users',
   adminDonationTimelineReport: '/api/admin/reports/donations/timeline',
+  adminNgoPerformanceReport: '/api/admin/reports/ngos/performance',
   adminNgos: '/api/admin/ngos',
   adminRequests: '/api/admin/requests',
+  adminDonations: '/api/admin/donations',
+  adminDonationStatus: '/api/admin/status',
+  adminUsers: '/api/admin/users',
 };

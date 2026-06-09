@@ -31,9 +31,4 @@ export const adminNavItems = [
     href: ROUTES.adminReports,
     label: 'Reports & Analytics',
   },
-  {
-    key: 'profile',
-    href: ROUTES.adminProfile,
-    label: 'My Profile',
-  },
 ];

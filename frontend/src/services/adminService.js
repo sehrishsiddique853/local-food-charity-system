@@ -12,6 +12,9 @@ export const getAdminUserReport = () => apiRequest(API_ROUTES.adminUserReport);
 export const getAdminDonationTimelineReport = (period = 'monthly') =>
   apiRequest(`${API_ROUTES.adminDonationTimelineReport}?period=${period}`);
 
+export const getAdminNgoPerformanceReport = () =>
+  apiRequest(API_ROUTES.adminNgoPerformanceReport);
+
 export const getAdminNgos = (status = '') => {
   const queryString = status ? `?status=${status}` : '';
   return apiRequest(`${API_ROUTES.adminNgos}${queryString}`);
@@ -57,4 +60,44 @@ export const rejectAdminRequest = (requestId, payload = {}) =>
       'Content-Type': 'application/json',
     },
     body: JSON.stringify(payload),
+  });
+
+export const getAdminDonations = (status = '') => {
+  const queryString = status ? `?status=${status}` : '';
+  return apiRequest(`${API_ROUTES.adminDonations}${queryString}`);
+};
+
+export const getAdminDonationById = (donationId) =>
+  apiRequest(`${API_ROUTES.adminDonations}/${donationId}`);
+
+export const updateAdminDonationStatus = (donationId, status) =>
+  apiRequest(`${API_ROUTES.adminDonationStatus}/${donationId}`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ status }),
+  });
+
+export const deleteAdminDonation = (donationId) =>
+  apiRequest(`${API_ROUTES.adminDonations}/${donationId}`, {
+    method: 'DELETE',
+  });
+
+export const getAdminUsers = (role = '') => {
+  const queryString = role ? `?role=${role}` : '';
+  return apiRequest(`${API_ROUTES.adminUsers}${queryString}`);
+};
+
+export const getAdminUserById = (userId) =>
+  apiRequest(`${API_ROUTES.adminUsers}/${userId}`);
+
+export const activateAdminUser = (userId) =>
+  apiRequest(`${API_ROUTES.adminUsers}/${userId}/activate`, {
+    method: 'PUT',
+  });
+
+export const deactivateAdminUser = (userId) =>
+  apiRequest(`${API_ROUTES.adminUsers}/${userId}/deactivate`, {
+    method: 'PUT',
   });
