@@ -105,8 +105,15 @@ export const getDashboardStats = async (req, res, next) => {
 export const getUsers = async (req, res, next) => {
   try {
     const { role } = req.query;
-    const filter = {};
+    const filter = { role: { $ne: "admin" } };
     if (role) {
+      if (role === "admin") {
+        throw new ApiError(
+          400,
+          "ADMIN_USERS_NOT_MANAGEABLE",
+          "Admin accounts are managed from the backend only"
+        );
+      }
       filter.role = role;
     }
 
@@ -125,6 +132,14 @@ export const getUserById = async (req, res, next) => {
       throw new ApiError(404, "USER_NOT_FOUND", "User not found");
     }
 
+    if (user.role === "admin") {
+      throw new ApiError(
+        403,
+        "ADMIN_USERS_NOT_MANAGEABLE",
+        "Admin accounts are managed from the backend only"
+      );
+    }
+
     return successResponse(res, 200, { user });
   } catch (err) {
     return next(err);
@@ -137,6 +152,14 @@ export const activateUser = async (req, res, next) => {
 
     if (!user) {
       throw new ApiError(404, "USER_NOT_FOUND", "User not found");
+    }
+
+    if (user.role === "admin") {
+      throw new ApiError(
+        403,
+        "ADMIN_USERS_NOT_MANAGEABLE",
+        "Admin accounts are managed from the backend only"
+      );
     }
 
     user.isBlocked = false;
@@ -159,6 +182,14 @@ export const deactivateUser = async (req, res, next) => {
       throw new ApiError(404, "USER_NOT_FOUND", "User not found");
     }
 
+    if (user.role === "admin") {
+      throw new ApiError(
+        403,
+        "ADMIN_USERS_NOT_MANAGEABLE",
+        "Admin accounts are managed from the backend only"
+      );
+    }
+
     user.isBlocked = true;
     await user.save();
 
@@ -176,6 +207,14 @@ export const deleteUser = async (req, res, next) => {
     const user = await User.findById(req.params.id);
     if (!user) {
       throw new ApiError(404, "USER_NOT_FOUND", "User not found");
+    }
+
+    if (user.role === "admin") {
+      throw new ApiError(
+        403,
+        "ADMIN_USERS_NOT_MANAGEABLE",
+        "Admin accounts are managed from the backend only"
+      );
     }
 
     if (user.role === "donor") {

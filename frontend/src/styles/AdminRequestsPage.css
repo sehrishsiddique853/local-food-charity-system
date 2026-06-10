@@ -198,6 +198,23 @@
     text-align: right;
   }
 
+  .admin-request-row span:not(.status-pill),
+  .admin-request-row time,
+  .admin-request-donation strong,
+  .admin-request-donation small {
+    overflow: visible;
+    text-overflow: clip;
+    white-space: normal;
+    word-break: break-word;
+  }
+
+  .admin-request-row span:not(.status-pill),
+  .admin-request-row time,
+  .admin-request-donation small {
+    font-size: 0.86rem;
+    line-height: 1.35;
+  }
+
   .admin-request-actions {
     grid-column: 1 / -1;
   }
@@ -211,5 +228,20 @@
 
   .admin-request-actions button {
     width: 100%;
+  }
+}
+
+@media (max-width: 420px) {
+  .admin-request-row {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-request-row .status-pill,
+  .admin-request-row > span:not(.status-pill),
+  .admin-request-row time {
+    grid-column: 1;
+    grid-row: auto;
+    justify-self: start;
+    text-align: left;
   }
 }

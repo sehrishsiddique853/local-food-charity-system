@@ -29,17 +29,17 @@ const saveRefreshToken = async (userId, token) => {
 
 const formatPakistanPhone = (phone) => `+92 ${phone}`;
 
-export const registerUser = async ({
-  name,
-  email,
-  password,
-  phone,
-  role,
-  location,
-  ngoName,
-  ngoRegistrationNumber,
-  ngoDocument,
-}) => {
+const ensureNgoCanAuthenticate = (user) => {
+  if (user.role === "ngo" && user.ngoVerificationStatus !== "approved") {
+    throw new ApiError(
+      403,
+      "NGO_NOT_APPROVED",
+      "Your NGO account is pending admin approval"
+    );
+  }
+};
+
+export const assertRegistrationAvailable = async ({ email, phone }) => {
   const formattedPhone = formatPakistanPhone(phone);
 
   // Prevent duplicate email and phone registrations.
@@ -52,6 +52,22 @@ export const registerUser = async ({
   if (existingPhone) {
     throw new ApiError(409, "PHONE_ALREADY_EXISTS", "Phone number already in use");
   }
+
+  return formattedPhone;
+};
+
+export const registerUser = async ({
+  name,
+  email,
+  password,
+  phone,
+  role,
+  location,
+  ngoName,
+  ngoRegistrationNumber,
+  ngoDocument,
+}) => {
+  const formattedPhone = await assertRegistrationAvailable({ email, phone });
 
   const salt = await bcrypt.genSalt(10);
   const hashedPassword = await bcrypt.hash(password, salt);
@@ -74,9 +90,13 @@ export const registerUser = async ({
     ngoVerificationStatus: normalizedRole === "ngo" ? "pending" : undefined,
   });
 
-  const accessToken = generateAccessToken(user);
-  const refreshToken = generateRefreshToken();
-  await saveRefreshToken(user._id, refreshToken);
+  const shouldIssueTokens = user.role !== "ngo" || user.ngoVerificationStatus === "approved";
+  const accessToken = shouldIssueTokens ? generateAccessToken(user) : null;
+  const refreshToken = shouldIssueTokens ? generateRefreshToken() : null;
+
+  if (refreshToken) {
+    await saveRefreshToken(user._id, refreshToken);
+  }
 
   return {
     user,
@@ -99,6 +119,8 @@ export const loginUser = async ({ email, password }) => {
   if (!match) {
     throw new ApiError(401, "INVALID_CREDENTIALS", "Invalid credentials");
   }
+
+  ensureNgoCanAuthenticate(user);
 
   const accessToken = generateAccessToken(user);
   const refreshToken = generateRefreshToken();
@@ -213,6 +235,13 @@ export const refreshAccessToken = async (refreshToken) => {
   if (user.isBlocked) {
     await RefreshToken.deleteMany({ user: user._id });
     throw new ApiError(403, "ACCOUNT_DEACTIVATED", "Your account has been deactivated");
+  }
+
+  try {
+    ensureNgoCanAuthenticate(user);
+  } catch (error) {
+    await RefreshToken.deleteMany({ user: user._id });
+    throw error;
   }
 
   const accessToken = generateAccessToken(user);

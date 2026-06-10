@@ -84,7 +84,18 @@ export const useNgoAvailableDonations = () => {
 
   const donations = useMemo(() => {
     const minimumQuantity = Number(quantityFilter);
-    const expiryTimestamp = expiryFilter ? new Date(expiryFilter).setHours(23, 59, 59, 999) : null;
+    const selectedExpiryDate = expiryFilter ? new Date(expiryFilter) : null;
+    const expiryTimestamp = selectedExpiryDate
+      ? new Date(
+          selectedExpiryDate.getFullYear(),
+          selectedExpiryDate.getMonth(),
+          selectedExpiryDate.getDate(),
+          23,
+          59,
+          59,
+          999
+        ).getTime()
+      : null;
     const pickupSearch = pickupAreaFilter.trim().toLowerCase();
 
     return allDonations.filter((donation) => {

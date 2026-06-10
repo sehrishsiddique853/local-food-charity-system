@@ -14,10 +14,12 @@
 
 .admin-user-filters {
   margin-bottom: 1.35rem;
+  width: 100%;
+  max-width: 360px;
 }
 
 .admin-user-filters label {
-  max-width: 360px;
+  width: 100%;
   display: grid;
   gap: 0.55rem;
 }
@@ -28,14 +30,70 @@
   font-weight: 900;
 }
 
-.admin-user-filters select {
+.admin-user-select {
+  position: relative;
+  width: 100%;
+}
+
+.admin-user-select__button {
+  width: 100%;
   min-height: 44px;
   padding: 0 0.95rem;
   border: 1px solid #d9e0e7;
   border-radius: 8px;
   background: #ffffff;
   color: #111827;
+  text-align: left;
   font: inherit;
+  box-sizing: border-box;
+  cursor: pointer;
+}
+
+.admin-user-select__button:focus {
+  outline: none;
+  border-color: rgba(39, 174, 96, 0.55);
+  box-shadow: 0 0 0 3px rgba(39, 174, 96, 0.1);
+}
+
+.admin-user-select__menu {
+  position: absolute;
+  top: calc(100% + 0.35rem);
+  left: 0;
+  width: 100%;
+  margin: 0;
+  padding: 0.35rem 0;
+  list-style: none;
+  border: 1px solid #d9e0e7;
+  border-radius: 10px;
+  background: #ffffff;
+  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+  z-index: 20;
+}
+
+.admin-user-select__item {
+  width: 100%;
+  display: block;
+  padding: 0.85rem 0.95rem;
+  border: none;
+  background: transparent;
+  text-align: left;
+  color: #111827;
+  font: inherit;
+  cursor: pointer;
+}
+
+.admin-user-select__item:hover,
+.admin-user-select__item.selected {
+  background: #eef6f0;
+}
+
+.admin-user-select__item:focus {
+  outline: none;
+  background: #eef6f0;
+}
+
+.admin-user-filters select {
+  display: none;
 }
 
 .admin-user-filters select:focus {
@@ -238,6 +296,21 @@
     grid-column: 1 / -1;
   }
 
+  .admin-user-row strong,
+  .admin-user-row span:not(.status-pill),
+  .admin-user-row time {
+    overflow: visible;
+    text-overflow: clip;
+    white-space: normal;
+    word-break: break-word;
+  }
+
+  .admin-user-row span:not(.status-pill),
+  .admin-user-row time {
+    font-size: 0.86rem;
+    line-height: 1.35;
+  }
+
   .admin-user-actions {
     grid-column: 1 / -1;
   }
@@ -251,5 +324,17 @@
 
   .admin-user-actions button {
     width: 100%;
+  }
+}
+
+@media (max-width: 420px) {
+  .admin-user-row {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-user-row .status-pill {
+    grid-column: 1;
+    grid-row: auto;
+    justify-self: start;
   }
 }

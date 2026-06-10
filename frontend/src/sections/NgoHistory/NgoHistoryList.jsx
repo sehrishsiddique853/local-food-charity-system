@@ -32,19 +32,34 @@ const NgoHistoryList = ({
       </div>
     </div>
 
-    <div className="ngo-request-summary ngo-history-summary">
-      <article>
-        <span>All History</span>
+    <div className="ngo-request-summary ngo-history-summary" role="tablist" aria-label="History tabs">
+      <button
+        type="button"
+        className={`summary-chip all ${statusFilter === '' ? 'active' : ''}`}
+        aria-pressed={statusFilter === ''}
+        onClick={() => onStatusChange('')}
+      >
+        All History
         <strong>{totals.all}</strong>
-      </article>
-      <article>
-        <span>Rejected</span>
+      </button>
+      <button
+        type="button"
+        className={`summary-chip cancelled ${statusFilter === 'rejected' ? 'active' : ''}`}
+        aria-pressed={statusFilter === 'rejected'}
+        onClick={() => onStatusChange('rejected')}
+      >
+        Rejected
         <strong>{totals.rejected}</strong>
-      </article>
-      <article>
-        <span>Collected</span>
+      </button>
+      <button
+        type="button"
+        className={`summary-chip collected ${statusFilter === 'collected' ? 'active' : ''}`}
+        aria-pressed={statusFilter === 'collected'}
+        onClick={() => onStatusChange('collected')}
+      >
+        Collected
         <strong>{totals.collected}</strong>
-      </article>
+      </button>
     </div>
 
     <div className="ngo-donation-toolbar ngo-history-toolbar" aria-label="History filters">

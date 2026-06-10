@@ -39,11 +39,11 @@ const AdminNgoPerformanceTable = ({ rows }) => {
           {rows.map((row) => (
             <article className="admin-report-row" key={row.ngoId}>
               <strong>{row.ngoName || row.email || 'NGO'}</strong>
-              <span>{row.totalRequests || 0}</span>
-              <span>{row.pendingRequests || 0}</span>
-              <span>{row.approvedRequests || 0}</span>
-              <span>{row.rejectedRequests || 0}</span>
-              <span>{row.collectedRequests || 0}</span>
+              <span data-label="Total Requests">{row.totalRequests || 0}</span>
+              <span data-label="Pending">{row.pendingRequests || 0}</span>
+              <span data-label="Approved">{row.approvedRequests || 0}</span>
+              <span data-label="Rejected">{row.rejectedRequests || 0}</span>
+              <span data-label="Collected">{row.collectedRequests || 0}</span>
             </article>
           ))}
         </div>

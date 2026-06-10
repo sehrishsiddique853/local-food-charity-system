@@ -178,6 +178,8 @@
   .request-status-row,
   .booked-donation-row {
     grid-template-columns: minmax(0, 1fr) auto;
+    gap: 0.75rem;
+    align-items: start;
   }
 
   .booked-donation-actions {
@@ -188,10 +190,51 @@
 
   .request-status-row .status-pill {
     justify-self: end;
+    align-self: start;
   }
 
   .booked-donation-actions button {
     padding: 0.65rem 0.75rem;
     white-space: nowrap;
+  }
+
+  .request-status-row p,
+  .booked-donation-row p {
+    flex-wrap: wrap;
+    line-height: 1.35;
+  }
+
+  .booked-donation-row time {
+    white-space: normal;
+    text-align: right;
+  }
+}
+
+@media (max-width: 420px) {
+  .ngo-dashboard-grid .panel-heading {
+    align-items: flex-start;
+  }
+
+  .request-status-row,
+  .booked-donation-row {
+    grid-template-columns: 1fr;
+  }
+
+  .request-status-row .status-pill,
+  .booked-donation-actions {
+    justify-self: start;
+  }
+
+  .booked-donation-actions {
+    width: 100%;
+    justify-content: stretch;
+  }
+
+  .booked-donation-actions button {
+    width: 100%;
+  }
+
+  .booked-donation-row time {
+    text-align: left;
   }
 }

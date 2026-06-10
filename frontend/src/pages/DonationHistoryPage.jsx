@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { useDonationHistory } from '../hooks/useDonationHistory';
 import { useDonorProfile } from '../hooks/useDonorProfile';
 import DonorLayout from '../layouts/DonorLayout/DonorLayout';
@@ -19,6 +20,11 @@ const DonationHistoryPage = () => {
     selectedDonation,
     setSelectedDonation,
   } = useDonationHistory();
+  const [selectedStatus, setSelectedStatus] = useState('all');
+
+  const filteredDonations = selectedStatus === 'all'
+    ? historyDonations
+    : historyDonations.filter((donation) => donation.status === selectedStatus);
 
   return (
     <DonorLayout
@@ -40,8 +46,10 @@ const DonationHistoryPage = () => {
         )}
 
         <DonationHistoryList
-          donations={historyDonations}
+          donations={filteredDonations}
           totals={totals}
+          selectedStatus={selectedStatus}
+          onStatusChange={setSelectedStatus}
           isLoading={isLoading}
           onView={setSelectedDonation}
         />

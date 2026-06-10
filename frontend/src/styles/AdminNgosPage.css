@@ -313,7 +313,16 @@
 
   .admin-tabs button {
     min-height: 64px;
+    align-items: flex-start;
+    flex-direction: column;
     padding: 0 0.75rem;
+    justify-content: center;
+    line-height: 1.25;
+  }
+
+  .admin-tabs strong {
+    align-self: flex-end;
+    font-size: 1rem;
   }
 
   .admin-ngo-row {
@@ -339,6 +348,19 @@
     grid-column: 1 / -1;
   }
 
+  .admin-ngo-row strong,
+  .admin-ngo-row span:not(.status-pill) {
+    overflow: visible;
+    text-overflow: clip;
+    white-space: normal;
+    word-break: break-word;
+  }
+
+  .admin-ngo-row span:not(.status-pill) {
+    font-size: 0.86rem;
+    line-height: 1.35;
+  }
+
   .admin-ngo-actions {
     grid-column: 1 / -1;
   }
@@ -362,5 +384,17 @@
 
   .admin-ngo-actions button {
     width: 100%;
+  }
+}
+
+@media (max-width: 420px) {
+  .admin-ngo-row {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-ngo-row .status-pill {
+    grid-column: 1;
+    grid-row: auto;
+    justify-self: start;
   }
 }

@@ -431,6 +431,16 @@
 }
 
 @media (max-width: 760px) {
+  .donor-content,
+  .donor-profile-shell,
+  .my-donations-shell,
+  .donation-history-shell,
+  .post-donation-shell,
+  .notifications-shell {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
   .donor-content {
     padding: 1rem;
   }

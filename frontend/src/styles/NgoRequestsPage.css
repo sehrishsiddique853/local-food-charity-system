@@ -32,8 +32,56 @@
   font-size: 1.25rem;
 }
 
+.ngo-request-tabs {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.8rem;
+  margin-bottom: 1.1rem;
+}
+
+.ngo-request-tabs button {
+  min-height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0 1rem;
+  border: 1px solid #e8ece9;
+  border-radius: 8px;
+  background: #ffffff;
+  color: #1f2937;
+  cursor: pointer;
+  font: inherit;
+  text-align: left;
+  transition: border-color 0.2s ease, background 0.2s ease, color 0.2s ease;
+}
+
+.ngo-request-tabs button:hover,
+.ngo-request-tabs button.is-active {
+  border-color: rgba(39, 174, 96, 0.35);
+  background: rgba(39, 174, 96, 0.08);
+  color: #087f3f;
+}
+
+.ngo-request-tabs span {
+  font-size: 0.9rem;
+  font-weight: 800;
+  line-height: 1.25;
+}
+
+.ngo-request-tabs strong {
+  color: #111827;
+  font-size: 1.25rem;
+}
+
 .ngo-requests-toolbar {
   grid-template-columns: minmax(220px, 320px);
+}
+
+.ngo-request-card .ngo-list-copy p {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .ngo-request-card .request-badge.request-pending {
@@ -100,9 +148,39 @@
 }
 
 @media (max-width: 640px) {
-  .ngo-request-summary,
   .ngo-requests-toolbar {
     grid-template-columns: 1fr;
+  }
+
+  .ngo-request-tabs {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .ngo-request-tabs button {
+    min-height: 60px;
+    padding: 0.8rem;
+  }
+
+  .ngo-request-tabs button:nth-child(3) {
+    grid-column: 1 / -1;
+  }
+
+  .ngo-request-tabs span {
+    font-size: 0.82rem;
+  }
+
+  .ngo-request-summary {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .ngo-request-summary article {
+    min-height: 60px;
+    padding: 0.8rem;
+  }
+
+  .ngo-request-summary span {
+    font-size: 0.82rem;
+    line-height: 1.25;
   }
 
   .ngo-request-actions {
@@ -113,5 +191,11 @@
   .ngo-details-button.secondary-action,
   .ngo-cancel-button {
     width: 100%;
+  }
+}
+
+@media (max-width: 360px) {
+  .ngo-request-summary {
+    grid-template-columns: 1fr;
   }
 }

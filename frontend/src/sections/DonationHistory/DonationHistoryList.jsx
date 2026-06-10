@@ -19,7 +19,7 @@ const historyGroups = [
   },
 ];
 
-const DonationHistoryList = ({ donations, totals, isLoading, onView }) => (
+const DonationHistoryList = ({ donations, totals, selectedStatus, onStatusChange, isLoading, onView }) => (
   <section className="history-panel">
     <div className="my-donations-heading">
       <div>
@@ -28,23 +28,43 @@ const DonationHistoryList = ({ donations, totals, isLoading, onView }) => (
       </div>
     </div>
 
-    <div className="history-summary" aria-label="Donation history summary">
-      <span className="summary-chip all">
+    <div className="history-summary" role="tablist" aria-label="Donation history tabs">
+      <button
+        type="button"
+        className={`summary-chip all ${selectedStatus === 'all' ? 'active' : ''}`}
+        aria-pressed={selectedStatus === 'all'}
+        onClick={() => onStatusChange('all')}
+      >
         All History
         <strong>{totals.all || 0}</strong>
-      </span>
-      <span className="summary-chip collected">
+      </button>
+      <button
+        type="button"
+        className={`summary-chip collected ${selectedStatus === 'collected' ? 'active' : ''}`}
+        aria-pressed={selectedStatus === 'collected'}
+        onClick={() => onStatusChange('collected')}
+      >
         Collected
         <strong>{totals.collected || 0}</strong>
-      </span>
-      <span className="summary-chip expired">
+      </button>
+      <button
+        type="button"
+        className={`summary-chip expired ${selectedStatus === 'expired' ? 'active' : ''}`}
+        aria-pressed={selectedStatus === 'expired'}
+        onClick={() => onStatusChange('expired')}
+      >
         Expired
         <strong>{totals.expired || 0}</strong>
-      </span>
-      <span className="summary-chip cancelled">
+      </button>
+      <button
+        type="button"
+        className={`summary-chip cancelled ${selectedStatus === 'cancelled' ? 'active' : ''}`}
+        aria-pressed={selectedStatus === 'cancelled'}
+        onClick={() => onStatusChange('cancelled')}
+      >
         Cancelled
         <strong>{totals.cancelled || 0}</strong>
-      </span>
+      </button>
     </div>
 
     {isLoading && <p className="empty-state">Loading donation history...</p>}
@@ -58,10 +78,12 @@ const DonationHistoryList = ({ donations, totals, isLoading, onView }) => (
 
     {!isLoading && donations.length > 0 && (
       <div className="history-groups">
-        {historyGroups.map((group) => {
-          const groupDonations = donations.filter((donation) => group.statuses.includes(donation.status));
+        {historyGroups
+          .filter((group) => selectedStatus === 'all' || group.statuses.includes(selectedStatus))
+          .map((group) => {
+            const groupDonations = donations.filter((donation) => group.statuses.includes(donation.status));
 
-          return (
+            return (
             <article className="history-group" key={group.key}>
               <div className="history-group-heading">
                 <div>

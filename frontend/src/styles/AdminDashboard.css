@@ -40,12 +40,71 @@
 }
 
 @media (max-width: 760px) {
-  .admin-dashboard .stats-grid,
   .admin-chart-grid {
     grid-template-columns: 1fr;
   }
 
+  .admin-dashboard .stats-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.75rem;
+  }
+
+  .admin-dashboard .stat-card {
+    min-height: 126px;
+    padding: 1rem 0.85rem;
+    grid-template-rows: 32px 1fr auto;
+  }
+
+  .admin-dashboard .stat-card strong {
+    font-size: 1.75rem;
+  }
+
+  .admin-dashboard .stat-card p {
+    font-size: 0.82rem;
+    line-height: 1.2;
+  }
+
+  .admin-dashboard .stat-card small {
+    font-size: 0.74rem;
+  }
+
+  .admin-dashboard .stat-icon {
+    width: 32px;
+    height: 32px;
+  }
+
+  .admin-dashboard .stat-icon svg {
+    width: 19px;
+    height: 19px;
+  }
+
   .admin-chart-grid .overview-body {
     min-height: auto;
+  }
+
+  .admin-chart-grid .dashboard-panel {
+    padding: 1rem;
+  }
+
+  .admin-chart-grid .donut-chart {
+    width: 150px;
+    height: 150px;
+  }
+
+  .admin-chart-grid .overview-row {
+    grid-template-columns: 10px minmax(0, 1fr) 42px 54px;
+    gap: 0.55rem;
+  }
+
+  .admin-chart-grid .overview-row p,
+  .admin-chart-grid .overview-row small,
+  .admin-chart-grid .overview-row strong {
+    font-size: 0.82rem;
+  }
+}
+
+@media (max-width: 380px) {
+  .admin-dashboard .stats-grid {
+    grid-template-columns: 1fr;
   }
 }

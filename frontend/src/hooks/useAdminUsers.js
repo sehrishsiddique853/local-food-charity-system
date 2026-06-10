@@ -55,7 +55,10 @@ export const useAdminUsers = () => {
         return;
       }
 
-      setUsers(result.data.data?.users || []);
+      const manageableUsers = (result.data.data?.users || []).filter(
+        (user) => user.role !== 'admin'
+      );
+      setUsers(manageableUsers);
     } catch (error) {
       setErrorMessage(error.message || 'Unable to load users.');
     } finally {

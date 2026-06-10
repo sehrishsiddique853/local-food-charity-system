@@ -45,6 +45,7 @@
 }
 
 .admin-donation-row {
+  position: relative;
   min-height: 92px;
   padding: 1rem;
   border: 1px solid #edf1ee;
@@ -60,6 +61,10 @@
   box-shadow: 0 14px 34px rgba(15, 23, 42, 0.08);
   outline: none;
   transform: translateY(-1px);
+}
+
+.admin-donation-row:focus-within {
+  z-index: 30;
 }
 
 .admin-donation-row strong,
@@ -119,6 +124,78 @@
 .admin-status-select:disabled {
   cursor: not-allowed;
   opacity: 0.48;
+}
+
+.admin-status-menu {
+  position: relative;
+  z-index: 2;
+  width: 168px;
+  min-width: 168px;
+}
+
+.admin-status-menu-trigger {
+  min-height: 38px;
+  width: 100%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0 0.75rem;
+  border: 1px solid rgba(39, 174, 96, 0.35);
+  border-radius: 6px;
+  background: #ffffff;
+  color: #15803d;
+  cursor: pointer;
+  font: inherit;
+  font-weight: 800;
+  line-height: 1.15;
+  white-space: nowrap;
+}
+
+.admin-status-menu-trigger:hover:not(:disabled),
+.admin-status-menu-trigger:focus-visible {
+  border-color: rgba(39, 174, 96, 0.65);
+  box-shadow: 0 0 0 3px rgba(39, 174, 96, 0.1);
+  outline: none;
+}
+
+.admin-status-menu-trigger:disabled {
+  cursor: not-allowed;
+  opacity: 0.48;
+}
+
+.admin-status-menu-list {
+  position: absolute;
+  z-index: 20;
+  bottom: calc(100% + 0.4rem);
+  left: 0;
+  width: 220px;
+  display: grid;
+  gap: 0.25rem;
+  padding: 0.35rem;
+  border: 1px solid #d9e2dc;
+  border-radius: 8px;
+  background: #ffffff;
+  box-shadow: 0 18px 42px rgba(15, 23, 42, 0.16);
+}
+
+.admin-status-menu-list button {
+  min-height: 40px;
+  width: 100%;
+  padding: 0 0.8rem;
+  border: 0;
+  border-radius: 6px;
+  background: #ffffff;
+  color: #15803d;
+  font: inherit;
+  font-weight: 800;
+  text-align: left;
+}
+
+.admin-status-menu-list button:hover,
+.admin-status-menu-list button:focus-visible {
+  background: #effaf2;
+  outline: none;
 }
 
 .admin-donation-actions .update {
@@ -280,7 +357,7 @@
   .admin-donations-page .admin-tabs button {
     grid-column: span 2;
     min-height: 64px;
-    padding: 0 0.75rem;
+    padding: 0.75rem;
   }
 
   .admin-donations-page .admin-tabs button:nth-child(n + 4) {
@@ -312,6 +389,21 @@
     grid-column: 1 / -1;
   }
 
+  .admin-donation-row strong,
+  .admin-donation-row span:not(.status-pill),
+  .admin-donation-row time {
+    overflow: visible;
+    text-overflow: clip;
+    white-space: normal;
+    word-break: break-word;
+  }
+
+  .admin-donation-row span:not(.status-pill),
+  .admin-donation-row time {
+    font-size: 0.86rem;
+    line-height: 1.35;
+  }
+
   .admin-donation-actions {
     grid-column: 1 / -1;
   }
@@ -320,19 +412,94 @@
     display: grid;
     grid-template-columns: minmax(0, 1fr) 44px;
     gap: 0.6rem;
-    align-items: stretch;
+    align-items: start;
   }
 
   .admin-status-select {
+    min-width: 0;
     width: 100%;
+    max-width: 100%;
+    padding-right: 1.75rem;
+    font-size: 0.86rem;
+  }
+
+  .admin-status-menu {
+    min-width: 0;
+    width: 100%;
+  }
+
+  .admin-status-menu-trigger {
+    min-height: 40px;
+    font-size: 0.86rem;
+  }
+
+  .admin-status-menu-list {
+    position: static;
+    width: 100%;
+    margin-top: 0.5rem;
+    box-shadow: none;
   }
 
   .admin-donation-actions .delete-icon {
     width: 44px;
     min-width: 44px;
+    height: 40px;
+    min-height: 40px;
   }
 
   .admin-donation-request-item {
     grid-template-columns: 1fr;
+  }
+
+  .admin-donation-request-item strong,
+  .admin-donation-request-item span:not(.status-pill) {
+    overflow: visible;
+    text-overflow: clip;
+    white-space: normal;
+    word-break: break-word;
+  }
+}
+
+@media (max-width: 420px) {
+  .admin-donation-row {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-donation-row .status-pill {
+    grid-column: 1;
+    grid-row: auto;
+    justify-self: start;
+  }
+
+  .admin-donation-actions {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-donation-actions .delete-icon {
+    width: 100%;
+    min-width: 0;
+  }
+}
+
+@media (max-width: 360px) {
+  .admin-donations-page .admin-tabs {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .admin-donations-page .admin-tabs button,
+  .admin-donations-page .admin-tabs button:nth-child(n + 4) {
+    grid-column: span 1;
+  }
+
+  .admin-donations-page .admin-tabs button:last-child:nth-child(odd) {
+    grid-column: 1 / -1;
+  }
+
+  .admin-donation-actions {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-donation-actions .delete-icon {
+    width: 100%;
   }
 }

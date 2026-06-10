@@ -13,9 +13,18 @@
   margin-bottom: 1.25rem;
 }
 
-.ngo-donation-toolbar label {
+.ngo-donation-toolbar label,
+.ngo-foodtype-filter {
   display: grid;
   gap: 0.45rem;
+}
+
+.ngo-filter-toggle {
+  display: none;
+}
+
+.ngo-filter-fields {
+  display: contents;
 }
 
 .ngo-donation-toolbar span {
@@ -34,6 +43,72 @@
   background: #ffffff;
   color: #111827;
   font: inherit;
+}
+
+.ngo-foodtype-select {
+  position: relative;
+  width: 100%;
+}
+
+.ngo-foodtype-select__button {
+  width: 100%;
+  min-height: 46px;
+  padding: 0 0.9rem;
+  border: 1px solid #d9e2dc;
+  border-radius: 8px;
+  background: #ffffff;
+  color: #111827;
+  text-align: left;
+  font: inherit;
+  box-sizing: border-box;
+  cursor: pointer;
+}
+
+.ngo-foodtype-select__button:focus {
+  outline: none;
+  border-color: rgba(39, 174, 96, 0.45);
+  box-shadow: 0 0 0 3px rgba(39, 174, 96, 0.14);
+}
+
+.ngo-foodtype-select__menu {
+  position: absolute;
+  top: calc(100% + 0.35rem);
+  left: 0;
+  width: 100%;
+  margin: 0;
+  padding: 0.35rem 0;
+  list-style: none;
+  border: 1px solid #d9e2dc;
+  border-radius: 10px;
+  background: #ffffff;
+  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+  z-index: 20;
+}
+
+.ngo-foodtype-select__item {
+  width: 100%;
+  display: block;
+  padding: 0.85rem 0.95rem;
+  border: none;
+  background: transparent;
+  text-align: left;
+  color: #111827;
+  font: inherit;
+  cursor: pointer;
+}
+
+.ngo-foodtype-select__item:hover,
+.ngo-foodtype-select__item.selected {
+  background: #eef6f0;
+}
+
+.ngo-foodtype-select__item:focus {
+  outline: none;
+  background: #eef6f0;
+}
+
+.ngo-donation-toolbar select {
+  display: none;
 }
 
 .ngo-donation-toolbar input:focus,
@@ -341,10 +416,56 @@
 }
 
 @media (max-width: 640px) {
-  .ngo-donation-toolbar,
   .ngo-list-main,
   .ngo-donation-meta {
     grid-template-columns: 1fr;
+  }
+
+  .ngo-donation-toolbar {
+    grid-template-columns: 1fr auto;
+    align-items: end;
+    gap: 0.75rem;
+  }
+
+  .ngo-search-filter {
+    min-width: 0;
+  }
+
+  .ngo-filter-toggle {
+    min-height: 46px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.45rem;
+    padding: 0 0.85rem;
+    border: 1px solid rgba(39, 174, 96, 0.35);
+    border-radius: 8px;
+    background: #ffffff;
+    color: #15803d;
+    font: inherit;
+    font-weight: 850;
+    white-space: nowrap;
+  }
+
+  .ngo-filter-toggle span {
+    color: inherit;
+    font-size: 1rem;
+    line-height: 1;
+  }
+
+  .ngo-filter-fields {
+    grid-column: 1 / -1;
+    display: none;
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+    padding: 0.85rem;
+    border: 1px solid #edf1ee;
+    border-radius: 8px;
+    background: #fbfffc;
+  }
+
+  .ngo-filter-fields.open {
+    display: grid;
   }
 
   .ngo-list-card {
@@ -375,6 +496,8 @@
     gap: 0.55rem;
     margin-bottom: 0.4rem;
     white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   .ngo-list-copy p span {
@@ -383,6 +506,7 @@
 
   .ngo-list-copy small {
     white-space: normal;
+    overflow-wrap: anywhere;
   }
 
   .ngo-mobile-status {
@@ -421,5 +545,28 @@
 
   .modal-action-row {
     justify-content: stretch;
+  }
+}
+
+@media (max-width: 420px) {
+  .ngo-list-card {
+    padding: 0.9rem;
+  }
+
+  .ngo-list-copy p {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: 1.35;
+  }
+
+  .ngo-list-copy small {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .ngo-list-main img {
+    max-height: 220px;
   }
 }

@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { donationStatusLabels } from '../../constants/donationConstants';
 import { formatDate, formatQuantity } from '../../utils/donationUtils';
 
@@ -32,6 +33,8 @@ const AdminDonationsList = ({
   onDelete,
   onStatusChange,
 }) => {
+  const [openStatusMenuId, setOpenStatusMenuId] = useState('');
+
   if (isLoading) {
     return <p className="empty-state">Loading donations...</p>;
   }
@@ -61,6 +64,7 @@ const AdminDonationsList = ({
           const status = getDonationStatus(donation);
           const isActionLoading = actionDonationId === donation._id;
           const statusOptions = getStatusOptions(status);
+          const isMenuOpen = openStatusMenuId === donation._id;
 
           return (
             <article
@@ -84,26 +88,40 @@ const AdminDonationsList = ({
                 {donationStatusLabels[status] || status}
               </span>
               <div className="admin-donation-actions">
-                <select
-                  className="admin-status-select"
-                  aria-label={`Update status for ${donation.foodTitle || 'donation'}`}
-                  disabled={isActionLoading || !statusOptions.length}
-                  value=""
+                <div
+                  className={`admin-status-menu ${isMenuOpen ? 'open' : ''}`}
                   onClick={(event) => event.stopPropagation()}
-                  onChange={(event) => {
-                    event.stopPropagation();
-                    if (event.target.value) {
-                      onStatusChange(donation._id, event.target.value);
-                    }
-                  }}
                 >
-                  <option value="">Update Status</option>
-                  {statusOptions.map((option) => (
-                    <option value={option.value} key={option.value}>
-                      {option.label}
-                    </option>
-                  ))}
-                </select>
+                  <button
+                    className="admin-status-menu-trigger"
+                    type="button"
+                    aria-expanded={isMenuOpen}
+                    aria-haspopup="menu"
+                    disabled={isActionLoading || !statusOptions.length}
+                    onClick={() => setOpenStatusMenuId(isMenuOpen ? '' : donation._id)}
+                  >
+                    Update Status
+                    <span aria-hidden="true">v</span>
+                  </button>
+
+                  {isMenuOpen && (
+                    <div className="admin-status-menu-list" role="menu">
+                      {statusOptions.map((option) => (
+                        <button
+                          type="button"
+                          role="menuitem"
+                          key={option.value}
+                          onClick={() => {
+                            setOpenStatusMenuId('');
+                            onStatusChange(donation._id, option.value);
+                          }}
+                        >
+                          {option.label}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
                 <button
                   className="delete-icon"
                   type="button"

@@ -13,6 +13,8 @@ const statusLabels = {
 const MyDonationsList = ({
   donations,
   totals,
+  selectedStatus,
+  onStatusChange,
   isLoading,
   onView,
   onEdit,
@@ -26,12 +28,18 @@ const MyDonationsList = ({
       </div>
     </div>
 
-    <div className="donation-status-summary" aria-label="Donation status summary">
+    <div className="donation-status-summary" role="tablist" aria-label="Donation status tabs">
       {statusOrder.map((status) => (
-        <span className={`summary-chip ${status}`} key={status}>
-          {statusLabels[status]}
+        <button
+          type="button"
+          className={`summary-chip ${status} ${selectedStatus === status ? 'active' : ''}`}
+          key={status}
+          aria-pressed={selectedStatus === status}
+          onClick={() => onStatusChange(status)}
+        >
+          <span>{statusLabels[status]}</span>
           <strong>{totals[status] || 0}</strong>
-        </span>
+        </button>
       ))}
     </div>
 

@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { useDonorProfile } from '../hooks/useDonorProfile';
 import { useMyDonations } from '../hooks/useMyDonations';
 import DonorLayout from '../layouts/DonorLayout/DonorLayout';
@@ -29,6 +30,11 @@ const MyDonationsPage = () => {
     submitEdit,
     removeDonation,
   } = useMyDonations();
+  const [selectedStatus, setSelectedStatus] = useState('all');
+
+  const filteredDonations = selectedStatus === 'all'
+    ? donations
+    : donations.filter((donation) => donation.status === selectedStatus);
 
   return (
     <DonorLayout
@@ -52,8 +58,10 @@ const MyDonationsPage = () => {
         )}
 
         <MyDonationsList
-          donations={donations}
+          donations={filteredDonations}
           totals={totals}
+          selectedStatus={selectedStatus}
+          onStatusChange={setSelectedStatus}
           isLoading={isLoading}
           onView={setSelectedDonation}
           onEdit={startEdit}

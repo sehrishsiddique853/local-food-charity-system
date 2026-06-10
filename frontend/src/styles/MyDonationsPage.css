@@ -57,10 +57,31 @@
   padding: 0 0.9rem;
   border: 1px solid #e8ece9;
   border-radius: 8px;
-  background: #f8faf9;
+  background: #ffffff;
   color: #374151;
-  font-size: 0.86rem;
+  font: inherit;
   font-weight: 800;
+  text-align: left;
+  cursor: pointer;
+  appearance: none;
+  transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+
+.summary-chip:hover,
+.summary-chip:focus-visible {
+  background: #f8faf9;
+  border-color: #d1d5db;
+  outline: none;
+}
+
+.summary-chip.active {
+  background: #effaf2;
+  border-color: rgba(39, 174, 96, 0.35);
+  color: #15803d;
+}
+
+.summary-chip.active strong {
+  color: #111827;
 }
 
 .summary-chip strong {
@@ -68,24 +89,12 @@
   font-size: 1.15rem;
 }
 
-.summary-chip.available {
-  background: #effaf2;
-}
-
-.summary-chip.requested {
-  background: #fff8ea;
-}
-
-.summary-chip.booked {
-  background: #eef6ff;
-}
-
-.summary-chip.collected {
-  background: #f0fbf3;
-}
-
-.summary-chip.expired {
-  background: #f5efff;
+.summary-chip.available strong,
+.summary-chip.requested strong,
+.summary-chip.booked strong,
+.summary-chip.collected strong,
+.summary-chip.expired strong {
+  color: #111827;
 }
 
 .my-donations-list {
@@ -332,7 +341,7 @@
   }
 
   .donation-status-summary {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .my-donation-card {
@@ -404,10 +413,12 @@
   }
 
   .my-donation-copy p {
-    flex-wrap: nowrap;
+    display: flex;
     gap: 0.55rem;
     margin-bottom: 0.4rem;
     white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   .my-donation-copy p span {
