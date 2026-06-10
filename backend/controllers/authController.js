@@ -4,6 +4,12 @@ import { successResponse } from "../utils/apiResponse.js";
 import * as authService from "../services/authService.js";
 import { uploadBufferToCloudinary } from "../config/cloudinary.js";
 import { notifyAdminNgoRegistration } from "../services/notificationService.js";
+import { sendRegistrationOtpEmail } from "../services/emailService.js";
+import {
+  assertValidRegistrationOtp,
+  consumeRegistrationOtp,
+  createRegistrationOtp,
+} from "../services/emailOtpService.js";
 
 // Cookie settings for access and refresh tokens.
 // Access tokens are short-lived, refresh tokens are longer-lived.
@@ -26,6 +32,11 @@ const refreshCookieOptions = {
 export const register = async (req, res, next) => {
   try {
     const registerData = { ...req.body };
+    const otpRecord = await assertValidRegistrationOtp({
+      email: registerData.email,
+      role: registerData.role,
+      otp: registerData.otp,
+    });
 
     if (registerData.role === "ngo" && req.file) {
       const isPdfDocument = req.file.mimetype === "application/pdf";
@@ -46,16 +57,62 @@ export const register = async (req, res, next) => {
       await notifyAdminNgoRegistration(user);
     }
 
-    res.cookie("accessToken", accessToken, accessCookieOptions);
-    res.cookie("refreshToken", refreshToken, refreshCookieOptions);
+    await consumeRegistrationOtp(otpRecord._id);
+
+    if (accessToken && refreshToken) {
+      res.cookie("accessToken", accessToken, accessCookieOptions);
+      res.cookie("refreshToken", refreshToken, refreshCookieOptions);
+    }
 
     return successResponse(res, 201, {
       user: {
         id: user._id,
         email: user.email,
         role: user.role,
+        ngoVerificationStatus: user.ngoVerificationStatus,
       },
+      message:
+        user.role === "ngo"
+          ? "NGO registration submitted. Please wait for admin approval before signing in."
+          : undefined,
     });
+  } catch (err) {
+    return next(err);
+  }
+};
+
+export const sendRegistrationOtp = async (req, res, next) => {
+  try {
+    await authService.assertRegistrationAvailable(req.body);
+
+    const { otp, expiresInMinutes } = await createRegistrationOtp({
+      email: req.body.email,
+      role: req.body.role,
+    });
+
+    const emailInfo = await sendRegistrationOtpEmail({
+      to: req.body.email,
+      role: req.body.role,
+      otp,
+    });
+
+    console.log("Registration OTP email result:", {
+      to: req.body.email,
+      accepted: emailInfo.accepted,
+      rejected: emailInfo.rejected,
+      response: emailInfo.response,
+    });
+
+    if (process.env.EMAIL_DEBUG_OTP === "true" && process.env.NODE_ENV !== "production") {
+      console.log(`Development registration OTP for ${req.body.email}: ${otp}`);
+    }
+
+    const responseData = {
+      message: "Verification code sent to your email.",
+      expiresInMinutes,
+    };
+
+    return successResponse(res, 200, responseData);
   } catch (err) {
     return next(err);
   }
@@ -147,6 +204,7 @@ export const refresh = async (req, res, next) => {
 
 export default {
   register,
+  sendRegistrationOtp,
   login,
   getProfile,
   updateProfile,

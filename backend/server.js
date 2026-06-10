@@ -4,6 +4,8 @@ import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import dotenv from "dotenv";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
 import connectDB from "./config/db.js";
 import adminRoutes from "./routes/adminRoutes.js";
 import authRoutes from "./routes/auth.js";
@@ -14,7 +16,8 @@ import errorHandler from "./middleware/errorHandler.js";
 import { startDonationExpiryJob } from "./services/donationExpiryService.js";
 // import { apiRateLimiter } from "./middleware/rateLimiter.js";
 
-dotenv.config();
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+dotenv.config({ path: path.join(__dirname, ".env") });
 
 const app = express();
 

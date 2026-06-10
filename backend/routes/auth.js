@@ -2,6 +2,7 @@
 import express from "express";
 import {
   register,
+  sendRegistrationOtp,
   login,
   getProfile,
   updateProfile,
@@ -13,6 +14,7 @@ import auth from "../middleware/auth.js";
 import authorize from "../middleware/authorize.js";
 import {
   validateRegister,
+  validateRegistrationOtp,
   validateLogin,
   validateUpdateProfile,
   validateChangePassword,
@@ -26,11 +28,22 @@ const router = express.Router();
 
 // Register a new donor/NGO/admin.
 router.post(
+  "/register/send-otp",
+  // loginRegisterLimiter,
+  uploadNgoDocument.single("ngoDocument"),
+  normalizeRegisterBody,
+  validateRegister,
+  handleValidationErrors,
+  sendRegistrationOtp
+);
+
+router.post(
   "/register",
   // loginRegisterLimiter,
   uploadNgoDocument.single("ngoDocument"),
   normalizeRegisterBody,
   validateRegister,
+  validateRegistrationOtp,
   handleValidationErrors,
   register
 );

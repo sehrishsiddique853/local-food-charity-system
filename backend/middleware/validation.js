@@ -137,6 +137,13 @@ export const validateUpdateProfile = [
     .isLength({ min: 5, max: 250 }).withMessage("Exact address must be between 5 and 250 characters"),
 ];
 
+export const validateRegistrationOtp = [
+  body("otp")
+    .trim()
+    .notEmpty().withMessage("Verification code is required")
+    .matches(/^[0-9]{6}$/).withMessage("Verification code must be 6 digits"),
+];
+
 export const validateChangePassword = [
   body("currentPassword")
     .notEmpty().withMessage("Current password is required"),

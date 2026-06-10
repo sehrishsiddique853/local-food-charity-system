@@ -14,6 +14,11 @@ export const register = (payload) => apiRequest(API_ROUTES.register, {
   body: payload,
 });
 
+export const sendRegistrationOtp = (payload) => apiRequest(API_ROUTES.registerSendOtp, {
+  method: 'POST',
+  body: payload,
+});
+
 export const getProfile = () => apiRequest(API_ROUTES.profile);
 
 export const updateProfile = (payload) => apiRequest(API_ROUTES.profile, {

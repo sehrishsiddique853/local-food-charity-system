@@ -28,12 +28,19 @@ const RegisterForm = ({
   acceptedTerms,
   formStatus,
   isSubmitting,
+  isVerifyingOtp,
+  otpDialogOpen,
+  otpCode,
+  otpMessage,
   showPassword,
   showConfirmPassword,
   updateField,
   updateDocumentFile,
   setAcceptedTerms,
   handleAccountTypeChange,
+  closeOtpDialog,
+  handleOtpChange,
+  handleVerifyOtp,
   toggleShowPassword,
   toggleShowConfirmPassword,
   handleSubmit,
@@ -218,13 +225,50 @@ const RegisterForm = ({
         )}
 
         <button className="register-submit" type="submit" disabled={isSubmitting}>
-          {isSubmitting ? 'Registering...' : 'Register'}
+          {isSubmitting ? 'Sending code...' : 'Register'}
         </button>
 
         <p className="login-note">
           Already have an account? <Link to={ROUTES.login}>Sign In</Link>
         </p>
       </form>
+
+      {otpDialogOpen && (
+        <div className="otp-overlay" role="presentation">
+          <section className="otp-dialog" role="dialog" aria-modal="true" aria-labelledby="otp-title">
+            <button
+              className="otp-close"
+              type="button"
+              onClick={closeOtpDialog}
+              aria-label="Close verification dialog"
+              disabled={isVerifyingOtp}
+            >
+              ×
+            </button>
+            <div className="otp-heading">
+              <h3 id="otp-title">Verify Your Email</h3>
+              <p>Enter the 6 digit code sent to {formData.email}</p>
+            </div>
+            <form className="otp-form" onSubmit={handleVerifyOtp}>
+              <input
+                className="otp-input"
+                type="text"
+                inputMode="numeric"
+                autoComplete="one-time-code"
+                placeholder="000000"
+                value={otpCode}
+                onChange={handleOtpChange}
+                maxLength="6"
+                autoFocus
+              />
+              {otpMessage && <p className="otp-message">{otpMessage}</p>}
+              <button className="register-submit" type="submit" disabled={isVerifyingOtp}>
+                {isVerifyingOtp ? 'Verifying...' : 'Verify & Create Account'}
+              </button>
+            </form>
+          </section>
+        </div>
+      )}
     </section>
   );
 };

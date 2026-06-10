@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { register } from '../services/authService';
+import { register, sendRegistrationOtp } from '../services/authService';
 
 const initialRegisterForm = {
   name: '',
@@ -22,6 +22,11 @@ export const useRegisterForm = (defaultRole = 'donor') => {
   const [acceptedTerms, setAcceptedTerms] = useState(true);
   const [formStatus, setFormStatus] = useState({ type: '', message: '' });
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isVerifyingOtp, setIsVerifyingOtp] = useState(false);
+  const [otpDialogOpen, setOtpDialogOpen] = useState(false);
+  const [otpCode, setOtpCode] = useState('');
+  const [pendingPayload, setPendingPayload] = useState(null);
+  const [otpMessage, setOtpMessage] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
@@ -68,6 +73,10 @@ export const useRegisterForm = (defaultRole = 'donor') => {
   const handleAccountTypeChange = (role) => {
     setAccountType(role);
     setFormStatus({ type: '', message: '' });
+    setOtpDialogOpen(false);
+    setOtpCode('');
+    setPendingPayload(null);
+    setOtpMessage('');
 
     if (role === 'donor') {
       setFormData((current) => ({
@@ -79,25 +88,26 @@ export const useRegisterForm = (defaultRole = 'donor') => {
     }
   };
 
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-    setFormStatus({ type: '', message: '' });
-
+  const validateClientForm = () => {
     if (formData.password !== formData.confirmPassword) {
       setFormStatus({ type: 'error', message: 'Password and confirm password must match.' });
-      return;
+      return false;
     }
 
     if (!acceptedTerms) {
       setFormStatus({ type: 'error', message: 'Please agree to the terms and privacy policy.' });
-      return;
+      return false;
     }
 
     if (accountType === 'ngo' && !formData.ngoDocument) {
       setFormStatus({ type: 'error', message: 'Please upload your NGO verification document.' });
-      return;
+      return false;
     }
 
+    return true;
+  };
+
+  const buildRegistrationPayload = () => {
     const payload = new FormData();
     payload.append('email', formData.email);
     payload.append('password', formData.password);
@@ -115,28 +125,106 @@ export const useRegisterForm = (defaultRole = 'donor') => {
       payload.append('ngoDocument', formData.ngoDocument);
     }
 
+    return payload;
+  };
+
+  const getApiErrorMessage = (result, fallback) => {
+    const validationMessage = result.data.error?.details?.errors?.[0]?.message;
+    return validationMessage || result.data.error?.message || fallback;
+  };
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    setFormStatus({ type: '', message: '' });
+    setOtpMessage('');
+
+    if (!validateClientForm()) {
+      return;
+    }
+
+    const payload = buildRegistrationPayload();
+
     setIsSubmitting(true);
+
+    try {
+      const result = await sendRegistrationOtp(payload);
+
+      if (!result.ok) {
+        throw new Error(getApiErrorMessage(result, 'Could not send verification code.'));
+      }
+
+      setPendingPayload(payload);
+      setOtpDialogOpen(true);
+      setOtpCode('');
+      setFormStatus({
+        type: 'success',
+        message: 'Verification code sent. Please check your email.',
+      });
+      setOtpMessage(result.data.data?.message || 'Enter the 6 digit code sent to your email.');
+    } catch (error) {
+      setFormStatus({
+        type: 'error',
+        message: error.message || 'Could not send verification code. Please try again.',
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleOtpChange = (event) => {
+    setOtpCode(event.target.value.replace(/\D/g, '').slice(0, 6));
+  };
+
+  const closeOtpDialog = () => {
+    if (isVerifyingOtp) {
+      return;
+    }
+
+    setOtpDialogOpen(false);
+    setOtpCode('');
+    setOtpMessage('');
+  };
+
+  const handleVerifyOtp = async (event) => {
+    event.preventDefault();
+    setFormStatus({ type: '', message: '' });
+    setOtpMessage('');
+
+    if (!pendingPayload) {
+      setOtpMessage('Please request a new verification code.');
+      return;
+    }
+
+    if (otpCode.length !== 6) {
+      setOtpMessage('Enter the 6 digit verification code.');
+      return;
+    }
+
+    const payload = buildRegistrationPayload();
+    payload.append('otp', otpCode);
+
+    setIsVerifyingOtp(true);
 
     try {
       const result = await register(payload);
 
       if (!result.ok) {
-        const validationMessage = result.data.error?.details?.errors?.[0]?.message;
-        throw new Error(validationMessage || result.data.error?.message || 'Registration failed.');
+        throw new Error(getApiErrorMessage(result, 'Registration failed.'));
       }
 
       setFormStatus({
         type: 'success',
-        message: 'Account created successfully. Your registration is now saved.',
+        message: result.data.data?.message || 'Account created successfully. Your registration is now saved.',
       });
       setFormData(initialRegisterForm);
+      setOtpDialogOpen(false);
+      setOtpCode('');
+      setPendingPayload(null);
+      setOtpMessage('');
     } catch (error) {
-      setFormStatus({
-        type: 'error',
-        message: error.message || 'Registration failed. Please try again.',
-      });
+      setOtpMessage(error.message || 'Invalid verification code. Please try again.');
     } finally {
-      setIsSubmitting(false);
+      setIsVerifyingOtp(false);
     }
   };
 
@@ -146,12 +234,19 @@ export const useRegisterForm = (defaultRole = 'donor') => {
     acceptedTerms,
     formStatus,
     isSubmitting,
+    isVerifyingOtp,
+    otpDialogOpen,
+    otpCode,
+    otpMessage,
     showPassword,
     showConfirmPassword,
     updateField,
     updateDocumentFile,
     setAcceptedTerms,
     handleAccountTypeChange,
+    closeOtpDialog,
+    handleOtpChange,
+    handleVerifyOtp,
     toggleShowPassword: () => setShowPassword((value) => !value),
     toggleShowConfirmPassword: () => setShowConfirmPassword((value) => !value),
     handleSubmit,
