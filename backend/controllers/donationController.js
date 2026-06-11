@@ -52,7 +52,7 @@ const markExpiredDonations = async (donorId = null) => {
     filter.donor = donorId;
   }
 
-  const expiringDonations = await Donation.find(filter).select("_id donor foodTitle");
+  const expiringDonations = await Donation.find(filter).select("_id donor foodTitle").lean();
 
   await Donation.updateMany(filter, {
     $set: {
@@ -124,7 +124,7 @@ export const getMyDonations = async (req, res, next) => {
     const donations = await Donation.find({
       donor: req.user.id,
       isActive: true,
-    }).sort({ createdAt: -1 });
+    }).sort({ createdAt: -1 }).lean();
 
     return successResponse(res, 200, { donations });
   } catch (err) {
@@ -138,7 +138,7 @@ export const getDonationHistory = async (req, res, next) => {
 
     const donations = await Donation.find({
       donor: req.user.id,
-    }).sort({ createdAt: -1 });
+    }).sort({ createdAt: -1 }).lean();
 
     return successResponse(res, 200, { donations });
   } catch (err) {
@@ -150,7 +150,7 @@ export const getDonationById = async (req, res, next) => {
   try {
     await markExpiredDonations(req.user.id);
 
-    const donation = await Donation.findById(req.params.id);
+    const donation = await Donation.findById(req.params.id).lean();
     ensureDonorOwnsDonation(donation, req.user.id);
 
     return successResponse(res, 200, { donation });

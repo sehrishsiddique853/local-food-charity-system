@@ -19,7 +19,7 @@ const markExpiredDonations = async () => {
     isActive: true,
   };
 
-  const expiringDonations = await Donation.find(filter).select("_id donor foodTitle");
+  const expiringDonations = await Donation.find(filter).select("_id donor foodTitle").lean();
 
   await Donation.updateMany(filter, {
     $set: {
@@ -82,10 +82,11 @@ export const getAvailableDonations = async (req, res, next) => {
 
     const donations = await Donation.find(filter)
       .populate("donor", "name phone location")
-      .sort({ createdAt: -1 });
+      .sort({ createdAt: -1 })
+      .lean();
 
     const visibleDonations = donations.map((donation) => ({
-      ...donation.toObject(),
+      ...donation,
       status: "available",
     }));
 
@@ -160,7 +161,8 @@ export const getMyRequests = async (req, res, next) => {
       requestStatus: { $in: ["pending", "approved"] },
     })
       .populate("donation")
-      .sort({ createdAt: -1 });
+      .sort({ createdAt: -1 })
+      .lean();
 
     return successResponse(res, 200, { requests });
   } catch (err) {
@@ -170,7 +172,7 @@ export const getMyRequests = async (req, res, next) => {
 
 export const getRequestById = async (req, res, next) => {
   try {
-    const request = await DonationRequest.findById(req.params.id).populate("donation");
+    const request = await DonationRequest.findById(req.params.id).populate("donation").lean();
 
     if (!request) {
       throw new ApiError(404, "REQUEST_NOT_FOUND", "Request not found");
@@ -257,7 +259,8 @@ export const getBookedDonations = async (req, res, next) => {
       isActive: true,
     })
       .populate("donor", "name email phone location")
-      .sort({ updatedAt: -1 });
+      .sort({ updatedAt: -1 })
+      .lean();
 
     return successResponse(res, 200, { donations });
   } catch (err) {
@@ -316,11 +319,12 @@ export const getNgoHistory = async (req, res, next) => {
         ],
       })
         .populate("donation")
-        .sort({ createdAt: -1 }),
+        .sort({ createdAt: -1 })
+        .lean(),
       Donation.find({
         bookedByNgo: req.user.id,
         status: { $in: ["collected", "completed"] },
-      }).sort({ updatedAt: -1 }),
+      }).sort({ updatedAt: -1 }).lean(),
     ]);
 
     return successResponse(res, 200, {
@@ -335,7 +339,7 @@ export const getNgoHistory = async (req, res, next) => {
 export const getDonationById = async (req, res, next) => {
   try {
     await markExpiredDonations();
-    const donation = await Donation.findById(req.params.id).populate("donor", "name phone location");
+    const donation = await Donation.findById(req.params.id).populate("donor", "name phone location").lean();
     if (!donation) {
       throw new ApiError(404, "DONATION_NOT_FOUND", "Donation not found");
     }

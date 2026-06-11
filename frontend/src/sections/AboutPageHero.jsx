@@ -5,10 +5,10 @@ const AboutPageHero = () => {
   return (
     <section className="about-page-hero">
       <div className="about-page-copy">
-        <span className="about-page-eyebrow">About LocalFood</span>
+        <span className="about-page-eyebrow">About FoodBridge</span>
         <h1>Connecting surplus food with verified local support.</h1>
         <p>
-          Local Food Charity System is built to make food donation coordination
+          FoodBridge is built to make food donation coordination
           simpler, more transparent, and more useful for donors, NGOs, and
           administrators.
         </p>

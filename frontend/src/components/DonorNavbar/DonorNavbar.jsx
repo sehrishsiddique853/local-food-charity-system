@@ -28,10 +28,12 @@ const DonorNavbar = ({
   return (
     <header className="dashboard-header">
       <Link className="dashboard-logo" to={ROUTES.home}>
-        <span className="dashboard-logo-mark">🥗</span>
+        <span className="dashboard-logo-mark">
+          <img src="/website_logo.png" alt="FoodBridge logo" />
+        </span>
         <strong>
-          Local <span>Food</span>
-          <small>Charity System</small>
+          Food<span>Bridge</span>
+          <small>Food Donation Network</small>
         </strong>
       </Link>
 

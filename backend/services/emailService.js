@@ -49,7 +49,7 @@ export const sendRegistrationOtpEmail = async ({ to, otp, role }) => {
   return transport.sendMail({
     from,
     to,
-    subject: "Your Local Food verification code",
+    subject: "Your FoodBridge verification code",
     text: `Your ${accountLabel} registration verification code is ${otp}. It expires in 10 minutes.`,
     html: `
       <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #111827;">
@@ -80,7 +80,7 @@ export const sendContactMessageEmail = async ({ name, email, phone, topic, messa
     replyTo: email,
     subject: `New contact message: ${topic}`,
     text: [
-      "New contact message from Local Food Charity System",
+      "New contact message from FoodBridge",
       "",
       `Name: ${name}`,
       `Email: ${email}`,
@@ -93,7 +93,7 @@ export const sendContactMessageEmail = async ({ name, email, phone, topic, messa
     html: `
       <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #111827;">
         <h2>New contact message</h2>
-        <p>A visitor submitted the Contact Us form on Local Food Charity System.</p>
+        <p>A visitor submitted the Contact Us form on FoodBridge.</p>
         <table style="border-collapse: collapse; width: 100%; max-width: 640px;">
           <tr>
             <td style="padding: 8px 0; font-weight: 700;">Name</td>

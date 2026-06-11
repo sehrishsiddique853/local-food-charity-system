@@ -9,10 +9,12 @@ const Footer = () => {
         {/* Left Section - Logo and Description */}
         <div className="footer-section">
           <div className="footer-logo">
-            <div className="logo-icon">🥗</div>
+            <div className="logo-icon">
+              <img src="/website_logo.png" alt="FoodBridge logo" />
+            </div>
             <div>
-              <span className="logo-text">Local</span>
-              <span className="logo-text-accent">Food</span>
+              <span className="logo-text">Food</span>
+              <span className="logo-text-accent">Bridge</span>
             </div>
           </div>
           <p className="footer-description">
@@ -67,7 +69,7 @@ const Footer = () => {
 
       {/* Copyright */}
       <div className="footer-bottom">
-        <p>&copy; 2026 Local Food Charity System. All rights reserved.</p>
+        <p>&copy; 2026 FoodBridge. All rights reserved.</p>
       </div>
     </footer>
   );

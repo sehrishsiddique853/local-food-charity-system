@@ -26,14 +26,16 @@ const Navbar = ({ variant = 'transparent', actionSlot = null }) => {
       <div className="navbar-container">
         {/* Logo */}
         <Link to={homeHref} className="navbar-logo" onClick={closeMobileMenu}>
-          <div className="logo-icon">🥗</div>
+          <div className="logo-icon">
+            <img src="/website_logo.png" alt="FoodBridge logo" />
+          </div>
 
           <div className="logo-content">
             <div>
-              <span className="logo-text">Local</span>
-              <span className="logo-text-accent">Food</span>
+              <span className="logo-text">Food</span>
+              <span className="logo-text-accent">Bridge</span>
             </div>
-            <span className="logo-subtitle">Charity System</span>
+            <span className="logo-subtitle">Food Donation Network</span>
           </div>
         </Link>
 
