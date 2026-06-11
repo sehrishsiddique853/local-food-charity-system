@@ -1,4 +1,7 @@
+import dns from "node:dns";
 import nodemailer from "nodemailer";
+
+dns.setDefaultResultOrder("ipv4first");
 
 const getMailTransport = () => {
   if (process.env.SMTP_SERVICE) {
