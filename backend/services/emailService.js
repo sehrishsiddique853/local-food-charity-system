@@ -4,6 +4,8 @@ const getMailTransport = () => {
   if (process.env.SMTP_SERVICE) {
     return nodemailer.createTransport({
       service: process.env.SMTP_SERVICE,
+      family: 4,
+      connectionTimeout: 10000,
       auth: {
         user: process.env.SMTP_USER,
         pass: process.env.SMTP_PASS,
