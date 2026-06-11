@@ -40,7 +40,7 @@ const ensureNgoCanAuthenticate = (user) => {
 };
 
 export const assertRegistrationAvailable = async ({ email, phone }) => {
-  const formattedPhone = formatPakistanPhone(phone);
+  const formattedPhone = phone ? formatPakistanPhone(phone) : undefined;
 
   // Prevent duplicate email and phone registrations.
   const existingEmail = await User.findOne({ email });
@@ -48,9 +48,11 @@ export const assertRegistrationAvailable = async ({ email, phone }) => {
     throw new ApiError(409, "EMAIL_ALREADY_EXISTS", "Email already in use");
   }
 
-  const existingPhone = await User.findOne({ phone: formattedPhone });
-  if (existingPhone) {
-    throw new ApiError(409, "PHONE_ALREADY_EXISTS", "Phone number already in use");
+  if (formattedPhone) {
+    const existingPhone = await User.findOne({ phone: formattedPhone });
+    if (existingPhone) {
+      throw new ApiError(409, "PHONE_ALREADY_EXISTS", "Phone number already in use");
+    }
   }
 
   return formattedPhone;
@@ -78,7 +80,7 @@ export const registerUser = async ({
     name: normalizedRole === "donor" ? name : undefined,
     email,
     password: hashedPassword,
-    phone: formattedPhone,
+    ...(formattedPhone ? { phone: formattedPhone } : {}),
     role: normalizedRole,
     location: {
       city: FIXED_SERVICE_CITY,

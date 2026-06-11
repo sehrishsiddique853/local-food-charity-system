@@ -275,20 +275,41 @@
 }
 
 .image-field input[type='file'] {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.post-field .image-upload-display {
+  width: auto;
+  flex: 1 1 auto;
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  min-width: 0;
   color: #4b5563;
   cursor: pointer;
 }
 
-.image-field input[type='file']::file-selector-button {
-  margin-right: 0.85rem;
-  border: 0;
+.post-field .image-upload-display strong {
+  flex: 0 0 auto;
   border-radius: 4px;
   background: rgba(39, 174, 96, 0.12);
   color: #167d2f;
   padding: 0.55rem 0.8rem;
   font: inherit;
   font-weight: 700;
-  cursor: pointer;
+}
+
+.post-field .image-upload-display em {
+  min-width: 0;
+  overflow: hidden;
+  color: #4b5563;
+  font-style: normal;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .post-form-status {

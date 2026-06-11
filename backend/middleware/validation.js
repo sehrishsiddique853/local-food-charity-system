@@ -44,7 +44,7 @@ export const validateRegister = [
     .matches(/[!@#$%^&*]/).withMessage("Password must contain at least one special character (!@#$%^&*)"),
 
   body("phone")
-    .optional()
+    .optional({ values: "falsy" })
     .trim()
     .customSanitizer((value) => value.replace(/^\+92\s*/, ""))
     .matches(/^[0-9]{10}$/).withMessage("Phone must be exactly 10 digits"),
@@ -122,7 +122,7 @@ export const validateUpdateProfile = [
     .notEmpty().withMessage("NGO registration number cannot be empty"),
 
   body("phone")
-    .optional()
+    .optional({ values: "falsy" })
     .trim()
     .customSanitizer((value) => value.replace(/^\+92\s*/, ""))
     .matches(/^[0-9]{10}$/).withMessage("Phone must be exactly 10 digits"),

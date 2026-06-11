@@ -10,6 +10,7 @@ const getDateTimeInputNow = () => {
 };
 
 export const usePostDonationForm = (profile) => {
+  const profileAddress = profile?.location?.address || '';
   const [formData, setFormData] = useState(initialPostDonationForm);
   const [formStatus, setFormStatus] = useState({ type: '', message: '' });
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -22,6 +23,23 @@ export const usePostDonationForm = (profile) => {
 
     return () => window.clearInterval(intervalId);
   }, []);
+
+  useEffect(() => {
+    if (!profileAddress) {
+      return;
+    }
+
+    setFormData((current) => {
+      if (current.address) {
+        return current;
+      }
+
+      return {
+        ...current,
+        address: profileAddress,
+      };
+    });
+  }, [profileAddress]);
 
   const updateField = (event) => {
     const { name, value } = event.target;
@@ -97,7 +115,7 @@ export const usePostDonationForm = (profile) => {
       });
       setFormData((current) => ({
         ...initialPostDonationForm,
-        address: '',
+        address: profileAddress || current.address,
       }));
     } catch (error) {
       setFormStatus({

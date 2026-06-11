@@ -109,6 +109,10 @@ const PostDonationForm = ({
 
         <label className="post-field image-field">
           <span>▧</span>
+          <span className="image-upload-display">
+            <strong>Choose File</strong>
+            <em>{formData.images[0]?.name || 'Upload Image (Optional)'}</em>
+          </span>
           <input
             type="file"
             name="images"

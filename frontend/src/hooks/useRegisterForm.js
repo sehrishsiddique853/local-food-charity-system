@@ -111,9 +111,12 @@ export const useRegisterForm = (defaultRole = 'donor') => {
     const payload = new FormData();
     payload.append('email', formData.email);
     payload.append('password', formData.password);
-    payload.append('phone', formData.phone);
     payload.append('role', accountType);
     payload.append('address', formData.address);
+
+    if (formData.phone) {
+      payload.append('phone', formData.phone);
+    }
 
     if (accountType === 'donor') {
       payload.append('name', formData.name);

@@ -157,7 +157,6 @@ const RegisterForm = ({
             inputMode="numeric"
             maxLength="10"
             pattern="[0-9]{10}"
-            required
           />
         </label>
 
