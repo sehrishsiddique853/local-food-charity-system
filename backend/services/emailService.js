@@ -3,11 +3,16 @@ import nodemailer from "nodemailer";
 
 dns.setDefaultResultOrder("ipv4first");
 
+const lookupIpv4Only = (hostname, options, callback) => {
+  dns.lookup(hostname, { ...options, family: 4 }, callback);
+};
+
 const getMailTransport = () => {
   if (process.env.SMTP_SERVICE) {
     return nodemailer.createTransport({
       service: process.env.SMTP_SERVICE,
       family: 4,
+      lookup: lookupIpv4Only,
       connectionTimeout: 10000,
       auth: {
         user: process.env.SMTP_USER,
@@ -21,6 +26,7 @@ const getMailTransport = () => {
     port: Number(process.env.SMTP_PORT || 587),
     secure: process.env.SMTP_SECURE === "true",
     family: 4,
+    lookup: lookupIpv4Only,
     connectionTimeout: 10000,
     auth: {
       user: process.env.SMTP_USER,
