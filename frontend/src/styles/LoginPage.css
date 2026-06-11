@@ -198,27 +198,6 @@
   font-weight: 700;
 }
 
-.login-options {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
-  color: #374151;
-}
-
-.login-options label {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.7rem;
-}
-
-.login-options input {
-  width: 20px;
-  height: 20px;
-  accent-color: #27ae60;
-}
-
-.login-options a,
 .register-note a {
   color: #167d2f;
   font-weight: 700;
@@ -317,11 +296,6 @@
 
   .login-heading {
     margin-bottom: 2.5rem;
-  }
-
-  .login-options {
-    align-items: flex-start;
-    flex-direction: column;
   }
 
   .login-art {

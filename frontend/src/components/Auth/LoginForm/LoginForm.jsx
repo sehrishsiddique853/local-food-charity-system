@@ -4,8 +4,6 @@ import { ROUTES } from '../../../constants/routes';
 const LoginForm = ({
   formData,
   updateField,
-  rememberMe,
-  setRememberMe,
   showPassword,
   togglePassword,
   handleSubmit,
@@ -53,18 +51,6 @@ const LoginForm = ({
               {showPassword ? 'Hide' : 'Show'}
             </button>
           </div>
-        </div>
-
-        <div className="login-options">
-          <label>
-            <input
-              type="checkbox"
-              checked={rememberMe}
-              onChange={(event) => setRememberMe(event.target.checked)}
-            />
-            Remember me
-          </label>
-          <a href="#forgot-password">Forgot Password?</a>
         </div>
 
         {formStatus.message && (

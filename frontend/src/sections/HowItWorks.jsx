@@ -4,31 +4,31 @@ const HowItWorks = () => {
   const steps = [
     {
       id: 1,
-      icon: '📦',
+      image: '/Gift-rafiki.png',
       title: 'Donate',
       description: 'Donors post extra food they want to donate.'
     },
     {
       id: 2,
-      icon: '🔍',
+      image: '/Pull%20request-bro.png',
       title: 'Request',
       description: 'Verified NGOs request the available food.'
     },
     {
       id: 3,
-      icon: '✓',
+      image: '/Accept%20request-cuate.png',
       title: 'Approve',
       description: 'Admin approves the request to ensure transparency.'
     },
     {
       id: 4,
-      icon: '🚚',
+      image: '/Team%20spirit-bro.png',
       title: 'Collect',
       description: 'NGO collects the food from donor.'
     },
     {
       id: 5,
-      icon: '👥',
+      image: '/Humanitarian%20Help-bro.png',
       title: 'Distribute',
       description: 'NGO distributes food to people in need.'
     }
@@ -40,7 +40,9 @@ const HowItWorks = () => {
       <div className="steps-container">
         {steps.map((step, index) => (
           <div key={step.id} className="step">
-            <div className="step-icon">{step.icon}</div>
+            <div className="step-icon">
+              <img src={step.image} alt={`${step.title} step`} />
+            </div>
             <h3 className="step-number">{step.id}. {step.title}</h3>
             <p className="step-description">{step.description}</p>
             {index < steps.length - 1 && <div className="step-connector"></div>}

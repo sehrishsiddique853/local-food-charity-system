@@ -10,7 +10,6 @@ export const useLoginForm = () => {
     email: '',
     password: '',
   });
-  const [rememberMe, setRememberMe] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [formStatus, setFormStatus] = useState({ type: '', message: '' });
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -33,7 +32,7 @@ export const useLoginForm = () => {
     setIsSubmitting(true);
 
     try {
-      const result = await signIn({ ...formData, rememberMe });
+      const result = await signIn(formData);
 
       if (!result.ok) {
         throw new Error(result.data.error?.message || 'Sign in failed.');
@@ -65,12 +64,10 @@ export const useLoginForm = () => {
 
   return {
     formData,
-    rememberMe,
     showPassword,
     formStatus,
     isSubmitting,
     updateField,
-    setRememberMe,
     togglePassword,
     handleSubmit,
   };

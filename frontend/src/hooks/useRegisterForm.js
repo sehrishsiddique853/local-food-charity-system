@@ -19,7 +19,6 @@ const maxDocumentSize = 5 * 1024 * 1024;
 export const useRegisterForm = (defaultRole = 'donor') => {
   const [accountType, setAccountType] = useState(defaultRole);
   const [formData, setFormData] = useState(initialRegisterForm);
-  const [acceptedTerms, setAcceptedTerms] = useState(true);
   const [formStatus, setFormStatus] = useState({ type: '', message: '' });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isVerifyingOtp, setIsVerifyingOtp] = useState(false);
@@ -91,11 +90,6 @@ export const useRegisterForm = (defaultRole = 'donor') => {
   const validateClientForm = () => {
     if (formData.password !== formData.confirmPassword) {
       setFormStatus({ type: 'error', message: 'Password and confirm password must match.' });
-      return false;
-    }
-
-    if (!acceptedTerms) {
-      setFormStatus({ type: 'error', message: 'Please agree to the terms and privacy policy.' });
       return false;
     }
 
@@ -234,7 +228,6 @@ export const useRegisterForm = (defaultRole = 'donor') => {
   return {
     accountType,
     formData,
-    acceptedTerms,
     formStatus,
     isSubmitting,
     isVerifyingOtp,
@@ -245,7 +238,6 @@ export const useRegisterForm = (defaultRole = 'donor') => {
     showConfirmPassword,
     updateField,
     updateDocumentFile,
-    setAcceptedTerms,
     handleAccountTypeChange,
     closeOtpDialog,
     handleOtpChange,

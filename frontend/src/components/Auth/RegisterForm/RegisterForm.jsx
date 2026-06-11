@@ -25,7 +25,6 @@ const roleIcons = {
 const RegisterForm = ({
   accountType,
   formData,
-  acceptedTerms,
   formStatus,
   isSubmitting,
   isVerifyingOtp,
@@ -36,7 +35,6 @@ const RegisterForm = ({
   showConfirmPassword,
   updateField,
   updateDocumentFile,
-  setAcceptedTerms,
   handleAccountTypeChange,
   closeOtpDialog,
   handleOtpChange,
@@ -204,18 +202,6 @@ const RegisterForm = ({
             </label>
           </div>
         )}
-
-        <label className="terms-row">
-          <input
-            type="checkbox"
-            checked={acceptedTerms}
-            onChange={(event) => setAcceptedTerms(event.target.checked)}
-          />
-          <span>
-            I agree to the <a href="#terms">Terms & Conditions</a> and{' '}
-            <a href="#privacy">Privacy Policy</a>
-          </span>
-        </label>
 
         {formStatus.message && (
           <p className={`form-status ${formStatus.type}`}>
