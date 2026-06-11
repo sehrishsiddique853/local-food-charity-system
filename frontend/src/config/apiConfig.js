@@ -2,6 +2,7 @@ export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '';
 
 export const API_ROUTES = {
   login: '/api/auth/login',
+  contact: '/api/contact',
   register: '/api/auth/register',
   registerSendOtp: '/api/auth/register/send-otp',
   profile: '/api/auth/profile',

@@ -157,6 +157,34 @@ export const validateChangePassword = [
     .matches(/[!@#$%^&*]/).withMessage("Password must contain at least one special character (!@#$%^&*)"),
 ];
 
+export const validateContactMessage = [
+  body("name")
+    .trim()
+    .notEmpty().withMessage("Name is required")
+    .isLength({ min: 2, max: 100 }).withMessage("Name must be between 2 and 100 characters"),
+
+  body("email")
+    .trim()
+    .notEmpty().withMessage("Email is required")
+    .isEmail().withMessage("Invalid email format")
+    .normalizeEmail(),
+
+  body("phone")
+    .optional({ values: "falsy" })
+    .trim()
+    .isLength({ max: 25 }).withMessage("Phone must be 25 characters or fewer"),
+
+  body("topic")
+    .trim()
+    .notEmpty().withMessage("Topic is required")
+    .isLength({ min: 2, max: 80 }).withMessage("Topic must be between 2 and 80 characters"),
+
+  body("message")
+    .trim()
+    .notEmpty().withMessage("Message is required")
+    .isLength({ min: 10, max: 2000 }).withMessage("Message must be between 10 and 2000 characters"),
+];
+
 // Middleware to normalize express-validator errors into a consistent response.
 export const handleValidationErrors = (req, res, next) => {
   const errors = validationResult(req);

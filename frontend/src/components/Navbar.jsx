@@ -12,8 +12,6 @@ const Navbar = ({ variant = 'transparent', actionSlot = null }) => {
     setMobileMenuOpen(false);
   }, [location]);
   const homeHref = `${ROUTES.home}#home`;
-  const aboutHref = `${ROUTES.home}#about`;
-  const contactHref = `${ROUTES.home}#contact`;
 
   const toggleMobileMenu = () => {
     setMobileMenuOpen((prev) => !prev);
@@ -58,7 +56,7 @@ const Navbar = ({ variant = 'transparent', actionSlot = null }) => {
             </Link>
           </li>
           <li>
-            <Link to={aboutHref} onClick={closeMobileMenu}>About Us</Link>
+            <Link to={ROUTES.about} onClick={closeMobileMenu}>About Us</Link>
           </li>
           <li>
             <Link to={ROUTES.donorRegister} onClick={closeMobileMenu}>Donate</Link>
@@ -67,7 +65,7 @@ const Navbar = ({ variant = 'transparent', actionSlot = null }) => {
             <Link to={ROUTES.ngoRegister} onClick={closeMobileMenu}>Request</Link>
           </li>
           <li>
-            <Link to={contactHref} onClick={closeMobileMenu}>Contact Us</Link>
+            <Link to={ROUTES.contact} onClick={closeMobileMenu}>Contact Us</Link>
           </li>
           <li className="mobile-login">
             <Link to={ROUTES.login} onClick={closeMobileMenu}>Sign In</Link>

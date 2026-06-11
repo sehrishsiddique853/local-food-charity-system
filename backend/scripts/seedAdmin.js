@@ -35,15 +35,54 @@ const seedAdmin = async () => {
   const phone = normalizePakistanPhone(process.env.ADMIN_PHONE);
   const address = process.env.ADMIN_ADDRESS || "Admin Office";
 
-  const existingAdmin = await User.findOne({ email });
+  const existingAdmin = await User.findOne({
+    role: "admin",
+    $or: [{ email }, { phone }],
+  });
 
   if (existingAdmin) {
-    if (existingAdmin.role !== "admin") {
-      throw new Error(`A non-admin user already exists with email ${email}`);
+    const conflictingEmailUser = await User.findOne({
+      email,
+      _id: { $ne: existingAdmin._id },
+    });
+
+    if (conflictingEmailUser) {
+      throw new Error(`A different user already exists with email ${email}`);
     }
 
-    console.log(`Admin already exists: ${email}`);
+    const conflictingPhoneUser = await User.findOne({
+      phone,
+      _id: { $ne: existingAdmin._id },
+    });
+
+    if (conflictingPhoneUser) {
+      throw new Error(`A different user already exists with phone ${phone}`);
+    }
+
+    const password = await bcrypt.hash(process.env.ADMIN_PASSWORD, 10);
+
+    await User.updateOne(
+      { _id: existingAdmin._id },
+      {
+        $set: {
+          email,
+          phone,
+          password,
+          role: "admin",
+          "location.city": FIXED_SERVICE_CITY,
+          "location.address": address,
+        },
+      }
+    );
+
+    console.log(`Admin updated: ${email}`);
     return;
+  }
+
+  const existingEmail = await User.findOne({ email });
+
+  if (existingEmail) {
+    throw new Error(`A non-admin user already exists with email ${email}`);
   }
 
   const existingPhone = await User.findOne({ phone });

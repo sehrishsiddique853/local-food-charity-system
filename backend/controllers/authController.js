@@ -4,7 +4,10 @@ import { successResponse } from "../utils/apiResponse.js";
 import * as authService from "../services/authService.js";
 import { uploadBufferToCloudinary } from "../config/cloudinary.js";
 import { notifyAdminNgoRegistration } from "../services/notificationService.js";
-import { sendRegistrationOtpEmail } from "../services/emailService.js";
+import {
+  sendNgoRegistrationSubmittedEmail,
+  sendRegistrationOtpEmail,
+} from "../services/emailService.js";
 import {
   assertValidRegistrationOtp,
   consumeRegistrationOtp,
@@ -55,6 +58,12 @@ export const register = async (req, res, next) => {
 
     if (user.role === "ngo") {
       await notifyAdminNgoRegistration(user);
+      sendNgoRegistrationSubmittedEmail({
+        to: user.email,
+        ngoName: user.ngoName,
+      }).catch((emailError) => {
+        console.error("NGO registration submitted email failed:", emailError.message);
+      });
     }
 
     await consumeRegistrationOtp(otpRecord._id);

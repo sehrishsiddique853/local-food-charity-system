@@ -1,4 +1,5 @@
 import { Route, Routes } from 'react-router-dom';
+import AboutPage from '../pages/AboutPage';
 import AdminDashboardPage from '../pages/AdminDashboardPage';
 import AdminDonationsPage from '../pages/AdminDonationsPage';
 import AdminNgosPage from '../pages/AdminNgosPage';
@@ -6,6 +7,7 @@ import AdminNotificationsPage from '../pages/AdminNotificationsPage';
 import AdminReportsPage from '../pages/AdminReportsPage';
 import AdminRequestsPage from '../pages/AdminRequestsPage';
 import AdminUsersPage from '../pages/AdminUsersPage';
+import ContactPage from '../pages/ContactPage';
 import DonationHistoryPage from '../pages/DonationHistoryPage';
 import DonorDashboard from '../pages/DonorDashboard';
 import DonorProfilePage from '../pages/DonorProfilePage';
@@ -27,6 +29,8 @@ import { ROUTES } from '../constants/routes';
 const AppRoutes = () => (
   <Routes>
     <Route path={ROUTES.home} element={<HomePage />} />
+    <Route path={ROUTES.about} element={<AboutPage />} />
+    <Route path={ROUTES.contact} element={<ContactPage />} />
     <Route path={ROUTES.register} element={<RegisterPage />} />
     <Route path={ROUTES.login} element={<LoginPage />} />
     <Route path={ROUTES.donorDashboard} element={<DonorDashboard />} />

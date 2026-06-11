@@ -4,6 +4,7 @@ import NgoVerification from "../models/ngoVerification.js";
 import User from "../models/User.js";
 import ApiError from "../utils/ApiError.js";
 import { successResponse } from "../utils/apiResponse.js";
+import { sendNgoAccountApprovedEmail } from "../services/emailService.js";
 import {
   notifyDonationBooked,
   notifyNgoRequestApproved,
@@ -31,6 +32,19 @@ const removeInactiveDonationRequests = () =>
   DonationRequest.deleteMany({
     requestStatus: { $in: ["cancelled", "rejected"] },
   });
+
+const sendNgoApprovalEmailIfNeeded = (ngo, wasAlreadyApproved) => {
+  if (wasAlreadyApproved) {
+    return;
+  }
+
+  sendNgoAccountApprovedEmail({
+    to: ngo.email,
+    ngoName: ngo.ngoName,
+  }).catch((emailError) => {
+    console.error("NGO approval email failed:", emailError.message);
+  });
+};
 
 export const getPendingNgos = async (req, res, next) => {
   try {
@@ -278,6 +292,7 @@ export const verifyNgo = async (req, res, next) => {
       throw new ApiError(404, "NGO_NOT_FOUND", "NGO not found");
     }
 
+    const wasAlreadyApproved = ngo.ngoVerificationStatus === "approved";
     ngo.ngoVerificationStatus = "approved";
     await ngo.save();
 
@@ -293,6 +308,7 @@ export const verifyNgo = async (req, res, next) => {
     );
 
     await notifyNgoVerificationApproved(ngo);
+    sendNgoApprovalEmailIfNeeded(ngo, wasAlreadyApproved);
 
     return successResponse(res, 200, {
       message: "NGO verified successfully",
@@ -311,6 +327,7 @@ export const approveNgo = async (req, res, next) => {
       throw new ApiError(404, "NGO_NOT_FOUND", "NGO not found");
     }
 
+    const wasAlreadyApproved = ngo.ngoVerificationStatus === "approved";
     ngo.ngoVerificationStatus = "approved";
     await ngo.save();
 
@@ -326,6 +343,7 @@ export const approveNgo = async (req, res, next) => {
     );
 
     await notifyNgoVerificationApproved(ngo);
+    sendNgoApprovalEmailIfNeeded(ngo, wasAlreadyApproved);
 
     return successResponse(res, 200, {
       message: "NGO approved successfully",

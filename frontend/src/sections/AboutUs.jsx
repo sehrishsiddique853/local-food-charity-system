@@ -1,4 +1,6 @@
+import { Link } from 'react-router-dom';
 import '../styles/sections/AboutUs.css';
+import { ROUTES } from '../constants/routes';
 
 const AboutUs = () => {
   return (
@@ -14,7 +16,9 @@ const AboutUs = () => {
           <p>
             We are a team of people working to reduce food waste and help those in need by connecting donors with verified NGOs through a transparent and reliable platform.
           </p>
-          <button className="learn-more-btn">Learn More</button>
+          <Link className="learn-more-btn" to={ROUTES.about}>
+            Learn More
+          </Link>
         </div>
       </div>
     </section>

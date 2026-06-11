@@ -31,7 +31,8 @@ const Footer = () => {
           <h4>Quick Links</h4>
           <ul>
             <li><Link to={`${ROUTES.home}#home`}>Home</Link></li>
-            <li><Link to={`${ROUTES.home}#about`}>About Us</Link></li>
+            <li><Link to={ROUTES.about}>About Us</Link></li>
+            <li><Link to={ROUTES.contact}>Contact Us</Link></li>
             <li><Link to={ROUTES.donorRegister}>Donate Food</Link></li>
             <li><Link to={ROUTES.ngoRegister}>Request Food</Link></li>
             <li><Link to={ROUTES.register}>Register</Link></li>

@@ -9,6 +9,7 @@ import { fileURLToPath } from "node:url";
 import connectDB from "./config/db.js";
 import adminRoutes from "./routes/adminRoutes.js";
 import authRoutes from "./routes/auth.js";
+import contactRoutes from "./routes/contactRoutes.js";
 import donationRoutes from "./routes/donationRoutes.js";
 import ngoRoutes from "./routes/ngoRoutes.js";
 import notificationRoutes from "./routes/notificationRoutes.js";
@@ -27,6 +28,8 @@ startDonationExpiryJob();
 const allowedOrigins = [
   "http://localhost:5173",
   "http://127.0.0.1:5173",
+  "http://localhost:5174",
+  "http://127.0.0.1:5174",
 ];
 
 app.use(cors({
@@ -41,6 +44,7 @@ app.use(cookieParser());
 
 // Mount authentication routes under /api/auth
 app.use("/api/auth", authRoutes);
+app.use("/api/contact", contactRoutes);
 app.use("/api/donations", donationRoutes);
 app.use("/api/ngo", ngoRoutes);
 app.use("/api/admin", adminRoutes);
