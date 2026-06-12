@@ -144,6 +144,7 @@ const RegisterForm = ({
         </div>
 
         <label className="field phone-field">
+          <span className="field-label">Phone Number (Optional)</span>
           <span>☏</span>
           <strong>+92</strong>
           <input

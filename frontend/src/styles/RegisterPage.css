@@ -234,6 +234,23 @@
   flex: 0 0 auto;
 }
 
+.field .field-label {
+  width: auto;
+  position: absolute;
+  top: 0.55rem;
+  left: 1.05rem;
+  color: #374151;
+  font-size: 0.76rem;
+  font-weight: 700;
+  text-align: left;
+}
+
+.phone-field {
+  position: relative;
+  min-height: 78px;
+  padding-top: 1.1rem;
+}
+
 .phone-field strong {
   flex: 0 0 auto;
   color: #111827;
