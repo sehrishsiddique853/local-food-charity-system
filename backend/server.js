@@ -15,7 +15,7 @@ import ngoRoutes from "./routes/ngoRoutes.js";
 import notificationRoutes from "./routes/notificationRoutes.js";
 import errorHandler from "./middleware/errorHandler.js";
 import { startDonationExpiryJob } from "./services/donationExpiryService.js";
-// import { apiRateLimiter } from "./middleware/rateLimiter.js";
+import { apiRateLimiter } from "./middleware/rateLimiter.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 dotenv.config({ path: path.join(__dirname, ".env") });
@@ -41,7 +41,7 @@ app.use(express.json());
 app.use(cookieParser());
 
 // Apply general API rate limiting to all /api routes.
-// app.use("/api", apiRateLimiter);
+app.use("/api", apiRateLimiter);
 
 // Mount authentication routes under /api/auth
 app.use("/api/auth", authRoutes);
