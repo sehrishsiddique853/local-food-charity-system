@@ -1,15 +1,16 @@
 import Donation from "../models/Donation.js";
+import DonationRequest from "../models/DonationRequest.js";
 import ApiError from "../utils/ApiError.js";
 import { successResponse } from "../utils/apiResponse.js";
 import { FIXED_SERVICE_CITY } from "../constants/location.js";
 import { uploadBufferToCloudinary } from "../config/cloudinary.js";
 import {
   notifyApprovedNgosDonationAvailable,
-  notifyDonationCancelled,
   notifyDonationExpired,
   notifyDonationPosted,
   notifyDonationUpdated,
 } from "../services/notificationService.js";
+import { syncDonationStatuses } from "../services/donationStatusSyncService.js";
 
 const ensureDonorOwnsDonation = (donation, userId) => {
   if (!donation) {
@@ -26,17 +27,17 @@ const ensureDonationIsAvailable = (donation) => {
     throw new ApiError(
       400,
       "DONATION_NOT_EDITABLE",
-      "Only available donations can be edited or cancelled"
+      "Only available donations can be edited or deleted"
     );
   }
 };
 
-const ensureDonationCanBeCancelled = (donation) => {
+const ensureDonationCanBeDeleted = (donation) => {
   if (["booked", "collected", "completed"].includes(donation.status)) {
     throw new ApiError(
       400,
-      "DONATION_NOT_CANCELLABLE",
-      "Booked or collected donations cannot be cancelled"
+      "DONATION_NOT_DELETABLE",
+      "Booked or collected donations cannot be deleted"
     );
   }
 };
@@ -120,6 +121,7 @@ export const createDonation = async (req, res, next) => {
 export const getMyDonations = async (req, res, next) => {
   try {
     await markExpiredDonations(req.user.id);
+    await syncDonationStatuses({ donor: req.user.id });
 
     const donations = await Donation.find({
       donor: req.user.id,
@@ -135,9 +137,11 @@ export const getMyDonations = async (req, res, next) => {
 export const getDonationHistory = async (req, res, next) => {
   try {
     await markExpiredDonations(req.user.id);
+    await syncDonationStatuses({ donor: req.user.id });
 
     const donations = await Donation.find({
       donor: req.user.id,
+      status: { $ne: "cancelled" },
     }).sort({ createdAt: -1 }).lean();
 
     return successResponse(res, 200, { donations });
@@ -149,6 +153,7 @@ export const getDonationHistory = async (req, res, next) => {
 export const getDonationById = async (req, res, next) => {
   try {
     await markExpiredDonations(req.user.id);
+    await syncDonationStatuses({ donor: req.user.id });
 
     const donation = await Donation.findById(req.params.id).lean();
     ensureDonorOwnsDonation(donation, req.user.id);
@@ -162,6 +167,7 @@ export const getDonationById = async (req, res, next) => {
 export const updateDonation = async (req, res, next) => {
   try {
     await markExpiredDonations(req.user.id);
+    await syncDonationStatuses({ donor: req.user.id });
 
     const donation = await Donation.findById(req.params.id);
     ensureDonorOwnsDonation(donation, req.user.id);
@@ -201,19 +207,18 @@ export const updateDonation = async (req, res, next) => {
 export const deleteDonation = async (req, res, next) => {
   try {
     await markExpiredDonations(req.user.id);
+    await syncDonationStatuses({ donor: req.user.id });
 
     const donation = await Donation.findById(req.params.id);
     ensureDonorOwnsDonation(donation, req.user.id);
-    ensureDonationCanBeCancelled(donation);
+    ensureDonationCanBeDeleted(donation);
 
-    donation.status = "cancelled";
-    donation.isActive = false;
-    await donation.save();
-    await notifyDonationCancelled(donation);
+    await DonationRequest.deleteMany({ donation: donation._id });
+    await Donation.deleteOne({ _id: donation._id });
 
     return successResponse(res, 200, {
-      message: "Donation cancelled successfully",
-      donation,
+      message: "Donation deleted successfully",
+      donation: { ...donation.toObject(), isActive: false },
     });
   } catch (err) {
     return next(err);
@@ -223,6 +228,7 @@ export const deleteDonation = async (req, res, next) => {
 export const getMyDonationStats = async (req, res, next) => {
   try {
     await markExpiredDonations(req.user.id);
+    await syncDonationStatuses({ donor: req.user.id });
 
     const statuses = ["available", "requested", "booked", "collected"];
     const groupedStats = await Donation.aggregate([

@@ -13,6 +13,7 @@ import {
   notifyNgoVerificationRejected,
 } from "../services/notificationService.js";
 import { expireStaleDonations } from "../services/donationExpiryService.js";
+import { syncDonationStatuses } from "../services/donationStatusSyncService.js";
 
 const getDateRange = ({ from, to } = {}) => {
   const range = {};
@@ -32,6 +33,8 @@ const removeInactiveDonationRequests = () =>
   DonationRequest.deleteMany({
     requestStatus: { $in: ["cancelled", "rejected"] },
   });
+
+const visibleAdminDonationFilter = { status: { $ne: "cancelled" } };
 
 const sendNgoApprovalEmailIfNeeded = (ngo, wasAlreadyApproved) => {
   if (wasAlreadyApproved) {
@@ -62,6 +65,7 @@ export const getPendingNgos = async (req, res, next) => {
 export const getDashboardStats = async (req, res, next) => {
   try {
     await expireStaleDonations();
+    await syncDonationStatuses();
 
     const [
       totalDonors,
@@ -75,7 +79,6 @@ export const getDashboardStats = async (req, res, next) => {
       bookedDonations,
       collectedDonations,
       expiredDonations,
-      cancelledDonations,
       pendingRequests,
       approvedRequests,
     ] = await Promise.all([
@@ -84,13 +87,12 @@ export const getDashboardStats = async (req, res, next) => {
       User.countDocuments({ role: "ngo", ngoVerificationStatus: "approved" }),
       User.countDocuments({ role: "ngo", ngoVerificationStatus: "pending" }),
       User.countDocuments({ role: "ngo", ngoVerificationStatus: "rejected" }),
-      Donation.countDocuments(),
+      Donation.countDocuments(visibleAdminDonationFilter),
       Donation.countDocuments({ status: "available" }),
       DonationRequest.countDocuments({ requestStatus: "pending" }),
       Donation.countDocuments({ status: "booked" }),
       Donation.countDocuments({ status: { $in: ["collected", "completed"] } }),
       Donation.countDocuments({ status: "expired" }),
-      Donation.countDocuments({ status: "cancelled" }),
       DonationRequest.countDocuments({ requestStatus: "pending" }),
       DonationRequest.countDocuments({ requestStatus: "approved" }),
     ]);
@@ -107,7 +109,6 @@ export const getDashboardStats = async (req, res, next) => {
       bookedDonations,
       collectedDonations,
       expiredDonations,
-      cancelledDonations,
       pendingRequests,
       approvedRequests,
     });
@@ -393,9 +394,14 @@ export const rejectNgo = async (req, res, next) => {
 export const getDonations = async (req, res, next) => {
   try {
     await expireStaleDonations();
+    await syncDonationStatuses();
 
     const { status } = req.query;
-    const filter = {};
+    const filter = { ...visibleAdminDonationFilter };
+    if (status === "cancelled") {
+      return successResponse(res, 200, { donations: [] });
+    }
+
     if (status) {
       filter.status = status;
     }
@@ -414,6 +420,7 @@ export const getDonations = async (req, res, next) => {
 export const getDonationById = async (req, res, next) => {
   try {
     await expireStaleDonations();
+    await syncDonationStatuses();
 
     const donation = await Donation.findById(req.params.id)
       .populate("donor", "name email phone location")
@@ -455,7 +462,7 @@ export const deleteDonation = async (req, res, next) => {
 export const changeDonationStatus = async (req, res, next) => {
   try {
     const { status } = req.body;
-    const allowed = ["available", "collected", "expired", "cancelled"];
+    const allowed = ["available", "collected", "expired"];
 
     if (!allowed.includes(status)) {
       throw new ApiError(400, "INVALID_DONATION_STATUS", "Invalid donation status");
@@ -467,21 +474,21 @@ export const changeDonationStatus = async (req, res, next) => {
     }
 
     const currentStatus = donation.status || "available";
-    const terminalStatuses = ["collected", "completed", "expired", "cancelled"];
+    const terminalStatuses = ["collected", "completed", "expired"];
 
     if (terminalStatuses.includes(currentStatus)) {
       throw new ApiError(
         400,
         "DONATION_STATUS_LOCKED",
-        "Collected, expired, and cancelled donations cannot be changed"
+        "Collected and expired donations cannot be changed"
       );
     }
 
-    if (["available", "requested"].includes(currentStatus) && !["expired", "cancelled"].includes(status)) {
+    if (["available", "requested"].includes(currentStatus) && status !== "expired") {
       throw new ApiError(
         400,
         "INVALID_DONATION_TRANSITION",
-        "Available donations can only be marked expired or cancelled"
+        "Available donations can only be marked expired"
       );
     }
 
@@ -494,14 +501,14 @@ export const changeDonationStatus = async (req, res, next) => {
     }
 
     donation.status = status;
-    donation.isActive = !["expired", "cancelled", "completed"].includes(status);
+    donation.isActive = !["expired", "completed"].includes(status);
 
     if (status === "available") {
       donation.bookedByNgo = null;
       await DonationRequest.deleteMany({ donation: donation._id });
     }
 
-    if (["expired", "cancelled"].includes(status)) {
+    if (status === "expired") {
       donation.bookedByNgo = null;
       await DonationRequest.deleteMany({ donation: donation._id });
     }
@@ -532,6 +539,7 @@ export const changeDonationStatus = async (req, res, next) => {
 export const getDonationRequests = async (req, res, next) => {
   try {
     await expireStaleDonations();
+    await syncDonationStatuses();
     await removeInactiveDonationRequests();
 
     const { status } = req.query;
@@ -556,6 +564,7 @@ export const getDonationRequests = async (req, res, next) => {
 export const getDonationRequestById = async (req, res, next) => {
   try {
     await expireStaleDonations();
+    await syncDonationStatuses();
 
     const request = await DonationRequest.findById(req.params.id)
       .populate("ngo", "ngoName email phone location ngoVerificationStatus")
@@ -656,9 +665,13 @@ export const approveDonationRequest = async (req, res, next) => {
 export const getDonationReport = async (req, res, next) => {
   try {
     await expireStaleDonations();
+    await syncDonationStatuses();
 
     const [groupedDonationStats, requested] = await Promise.all([
       Donation.aggregate([
+        {
+          $match: visibleAdminDonationFilter,
+        },
         {
           $group: {
             _id: "$status",
@@ -676,7 +689,6 @@ export const getDonationReport = async (req, res, next) => {
       collected: 0,
       completed: 0,
       expired: 0,
-      cancelled: 0,
     };
 
     groupedDonationStats.forEach((item) => {
@@ -723,6 +735,7 @@ export const getUserReport = async (req, res, next) => {
 export const getRequestReport = async (req, res, next) => {
   try {
     await expireStaleDonations();
+    await syncDonationStatuses();
 
     const createdAtRange = getDateRange(req.query);
     const match = createdAtRange ? { createdAt: createdAtRange } : {};
@@ -762,6 +775,7 @@ export const getRequestReport = async (req, res, next) => {
 export const getCollectionReport = async (req, res, next) => {
   try {
     await expireStaleDonations();
+    await syncDonationStatuses();
 
     const createdAtRange = getDateRange(req.query);
     const dateFilter = createdAtRange ? { updatedAt: createdAtRange } : {};
@@ -799,10 +813,14 @@ export const getCollectionReport = async (req, res, next) => {
 export const getDonationTimelineReport = async (req, res, next) => {
   try {
     await expireStaleDonations();
+    await syncDonationStatuses();
 
     const period = req.query.period === "weekly" ? "weekly" : "monthly";
     const createdAtRange = getDateRange(req.query);
-    const match = createdAtRange ? { createdAt: createdAtRange } : {};
+    const match = {
+      ...visibleAdminDonationFilter,
+      ...(createdAtRange ? { createdAt: createdAtRange } : {}),
+    };
     const dateFormat = period === "weekly" ? "%G-W%V" : "%Y-%m";
 
     const timeline = await Donation.aggregate([
@@ -833,7 +851,6 @@ export const getDonationTimelineReport = async (req, res, next) => {
           collected: 0,
           completed: 0,
           expired: 0,
-          cancelled: 0,
         });
       }
 
@@ -854,6 +871,7 @@ export const getDonationTimelineReport = async (req, res, next) => {
 export const getNgoPerformanceReport = async (req, res, next) => {
   try {
     await expireStaleDonations();
+    await syncDonationStatuses();
 
     const performance = await DonationRequest.aggregate([
       {

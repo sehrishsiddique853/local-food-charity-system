@@ -26,6 +26,8 @@ export const useMyDonations = () => {
   const [editingDonation, setEditingDonation] = useState(null);
   const [editForm, setEditForm] = useState(null);
   const [isSaving, setIsSaving] = useState(false);
+  const [deletingDonation, setDeletingDonation] = useState(null);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const loadDonations = useCallback(async () => {
     setIsLoading(true);
@@ -136,17 +138,26 @@ export const useMyDonations = () => {
     }
   };
 
-  const removeDonation = async (donation) => {
-    const confirmed = window.confirm(`Delete "${donation.foodTitle}"?`);
+  const requestDeleteDonation = (donation) => {
+    setDeletingDonation(donation);
+    setStatusMessage({ type: '', message: '' });
+  };
 
-    if (!confirmed) {
+  const closeDelete = () => {
+    setDeletingDonation(null);
+    setIsDeleting(false);
+  };
+
+  const confirmDeleteDonation = async () => {
+    if (!deletingDonation) {
       return;
     }
 
+    setIsDeleting(true);
     setStatusMessage({ type: '', message: '' });
 
     try {
-      const result = await deleteDonation(donation._id);
+      const result = await deleteDonation(deletingDonation._id);
 
       if (result.status === 401) {
         navigate(ROUTES.login);
@@ -158,14 +169,17 @@ export const useMyDonations = () => {
       }
 
       setDonations((current) =>
-        current.map((item) => (item._id === donation._id ? result.data.data.donation : item))
+        current.map((item) => (item._id === deletingDonation._id ? result.data.data.donation : item))
       );
       setStatusMessage({ type: 'success', message: 'Donation deleted successfully.' });
+      closeDelete();
     } catch (error) {
       setStatusMessage({
         type: 'error',
         message: error.message || 'Unable to delete donation.',
       });
+    } finally {
+      setIsDeleting(false);
     }
   };
 
@@ -188,14 +202,18 @@ export const useMyDonations = () => {
     statusMessage,
     selectedDonation,
     editingDonation,
+    deletingDonation,
     editForm,
     isSaving,
+    isDeleting,
     setSelectedDonation,
     startEdit,
     closeEdit,
+    closeDelete,
     updateEditField,
     updateEditImage,
     submitEdit,
-    removeDonation,
+    requestDeleteDonation,
+    confirmDeleteDonation,
   };
 };

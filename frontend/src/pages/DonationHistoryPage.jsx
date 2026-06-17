@@ -37,7 +37,7 @@ const DonationHistoryPage = () => {
         <PostDonationIntro
           eyebrow="Donation History"
           title="Review completed and inactive donations."
-          description="Collected, expired, and cancelled donations are kept here so you can track your contribution record."
+          description="Collected and expired donations are kept here so you can track your contribution record."
           imageAlt="Food donation volunteers"
         />
 

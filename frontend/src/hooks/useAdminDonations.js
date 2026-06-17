@@ -28,6 +28,7 @@ export const useAdminDonations = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [isDetailsLoading, setIsDetailsLoading] = useState(false);
   const [actionDonationId, setActionDonationId] = useState('');
+  const [deletingDonation, setDeletingDonation] = useState(null);
   const [errorMessage, setErrorMessage] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
 
@@ -155,24 +156,43 @@ export const useAdminDonations = () => {
     }
   };
 
-  const deleteDonation = async (donationId) => {
-    const shouldDelete = window.confirm('Delete this donation permanently?');
-    if (!shouldDelete) {
+  const requestDeleteDonation = (donationId) => {
+    const donation =
+      donations.find((item) => item._id === donationId) ||
+      selectedDonationDetails?.donation ||
+      null;
+
+    if (!donation) {
       return;
     }
 
-    setActionDonationId(donationId);
+    setDeletingDonation(donation);
+    setErrorMessage('');
+    setSuccessMessage('');
+  };
+
+  const closeDeleteDonation = () => {
+    setDeletingDonation(null);
+  };
+
+  const confirmDeleteDonation = async () => {
+    if (!deletingDonation) {
+      return;
+    }
+
+    setActionDonationId(deletingDonation._id);
     setErrorMessage('');
     setSuccessMessage('');
 
     try {
-      const result = await deleteAdminDonation(donationId);
+      const result = await deleteAdminDonation(deletingDonation._id);
       if (!handleApiResult(result, 'Unable to delete donation.')) {
         return;
       }
 
       setSuccessMessage('Donation deleted successfully.');
       setSelectedDonationDetails(null);
+      setDeletingDonation(null);
       await loadDonations();
     } catch (error) {
       setErrorMessage(error.message || 'Unable to delete donation.');
@@ -183,9 +203,6 @@ export const useAdminDonations = () => {
 
   const markExpired = (donationId) =>
     updateDonationStatus(donationId, 'expired', 'Donation marked expired successfully.');
-
-  const cancelDonation = (donationId) =>
-    updateDonationStatus(donationId, 'cancelled', 'Donation cancelled successfully.');
 
   const markCollected = (donationId) =>
     updateDonationStatus(donationId, 'collected', 'Donation marked collected successfully.');
@@ -198,7 +215,6 @@ export const useAdminDonations = () => {
       available: 'Booking cancelled successfully.',
       collected: 'Donation marked collected successfully.',
       expired: 'Donation marked expired successfully.',
-      cancelled: 'Donation cancelled successfully.',
     };
 
     return updateDonationStatus(
@@ -212,9 +228,10 @@ export const useAdminDonations = () => {
     activeTab,
     actionDonationId,
     cancelBooking,
-    cancelDonation,
+    closeDeleteDonation,
     closeDonationDetails,
-    deleteDonation,
+    confirmDeleteDonation,
+    deletingDonation,
     errorMessage,
     filteredDonations,
     isDetailsLoading,
@@ -222,6 +239,7 @@ export const useAdminDonations = () => {
     markCollected,
     markExpired,
     openDonationDetails,
+    requestDeleteDonation,
     selectedDonationDetails,
     setActiveTab,
     statusTabs,

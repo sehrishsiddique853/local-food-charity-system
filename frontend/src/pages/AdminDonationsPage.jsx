@@ -3,6 +3,7 @@ import { useAdminProfile } from '../hooks/useAdminProfile';
 import AdminLayout from '../layouts/AdminLayout/AdminLayout';
 import PostDonationIntro from '../sections/PostDonationIntro';
 import { AdminDonationsPanel } from '../sections/AdminDonations';
+import { DeleteDonationModal } from '../sections/MyDonations';
 import '../styles/DonorDashboard.css';
 import '../styles/PostDonationPage.css';
 import '../styles/MyDonationsPage.css';
@@ -15,9 +16,10 @@ const AdminDonationsPage = () => {
     activeTab,
     actionDonationId,
     cancelBooking,
-    cancelDonation,
+    closeDeleteDonation,
     closeDonationDetails,
-    deleteDonation,
+    confirmDeleteDonation,
+    deletingDonation,
     errorMessage,
     filteredDonations,
     isDetailsLoading,
@@ -25,6 +27,7 @@ const AdminDonationsPage = () => {
     markCollected,
     markExpired,
     openDonationDetails,
+    requestDeleteDonation,
     selectedDonationDetails,
     setActiveTab,
     statusTabs,
@@ -58,9 +61,8 @@ const AdminDonationsPage = () => {
           isDetailsLoading={isDetailsLoading}
           isLoading={isLoading}
           onCancelBooking={cancelBooking}
-          onCancelDonation={cancelDonation}
           onCloseDetails={closeDonationDetails}
-          onDelete={deleteDonation}
+          onDelete={requestDeleteDonation}
           onMarkCollected={markCollected}
           onMarkExpired={markExpired}
           onOpenDetails={openDonationDetails}
@@ -69,6 +71,13 @@ const AdminDonationsPage = () => {
           setActiveTab={setActiveTab}
           statusTabs={statusTabs}
           tabCounts={tabCounts}
+        />
+
+        <DeleteDonationModal
+          donation={deletingDonation}
+          isDeleting={actionDonationId === deletingDonation?._id}
+          onCancel={closeDeleteDonation}
+          onConfirm={confirmDeleteDonation}
         />
       </section>
     </AdminLayout>

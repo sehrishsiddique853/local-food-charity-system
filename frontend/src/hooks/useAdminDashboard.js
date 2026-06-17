@@ -25,7 +25,6 @@ const donationColors = {
   booked: '#2563eb',
   collected: '#0f766e',
   expired: '#6b7280',
-  cancelled: '#c81e1e',
 };
 
 const requestColors = {
@@ -129,7 +128,6 @@ export const useAdminDashboard = () => {
         color: donationColors.collected,
       },
       { label: 'Expired', value: donationReport.expired || 0, color: donationColors.expired },
-      { label: 'Cancelled', value: donationReport.cancelled || 0, color: donationColors.cancelled },
     ];
 
     return {

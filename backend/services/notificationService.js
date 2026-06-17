@@ -109,17 +109,6 @@ export const notifyDonationUpdated = (donation) =>
     relatedDonation: donation._id,
   });
 
-export const notifyDonationCancelled = (donation) =>
-  createNotification({
-    receiver: donation.donor,
-    title: "Donation Deleted",
-    message: `Your donation "${donation.foodTitle}" was removed from active listings.`,
-    type: "system",
-    eventKey: "donation_cancelled",
-    relatedDonation: donation._id,
-    dedupe: true,
-  });
-
 export const notifyDonationExpired = (donation) =>
   Promise.all([
     createNotification({
@@ -253,7 +242,6 @@ export default {
   notifyDonationPosted,
   notifyApprovedNgosDonationAvailable,
   notifyDonationUpdated,
-  notifyDonationCancelled,
   notifyDonationExpired,
   notifyDonationBooked,
   notifyDonationCollected,

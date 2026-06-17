@@ -16,7 +16,7 @@ const requestStatusLabels = {
 
 const getDonorContact = (donor) => donor?.phone || donor?.email || 'Contact not available';
 
-const terminalDonationStatuses = ['collected', 'completed', 'expired', 'cancelled'];
+const terminalDonationStatuses = ['collected', 'completed', 'expired'];
 
 const AdminDonationDetailsModal = ({
   details,
@@ -24,7 +24,6 @@ const AdminDonationDetailsModal = ({
   actionDonationId,
   onClose,
   onCancelBooking,
-  onCancelDonation,
   onDelete,
   onMarkCollected,
   onMarkExpired,
@@ -149,14 +148,6 @@ const AdminDonationDetailsModal = ({
                     onClick={() => onMarkExpired(donation._id)}
                   >
                     Mark Expired
-                  </button>
-                  <button
-                    className="reject"
-                    type="button"
-                    disabled={isActionLoading}
-                    onClick={() => onCancelDonation(donation._id)}
-                  >
-                    Cancel Donation
                   </button>
                   <button
                     className="delete"

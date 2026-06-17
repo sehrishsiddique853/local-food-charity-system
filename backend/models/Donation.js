@@ -72,7 +72,6 @@ const donationSchema = new mongoose.Schema(
         "collected",
         "completed",
         "expired",
-        "cancelled",
       ],
       default: "available",
     },
