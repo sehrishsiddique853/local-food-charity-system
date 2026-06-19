@@ -14,15 +14,12 @@ const donationColors = {
   booked: '#2563eb',
   collected: '#0f766e',
   expired: '#6b7280',
-  cancelled: '#c81e1e',
 };
 
 const requestColors = {
   pending: '#f59e0b',
   approved: '#4f46e5',
-  rejected: '#be123c',
   collected: '#0f766e',
-  cancelled: '#6b7280',
 };
 
 const ngoColors = {
@@ -98,7 +95,6 @@ export const useAdminReports = () => {
         color: donationColors.collected,
       },
       { label: 'Expired', value: donationReport.expired || 0, color: donationColors.expired },
-      { label: 'Cancelled', value: donationReport.cancelled || 0, color: donationColors.cancelled },
     ];
 
     return { rows, total: buildTotal(rows) };
@@ -108,9 +104,7 @@ export const useAdminReports = () => {
     const rows = [
       { label: 'Pending', value: requestReport.pending || 0, color: requestColors.pending },
       { label: 'Approved', value: requestReport.approved || 0, color: requestColors.approved },
-      { label: 'Rejected', value: requestReport.rejected || 0, color: requestColors.rejected },
       { label: 'Collected', value: requestReport.collected || 0, color: requestColors.collected },
-      { label: 'Cancelled', value: requestReport.cancelled || 0, color: requestColors.cancelled },
     ];
 
     return { rows, total: buildTotal(rows) };
@@ -159,11 +153,10 @@ export const useAdminReports = () => {
     },
     {
       title: 'Request Report',
-      description: 'NGO request decisions and collection status.',
+      description: 'Active approvals and collection status.',
       metrics: [
         { label: 'Pending', value: requestReport.pending || 0 },
         { label: 'Approved', value: requestReport.approved || 0 },
-        { label: 'Rejected', value: requestReport.rejected || 0 },
         { label: 'Collected', value: requestReport.collected || 0 },
       ],
     },

@@ -5,7 +5,6 @@ export const donationStatusLabels = {
   collected: 'Collected',
   completed: 'Completed',
   expired: 'Expired',
-  cancelled: 'Cancelled',
 };
 
 export const donationStatusClasses = {
@@ -15,7 +14,6 @@ export const donationStatusClasses = {
   collected: 'collected',
   completed: 'completed',
   expired: 'expired',
-  cancelled: 'cancelled',
 };
 
 export const initialDonationStats = {
@@ -30,7 +28,6 @@ export const overviewColors = {
   available: '#27ae60',
   booked: '#2563eb',
   collected: '#0f766e',
-  cancelled: '#b91c1c',
   expired: '#6b7280',
 };
 
@@ -49,6 +46,9 @@ export const quantityUnitOptions = [
   { label: 'Packets', value: 'packets' },
   { label: 'Bottles', value: 'bottles' },
   { label: 'Trays', value: 'trays' },
+  { label: 'Cups', value: 'cups' },
+  { label: 'Litres', value: 'litres' },
+  { label: 'Unit', value: 'unit' },
 ];
 
 export const initialPostDonationForm = {

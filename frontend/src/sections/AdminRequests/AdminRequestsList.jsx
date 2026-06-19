@@ -3,9 +3,7 @@ import { formatDate, formatQuantity } from '../../utils/donationUtils';
 const requestStatusLabels = {
   pending: 'Pending',
   approved: 'Approved',
-  rejected: 'Rejected',
   collected: 'Collected',
-  cancelled: 'Cancelled',
 };
 
 const getRequestStatus = (request) => request.requestStatus || 'pending';

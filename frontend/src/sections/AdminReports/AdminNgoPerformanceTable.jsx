@@ -31,7 +31,6 @@ const AdminNgoPerformanceTable = ({ rows }) => {
           <span>Total Requests</span>
           <span>Pending</span>
           <span>Approved</span>
-          <span>Rejected</span>
           <span>Collected</span>
         </div>
 
@@ -42,7 +41,6 @@ const AdminNgoPerformanceTable = ({ rows }) => {
               <span data-label="Total Requests">{row.totalRequests || 0}</span>
               <span data-label="Pending">{row.pendingRequests || 0}</span>
               <span data-label="Approved">{row.approvedRequests || 0}</span>
-              <span data-label="Rejected">{row.rejectedRequests || 0}</span>
               <span data-label="Collected">{row.collectedRequests || 0}</span>
             </article>
           ))}

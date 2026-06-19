@@ -59,11 +59,10 @@ export const buildDonutGradient = (rows, total) => {
 
 export const getDonationSummary = (donations, stats) => {
   const expired = donations.filter((donation) => donation.status === 'expired').length;
-  const cancelled = donations.filter((donation) => donation.status === 'cancelled').length;
   const requestedBooked = (stats.requested || 0) + (stats.booked || 0);
   const total = stats.total || donations.length || 0;
   const overviewTotal =
-    (stats.available || 0) + (stats.booked || 0) + (stats.collected || 0) + cancelled + expired;
+    (stats.available || 0) + (stats.booked || 0) + (stats.collected || 0) + expired;
 
   return {
     total,
@@ -71,7 +70,6 @@ export const getDonationSummary = (donations, stats) => {
     booked: stats.booked || 0,
     requestedBooked,
     collected: stats.collected || 0,
-    cancelled,
     expired,
     overviewTotal,
   };
@@ -81,6 +79,5 @@ export const buildDashboardOverviewRows = (donationSummary, overviewColors) => [
   { label: 'Available', value: donationSummary.available, color: overviewColors.available },
   { label: 'Booked', value: donationSummary.booked, color: overviewColors.booked },
   { label: 'Collected', value: donationSummary.collected, color: overviewColors.collected },
-  { label: 'Cancelled', value: donationSummary.cancelled, color: overviewColors.cancelled },
   { label: 'Expired', value: donationSummary.expired, color: overviewColors.expired },
 ];

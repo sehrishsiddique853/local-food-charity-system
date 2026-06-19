@@ -22,18 +22,16 @@ const initialDashboard = {
 
 const donationColors = {
   available: '#27ae60',
+  requested: '#f59e0b',
   booked: '#2563eb',
   collected: '#0f766e',
   expired: '#6b7280',
-  cancelled: '#c81e1e',
 };
 
 const requestColors = {
   pending: '#f59e0b',
   approved: '#4f46e5',
-  rejected: '#be123c',
   collected: '#0f766e',
-  cancelled: '#6b7280',
 };
 
 const ngoColors = {
@@ -122,6 +120,7 @@ export const useAdminDashboard = () => {
   const donationOverview = useMemo(() => {
     const rows = [
       { label: 'Available', value: donationReport.available || 0, color: donationColors.available },
+      { label: 'Requested', value: donationReport.requested || 0, color: donationColors.requested },
       { label: 'Booked', value: donationReport.booked || 0, color: donationColors.booked },
       {
         label: 'Collected',
@@ -129,7 +128,6 @@ export const useAdminDashboard = () => {
         color: donationColors.collected,
       },
       { label: 'Expired', value: donationReport.expired || 0, color: donationColors.expired },
-      { label: 'Cancelled', value: donationReport.cancelled || 0, color: donationColors.cancelled },
     ];
 
     return {
@@ -142,9 +140,7 @@ export const useAdminDashboard = () => {
     const rows = [
       { label: 'Pending', value: requestReport.pending || 0, color: requestColors.pending },
       { label: 'Approved', value: requestReport.approved || 0, color: requestColors.approved },
-      { label: 'Rejected', value: requestReport.rejected || 0, color: requestColors.rejected },
       { label: 'Collected', value: requestReport.collected || 0, color: requestColors.collected },
-      { label: 'Cancelled', value: requestReport.cancelled || 0, color: requestColors.cancelled },
     ];
 
     return {

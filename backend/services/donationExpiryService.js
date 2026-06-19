@@ -12,7 +12,7 @@ export const expireStaleDonations = async (now = new Date()) => {
   }).select("_id donor foodTitle");
 
   if (!expiredDonations.length) {
-    return { expiredDonations: 0, cancelledRequests: 0 };
+    return { expiredDonations: 0, removedRequests: 0 };
   }
 
   const expiredDonationIds = expiredDonations.map((donation) => donation._id);
@@ -22,16 +22,10 @@ export const expireStaleDonations = async (now = new Date()) => {
       { _id: { $in: expiredDonationIds } },
       { $set: { status: "expired", isActive: false } }
     ),
-    DonationRequest.updateMany(
+    DonationRequest.deleteMany(
       {
         donation: { $in: expiredDonationIds },
         requestStatus: "pending",
-      },
-      {
-        $set: {
-          requestStatus: "cancelled",
-          adminMessage: "Donation expired before approval.",
-        },
       }
     ),
   ]);
@@ -40,7 +34,7 @@ export const expireStaleDonations = async (now = new Date()) => {
 
   return {
     expiredDonations: donationResult.modifiedCount || 0,
-    cancelledRequests: requestResult.modifiedCount || 0,
+    removedRequests: requestResult.deletedCount || 0,
   };
 };
 

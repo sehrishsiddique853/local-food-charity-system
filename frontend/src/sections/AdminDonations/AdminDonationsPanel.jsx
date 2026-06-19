@@ -9,7 +9,6 @@ const AdminDonationsPanel = ({
   isDetailsLoading,
   isLoading,
   onCancelBooking,
-  onCancelDonation,
   onCloseDetails,
   onDelete,
   onMarkCollected,
@@ -54,7 +53,6 @@ const AdminDonationsPanel = ({
         actionDonationId={actionDonationId}
         onClose={onCloseDetails}
         onCancelBooking={onCancelBooking}
-        onCancelDonation={onCancelDonation}
         onDelete={onDelete}
         onMarkCollected={onMarkCollected}
         onMarkExpired={onMarkExpired}

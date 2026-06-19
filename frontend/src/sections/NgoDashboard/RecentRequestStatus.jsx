@@ -4,7 +4,6 @@ import { formatDate, formatQuantity } from '../../utils/donationUtils';
 const requestStatusLabels = {
   pending: 'Pending',
   approved: 'Booked',
-  rejected: 'Rejected',
 };
 
 const RecentRequestStatus = ({

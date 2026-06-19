@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { ROUTES } from '../constants/routes';
 import { getDonationHistory } from '../services/donationService';
 
-const historyStatuses = ['collected', 'completed', 'expired', 'cancelled'];
+const historyStatuses = ['collected', 'completed', 'expired'];
 
 export const useDonationHistory = () => {
   const navigate = useNavigate();
@@ -51,7 +51,6 @@ export const useDonationHistory = () => {
       ['collected', 'completed'].includes(donation.status)
     ).length,
     expired: historyDonations.filter((donation) => donation.status === 'expired').length,
-    cancelled: historyDonations.filter((donation) => donation.status === 'cancelled').length,
   }), [historyDonations]);
 
   return {

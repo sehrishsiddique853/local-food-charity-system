@@ -4,7 +4,6 @@ import { ROUTES } from '../constants/routes';
 import { cancelNgoRequest, getNgoRequests } from '../services/ngoService';
 
 const activeRequestStatuses = ['pending', 'approved'];
-const ngoCancelledMessage = 'Cancelled by NGO';
 
 export const useNgoRequests = () => {
   const navigate = useNavigate();
@@ -50,13 +49,7 @@ export const useNgoRequests = () => {
 
   const activeRequests = useMemo(
     () =>
-      requests
-        .filter((request) => activeRequestStatuses.includes(request.requestStatus))
-        .filter(
-          (request) =>
-            request.requestStatus !== 'rejected' ||
-            request.adminMessage !== ngoCancelledMessage
-        ),
+      requests.filter((request) => activeRequestStatuses.includes(request.requestStatus)),
     [requests]
   );
 
@@ -79,9 +72,7 @@ export const useNgoRequests = () => {
     setSuccessMessage('');
 
     try {
-      const result = await cancelNgoRequest(requestId, {
-        reason: 'Cancelled by NGO',
-      });
+      const result = await cancelNgoRequest(requestId);
 
       if (result.status === 401) {
         navigate(ROUTES.login);

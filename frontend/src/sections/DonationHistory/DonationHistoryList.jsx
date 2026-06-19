@@ -12,11 +12,6 @@ const historyGroups = [
     title: 'Expired Donations',
     statuses: ['expired'],
   },
-  {
-    key: 'cancelled',
-    title: 'Cancelled Donations',
-    statuses: ['cancelled'],
-  },
 ];
 
 const DonationHistoryList = ({ donations, totals, selectedStatus, onStatusChange, isLoading, onView }) => (
@@ -56,15 +51,6 @@ const DonationHistoryList = ({ donations, totals, selectedStatus, onStatusChange
         Expired
         <strong>{totals.expired || 0}</strong>
       </button>
-      <button
-        type="button"
-        className={`summary-chip cancelled ${selectedStatus === 'cancelled' ? 'active' : ''}`}
-        aria-pressed={selectedStatus === 'cancelled'}
-        onClick={() => onStatusChange('cancelled')}
-      >
-        Cancelled
-        <strong>{totals.cancelled || 0}</strong>
-      </button>
     </div>
 
     {isLoading && <p className="empty-state">Loading donation history...</p>}
@@ -72,7 +58,7 @@ const DonationHistoryList = ({ donations, totals, selectedStatus, onStatusChange
     {!isLoading && donations.length === 0 && (
       <div className="my-donations-empty">
         <h3>No donation history yet</h3>
-        <p>Collected, expired, and cancelled donations will appear here.</p>
+        <p>Collected and expired donations will appear here.</p>
       </div>
     )}
 

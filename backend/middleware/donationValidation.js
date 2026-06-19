@@ -2,7 +2,7 @@ import { body, validationResult } from "express-validator";
 import { errorResponse } from "../utils/apiResponse.js";
 
 const foodTypes = ["cooked", "packed", "raw", "bakery", "beverages"];
-const quantityUnits = ["plates", "kg", "boxes", "packets", "bottles", "trays"];
+const quantityUnits = ["plates", "kg", "boxes", "packets", "bottles", "trays", "cups", "litres", "unit"];
 
 export const validateCreateDonation = [
   body("foodTitle")

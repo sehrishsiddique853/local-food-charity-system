@@ -7,9 +7,9 @@ import {
   notifyDonationExpired,
   notifyDonationRequested,
 } from "../services/notificationService.js";
+import { syncDonationStatuses } from "../services/donationStatusSyncService.js";
 
 const DAILY_REQUEST_LIMIT = 5;
-const NGO_CANCELLED_MESSAGE = "Cancelled by NGO";
 const INACTIVE_REQUEST_STATUSES = ["rejected", "cancelled"];
 
 const markExpiredDonations = async () => {
@@ -58,6 +58,7 @@ const getTodayRange = () => {
 export const getAvailableDonations = async (req, res, next) => {
   try {
     await markExpiredDonations();
+    await syncDonationStatuses();
 
     const { search, foodType } = req.query;
     const activeRequestDonationIds = await DonationRequest.distinct("donation", {
@@ -141,6 +142,11 @@ export const requestDonation = async (req, res, next) => {
       pickupTime: req.body.pickupTime,
     });
 
+    if (donation.status === "available") {
+      donation.status = "requested";
+      await donation.save();
+    }
+
     await notifyDonationRequested(donation, request);
 
     return successResponse(res, 201, {
@@ -155,6 +161,7 @@ export const requestDonation = async (req, res, next) => {
 export const getMyRequests = async (req, res, next) => {
   try {
     await markExpiredDonations();
+    await syncDonationStatuses();
 
     const requests = await DonationRequest.find({
       ngo: req.user.id,
@@ -205,6 +212,7 @@ export const cancelRequest = async (req, res, next) => {
     }
 
     await DonationRequest.deleteOne({ _id: request._id });
+    await syncDonationStatuses();
 
     return successResponse(res, 200, {
       message: "Request cancelled successfully",
@@ -220,7 +228,7 @@ export const getRequestStats = async (req, res, next) => {
       {
         $match: {
           ngo: req.user.id,
-          requestStatus: { $in: ["pending", "approved", "collected", "cancelled"] },
+          requestStatus: { $in: ["pending", "approved", "collected"] },
         },
       },
       {
@@ -235,9 +243,7 @@ export const getRequestStats = async (req, res, next) => {
       totalRequests: 0,
       pending: 0,
       approved: 0,
-      rejected: 0,
       collected: 0,
-      cancelled: 0,
     };
 
     groupedStats.forEach((item) => {
@@ -253,9 +259,19 @@ export const getRequestStats = async (req, res, next) => {
 
 export const getBookedDonations = async (req, res, next) => {
   try {
+    const approvedRequestDonationIds = await DonationRequest.distinct("donation", {
+      ngo: req.user.id,
+      requestStatus: "approved",
+    });
+
     const donations = await Donation.find({
-      bookedByNgo: req.user.id,
-      status: "booked",
+      $or: [
+        { bookedByNgo: req.user.id, status: "booked" },
+        {
+          _id: { $in: approvedRequestDonationIds },
+          status: { $nin: ["collected", "completed", "expired"] },
+        },
+      ],
       isActive: true,
     })
       .populate("donor", "name email phone location")
@@ -276,7 +292,16 @@ export const markDonationCollected = async (req, res, next) => {
       throw new ApiError(404, "DONATION_NOT_FOUND", "Donation not found");
     }
 
-    if (donation.status !== "booked" || donation.bookedByNgo?.toString() !== req.user.id.toString()) {
+    const approvedRequest = await DonationRequest.findOne({
+      donation: donation._id,
+      ngo: req.user.id,
+      requestStatus: "approved",
+    });
+
+    const isBookedForNgo = donation.bookedByNgo?.toString() === req.user.id.toString();
+    const isCollectableStatus = !["collected", "completed", "expired"].includes(donation.status);
+
+    if (!isCollectableStatus || (!isBookedForNgo && !approvedRequest)) {
       throw new ApiError(
         400,
         "DONATION_NOT_COLLECTABLE",
@@ -285,16 +310,13 @@ export const markDonationCollected = async (req, res, next) => {
     }
 
     donation.status = "collected";
+    donation.bookedByNgo = req.user.id;
     await donation.save();
 
-    await DonationRequest.findOneAndUpdate(
-      {
-        donation: donation._id,
-        ngo: req.user.id,
-        requestStatus: "approved",
-      },
-      { $set: { requestStatus: "collected" } }
-    );
+    if (approvedRequest) {
+      approvedRequest.requestStatus = "collected";
+      await approvedRequest.save();
+    }
 
     await notifyDonationCollected(donation);
 
@@ -312,11 +334,7 @@ export const getNgoHistory = async (req, res, next) => {
     const [requests, donations] = await Promise.all([
       DonationRequest.find({
         ngo: req.user.id,
-        requestStatus: { $in: ["rejected", "collected"] },
-        $or: [
-          { requestStatus: { $ne: "rejected" } },
-          { adminMessage: { $ne: NGO_CANCELLED_MESSAGE } },
-        ],
+        requestStatus: "collected",
       })
         .populate("donation")
         .sort({ createdAt: -1 })

@@ -11,7 +11,6 @@ const getStatusOptions = (status) => {
   if (['available', 'requested'].includes(status)) {
     return [
       { value: 'expired', label: 'Mark Expired' },
-      { value: 'cancelled', label: 'Cancel Donation' },
     ];
   }
 

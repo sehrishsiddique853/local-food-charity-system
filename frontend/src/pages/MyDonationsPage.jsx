@@ -4,6 +4,7 @@ import { useMyDonations } from '../hooks/useMyDonations';
 import DonorLayout from '../layouts/DonorLayout/DonorLayout';
 import PostDonationIntro from '../sections/PostDonationIntro';
 import {
+  DeleteDonationModal,
   DonationDetailsModal,
   EditDonationModal,
   MyDonationsList,
@@ -20,15 +21,19 @@ const MyDonationsPage = () => {
     isLoading,
     statusMessage,
     selectedDonation,
+    deletingDonation,
     editForm,
     isSaving,
+    isDeleting,
     setSelectedDonation,
     startEdit,
     closeEdit,
+    closeDelete,
     updateEditField,
     updateEditImage,
     submitEdit,
-    removeDonation,
+    requestDeleteDonation,
+    confirmDeleteDonation,
   } = useMyDonations();
   const [selectedStatus, setSelectedStatus] = useState('all');
 
@@ -65,11 +70,17 @@ const MyDonationsPage = () => {
           isLoading={isLoading}
           onView={setSelectedDonation}
           onEdit={startEdit}
-          onDelete={removeDonation}
+          onDelete={requestDeleteDonation}
         />
       </section>
 
       <DonationDetailsModal donation={selectedDonation} onClose={() => setSelectedDonation(null)} />
+      <DeleteDonationModal
+        donation={deletingDonation}
+        isDeleting={isDeleting}
+        onCancel={closeDelete}
+        onConfirm={confirmDeleteDonation}
+      />
       <EditDonationModal
         editForm={editForm}
         isSaving={isSaving}
