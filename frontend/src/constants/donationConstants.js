@@ -46,6 +46,9 @@ export const quantityUnitOptions = [
   { label: 'Packets', value: 'packets' },
   { label: 'Bottles', value: 'bottles' },
   { label: 'Trays', value: 'trays' },
+  { label: 'Cups', value: 'cups' },
+  { label: 'Litres', value: 'litres' },
+  { label: 'Unit', value: 'unit' },
 ];
 
 export const initialPostDonationForm = {

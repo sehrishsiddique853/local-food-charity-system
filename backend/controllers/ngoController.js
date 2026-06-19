@@ -10,7 +10,6 @@ import {
 import { syncDonationStatuses } from "../services/donationStatusSyncService.js";
 
 const DAILY_REQUEST_LIMIT = 5;
-const NGO_CANCELLED_MESSAGE = "Cancelled by NGO";
 const INACTIVE_REQUEST_STATUSES = ["rejected", "cancelled"];
 
 const markExpiredDonations = async () => {
@@ -229,7 +228,7 @@ export const getRequestStats = async (req, res, next) => {
       {
         $match: {
           ngo: req.user.id,
-          requestStatus: { $in: ["pending", "approved", "collected", "cancelled"] },
+          requestStatus: { $in: ["pending", "approved", "collected"] },
         },
       },
       {
@@ -244,9 +243,7 @@ export const getRequestStats = async (req, res, next) => {
       totalRequests: 0,
       pending: 0,
       approved: 0,
-      rejected: 0,
       collected: 0,
-      cancelled: 0,
     };
 
     groupedStats.forEach((item) => {
@@ -337,11 +334,7 @@ export const getNgoHistory = async (req, res, next) => {
     const [requests, donations] = await Promise.all([
       DonationRequest.find({
         ngo: req.user.id,
-        requestStatus: { $in: ["rejected", "collected"] },
-        $or: [
-          { requestStatus: { $ne: "rejected" } },
-          { adminMessage: { $ne: NGO_CANCELLED_MESSAGE } },
-        ],
+        requestStatus: "collected",
       })
         .populate("donation")
         .sort({ createdAt: -1 })

@@ -27,7 +27,7 @@ const donationSchema = new mongoose.Schema(
 
   unit: {
     type: String,
-    enum: ["plates", "kg", "boxes", "packets", "bottles", "trays"],
+    enum: ["plates", "kg", "boxes", "packets", "bottles", "trays", "cups", "litres", "unit"],
     required: true,
   },
 },

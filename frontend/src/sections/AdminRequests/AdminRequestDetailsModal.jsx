@@ -3,9 +3,7 @@ import { formatDate, formatQuantity, getDonationImage, getPickupArea } from '../
 const requestStatusLabels = {
   pending: 'Pending',
   approved: 'Approved',
-  rejected: 'Rejected',
   collected: 'Collected',
-  cancelled: 'Cancelled',
 };
 
 const AdminRequestDetailsModal = ({

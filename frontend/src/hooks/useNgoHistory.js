@@ -3,8 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { ROUTES } from '../constants/routes';
 import { getNgoHistory } from '../services/ngoService';
 
-const historyRequestStatuses = ['rejected', 'collected'];
-const ngoCancelledMessage = 'Cancelled by NGO';
+const historyRequestStatuses = ['collected'];
 
 export const useNgoHistory = () => {
   const navigate = useNavigate();
@@ -48,13 +47,7 @@ export const useNgoHistory = () => {
 
   const historyRequests = useMemo(
     () =>
-      requests
-        .filter((request) => historyRequestStatuses.includes(request.requestStatus))
-        .filter(
-          (request) =>
-            request.requestStatus !== 'rejected' ||
-            request.adminMessage !== ngoCancelledMessage
-        ),
+      requests.filter((request) => historyRequestStatuses.includes(request.requestStatus)),
     [requests]
   );
 
@@ -68,7 +61,6 @@ export const useNgoHistory = () => {
 
   const totals = useMemo(() => ({
     all: historyRequests.length,
-    rejected: historyRequests.filter((request) => request.requestStatus === 'rejected').length,
     collected: historyRequests.filter((request) => request.requestStatus === 'collected').length,
   }), [historyRequests]);
 

@@ -13,7 +13,6 @@ const initialRequestStats = {
   totalRequests: 0,
   pending: 0,
   approved: 0,
-  rejected: 0,
   collected: 0,
 };
 

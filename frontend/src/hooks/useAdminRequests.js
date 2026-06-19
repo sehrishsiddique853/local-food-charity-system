@@ -12,11 +12,10 @@ const statusTabs = [
   { key: 'all', label: 'All Requests' },
   { key: 'pending', label: 'Pending' },
   { key: 'approved', label: 'Approved' },
-  { key: 'rejected', label: 'Rejected' },
 ];
 
 const normalizeStatus = (status) => status || 'pending';
-const visibleRequestStatuses = ['pending', 'approved', 'rejected'];
+const visibleRequestStatuses = ['pending', 'approved'];
 
 export const useAdminRequests = () => {
   const navigate = useNavigate();
@@ -74,7 +73,6 @@ export const useAdminRequests = () => {
       all: 0,
       pending: 0,
       approved: 0,
-      rejected: 0,
     };
 
     requests.forEach((request) => {

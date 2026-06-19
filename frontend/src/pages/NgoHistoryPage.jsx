@@ -32,7 +32,7 @@ const NgoHistoryPage = () => {
           profile={profile}
           eyebrow="Donation History"
           title="Review donation outcomes"
-          description="View rejected requests and collected donations from your NGO activity."
+          description="View collected donations from your NGO activity."
         />
 
         {(profileError || errorMessage) && (

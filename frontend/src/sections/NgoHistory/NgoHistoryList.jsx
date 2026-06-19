@@ -6,13 +6,11 @@ import {
 } from '../../utils/donationUtils';
 
 const historyLabels = {
-  rejected: 'Rejected',
   collected: 'Collected',
 };
 
 const statusOptions = [
   { label: 'All history', value: '' },
-  { label: 'Rejected', value: 'rejected' },
   { label: 'Collected', value: 'collected' },
 ];
 
@@ -28,7 +26,7 @@ const NgoHistoryList = ({
     <div className="my-donations-heading ngo-available-heading">
       <div>
         <h2>Donation History</h2>
-        <p>Review rejected requests and collected donations.</p>
+        <p>Review collected donation requests.</p>
       </div>
     </div>
 
@@ -41,15 +39,6 @@ const NgoHistoryList = ({
       >
         All History
         <strong>{totals.all}</strong>
-      </button>
-      <button
-        type="button"
-        className={`summary-chip cancelled ${statusFilter === 'rejected' ? 'active' : ''}`}
-        aria-pressed={statusFilter === 'rejected'}
-        onClick={() => onStatusChange('rejected')}
-      >
-        Rejected
-        <strong>{totals.rejected}</strong>
       </button>
       <button
         type="button"
@@ -79,7 +68,7 @@ const NgoHistoryList = ({
       {!isLoading && requests.length === 0 && (
         <div className="my-donations-empty">
           <h3>No history yet</h3>
-          <p>Rejected and collected requests will appear here.</p>
+          <p>Collected requests will appear here.</p>
         </div>
       )}
 
@@ -115,7 +104,7 @@ const NgoHistoryList = ({
                   {getPickupArea(donation)}
                 </p>
                 <small>
-                  {status === 'collected' ? 'Collected' : 'Rejected'} {formatDate(request.updatedAt || request.createdAt)}
+                  Collected {formatDate(request.updatedAt || request.createdAt)}
                 </small>
               </div>
             </div>

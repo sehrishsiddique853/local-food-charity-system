@@ -630,20 +630,6 @@ export const approveDonationRequest = async (req, res, next) => {
       requestStatus: "pending",
     });
 
-    await DonationRequest.updateMany(
-      {
-        donation: donation._id,
-        _id: { $ne: request._id },
-        requestStatus: "pending",
-      },
-      {
-        $set: {
-          requestStatus: "rejected",
-          adminMessage: "Another NGO was approved for this donation.",
-        },
-      }
-    );
-
     await Promise.all([
       notifyDonationBooked(donation),
       notifyNgoRequestApproved(request, donation),
@@ -651,6 +637,12 @@ export const approveDonationRequest = async (req, res, next) => {
         notifyNgoRequestRejected(rejectedRequest, donation, "Another NGO was approved for this donation.")
       ),
     ]);
+
+    await DonationRequest.deleteMany({
+      donation: donation._id,
+      _id: { $ne: request._id },
+      requestStatus: "pending",
+    });
 
     return successResponse(res, 200, {
       message: "Donation request approved successfully",
@@ -738,7 +730,10 @@ export const getRequestReport = async (req, res, next) => {
     await syncDonationStatuses();
 
     const createdAtRange = getDateRange(req.query);
-    const match = createdAtRange ? { createdAt: createdAtRange } : {};
+    const match = {
+      requestStatus: { $in: ["pending", "approved", "collected"] },
+      ...(createdAtRange ? { createdAt: createdAtRange } : {}),
+    };
 
     const groupedRequests = await DonationRequest.aggregate([
       { $match: match },
@@ -754,9 +749,7 @@ export const getRequestReport = async (req, res, next) => {
       total: 0,
       pending: 0,
       approved: 0,
-      rejected: 0,
       collected: 0,
-      cancelled: 0,
     };
 
     groupedRequests.forEach((item) => {
@@ -875,6 +868,11 @@ export const getNgoPerformanceReport = async (req, res, next) => {
 
     const performance = await DonationRequest.aggregate([
       {
+        $match: {
+          requestStatus: { $in: ["pending", "approved", "collected"] },
+        },
+      },
+      {
         $group: {
           _id: "$ngo",
           totalRequests: { $sum: 1 },
@@ -883,9 +881,6 @@ export const getNgoPerformanceReport = async (req, res, next) => {
           },
           approvedRequests: {
             $sum: { $cond: [{ $eq: ["$requestStatus", "approved"] }, 1, 0] },
-          },
-          rejectedRequests: {
-            $sum: { $cond: [{ $eq: ["$requestStatus", "rejected"] }, 1, 0] },
           },
           collectedRequests: {
             $sum: { $cond: [{ $eq: ["$requestStatus", "collected"] }, 1, 0] },
@@ -911,7 +906,6 @@ export const getNgoPerformanceReport = async (req, res, next) => {
           totalRequests: 1,
           pendingRequests: 1,
           approvedRequests: 1,
-          rejectedRequests: 1,
           collectedRequests: 1,
         },
       },

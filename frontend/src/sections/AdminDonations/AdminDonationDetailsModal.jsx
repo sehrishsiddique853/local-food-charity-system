@@ -9,9 +9,7 @@ import {
 const requestStatusLabels = {
   pending: 'Pending',
   approved: 'Approved',
-  rejected: 'Rejected',
   collected: 'Collected',
-  cancelled: 'Cancelled',
 };
 
 const getDonorContact = (donor) => donor?.phone || donor?.email || 'Contact not available';
